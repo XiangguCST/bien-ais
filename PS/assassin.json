@@ -1,0 +1,56 @@
+{ "skeleton": { "images": "E:/UnityProjects/bien-ais/PS/images/" },
+"bones": [
+	{ "name": "root" }
+],
+"slots": [
+	{ "name": "head", "bone": "root", "attachment": "head" },
+	{ "name": "sword", "bone": "root", "attachment": "sword" },
+	{ "name": "body", "bone": "root", "attachment": "body" },
+	{ "name": "footR", "bone": "root", "attachment": "footR" },
+	{ "name": "footL", "bone": "root", "attachment": "footL" },
+	{ "name": "legR", "bone": "root", "attachment": "legR" },
+	{ "name": "legL", "bone": "root", "attachment": "legL" },
+	{ "name": "armR", "bone": "root", "attachment": "armR" },
+	{ "name": "armL", "bone": "root", "attachment": "armL" },
+	{ "name": "handR", "bone": "root", "attachment": "handR" },
+	{ "name": "handL", "bone": "root", "attachment": "handL" }
+],
+"skins": {
+	"default": {
+		"head": {
+			"head": { "x": 244, "y": -143, "width": 66, "height": 66 }
+		},
+		"sword": {
+			"sword": { "x": 418, "y": -253, "width": 36, "height": 192 }
+		},
+		"body": {
+			"body": { "x": 358, "y": -260.5, "width": 26, "height": 131 }
+		},
+		"footR": {
+			"footR": { "x": 268, "y": -309.5, "width": 26, "height": 71 }
+		},
+		"footL": {
+			"footL": { "x": 213, "y": -309.5, "width": 26, "height": 71 }
+		},
+		"legR": {
+			"legR": { "x": 162, "y": -309.5, "width": 26, "height": 71 }
+		},
+		"legL": {
+			"legL": { "x": 109, "y": -309.5, "width": 26, "height": 71 }
+		},
+		"armR": {
+			"armR": { "x": 268, "y": -233.5, "width": 26, "height": 71 }
+		},
+		"armL": {
+			"armL": { "x": 213, "y": -233.5, "width": 26, "height": 71 }
+		},
+		"handR": {
+			"handR": { "x": 162, "y": -233.5, "width": 26, "height": 71 }
+		},
+		"handL": {
+			"handL": { "x": 109, "y": -233.5, "width": 26, "height": 71 }
+		}
+	}
+},
+"animations": { "animation": {} }
+}
