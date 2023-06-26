@@ -10,28 +10,28 @@ public class InputController : BaseController
         // 移动
         if(Input.GetKey(KeyCode.A))
         {
-            _player1.Move(-1);
+            _player1.Move(CharacterDir.eLeft);
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            _player1.Move(1);
+            _player1.Move(CharacterDir.eRight);
         }
         else
         {
-            _player1.Move(0);
+            _player1.Stand();
 
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            _player2.Move(-1);
+            _player2.Move(CharacterDir.eLeft);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            _player2.Move(1);
+            _player2.Move(CharacterDir.eRight);
         }
         else
         {
-            _player2.Move(0);
+            _player2.Stand();
         }
 
         //// 攻击

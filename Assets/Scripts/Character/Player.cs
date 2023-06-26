@@ -8,10 +8,10 @@ public class Player : Character
 {
     override protected void InitAttribute()
     {
+        base.InitAttribute();
         _attr.maxHP = 50000;
         _attr.maxNeiLi = 10;
         _attr.atk = 500;
         _attr.speed = 100;
     }
-
 }
