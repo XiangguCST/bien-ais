@@ -5,6 +5,12 @@ using YFrameWork;
 
 public class InputController : BaseController
 {
+    private void Awake()
+    {
+        _skillBar1.AddSkill(KeyCode.J, new Skill(_skillBar1, "普攻", 1, 0, 0));
+        _skillBar1.ApplySkills();
+    }
+
     void Update()
     {
         // 移动
@@ -34,13 +40,19 @@ public class InputController : BaseController
             _player2.Stand();
         }
 
-        //// 攻击
-        //if (Input.GetKeyDown(KeyCode.J))
-        //{
-
-        //}
+        // 使用技能
+        foreach (var slot in _skillBar1._skills)
+        {
+            if(Input.GetKey(slot._hotKey))
+            {
+                _skillBar1.ActivateSkill(slot._skill);
+            }
+        }
+        
     }
 
     public Player _player1;
     public Player _player2;
+    public SkillBar _skillBar1;
+    public SkillBar _skillBar2;
 }
