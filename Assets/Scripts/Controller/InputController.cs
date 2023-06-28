@@ -8,11 +8,11 @@ public class InputController : MonoSingleton<InputController>
     void Awake()
     {
         // 初始化技能栏
-        _skillBar1.AddSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1, 1, false, 0f, 2.5f, 0.67f, 0.67f, 0.2f, 0));
-        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0, 6, true, 3f, -1f, 1.67f, 1.67f, 1f, 0));
+        _skillBar1.AddSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1,CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.67f, 0.67f, 0.2f, 0));
+        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0,CharacterStatusType.Stun, 3f, 6, true, 3f, -1f, 1.67f, 1.67f, 1f, 0));
         _skillBar1.ApplySkills(_player1);
-        _skillBar2.AddSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, 1, false, 0f, 2.5f, 0.67f, 0.67f, 0.2f, 0));
-        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, 6, true, 3f, -1f, 1.67f, 1.67f, 1f, 0));
+        _skillBar2.AddSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.67f, 0.67f, 0.2f, 0));
+        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, CharacterStatusType.Stun, 3f, 6, true, 3f, -1f, 1.67f, 1.67f, 1f, 0));
         _skillBar2.ApplySkills(_player2);
     }
 

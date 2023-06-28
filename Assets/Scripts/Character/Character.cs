@@ -7,7 +7,6 @@ using YFrameWork;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
-[RequireComponent(typeof(TargetFinder))]
 public class Character : MonoBehaviour
 {
     public void Awake()
@@ -15,10 +14,16 @@ public class Character : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CapsuleCollider2D>();
         _animator = GetComponentInChildren<Animator>();
-        _targetFinder = GetComponent<TargetFinder>(); 
+        _targetFinder._owner = this;
 
         InitAttribute();
         ApplyAttribute();
+    }
+
+    private void Update()
+    {
+        _targetFinder.UpdateTarget();
+        _stateManager.UpdateStatus(Time.deltaTime);
     }
 
     // 人物移动
@@ -133,7 +138,9 @@ public class Character : MonoBehaviour
     protected Rigidbody2D _rb;
     protected CapsuleCollider2D _collider;
     protected Animator _animator;
-    public TargetFinder _targetFinder;
+    public TargetFinder _targetFinder = new TargetFinder();
+    [SerializeField]
+    public CharacterStatusManager _stateManager = new CharacterStatusManager(); 
 }
 
 // 人物朝向

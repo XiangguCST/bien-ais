@@ -4,15 +4,20 @@ using UnityEngine;
 // 技能类
 public class Skill
 {
-    public Skill(string name, string animName, int energyCost, int energyRecover, float rate, bool bRequiredTarget, float requiredTargetDistance, float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime)
+    public Skill(string name, string animName, int energyCost, int energyRecover,
+        CharacterStatusType addStatus, float statusTime,
+        float rate, bool bRequiredTarget, float requiredTargetDistance,
+        float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime)
     {
         _name = name;
         _animName = animName;
         _energyCost = energyCost;
         _energyRecover = energyRecover;
+        _addStatus = addStatus;
+        _statusTime = statusTime;
         _rate = rate;
-        _bRequiredTarget = bRequiredTarget; 
-        _requiredTargetDistance = requiredTargetDistance; 
+        _bRequiredTarget = bRequiredTarget;
+        _requiredTargetDistance = requiredTargetDistance;
         _range = range;
         _cooldownTime = cooldownTime;
         _castTime = castTime;
@@ -116,6 +121,7 @@ public class Skill
         var target = _owner._targetFinder._nearestEnemy;
         int rawDamage = (int)(_owner._attr.atk * _rate);
         int damage = (int)Random.Range(0.7f * rawDamage, 1.3f * rawDamage);
+        target._stateManager.AddStatus(_addStatus, _statusTime);
         target.TakeDamage(damage);
     }
 
@@ -123,6 +129,8 @@ public class Skill
     public string _animName; // 技能动画名称
     public int _energyCost; // 技能消耗的能量值
     public int _energyRecover; // 技能回复的能量值
+    public CharacterStatusType _addStatus; // 附加异常状态
+    public float _statusTime; // 异常状态时间
     public float _rate; // 技能倍率
     public bool _bRequiredTarget; // 技能释放是否需要目标
     public float _requiredTargetDistance; // 表示技能释放所需的目标距离
@@ -139,5 +147,5 @@ public class Skill
     public bool _bIsCooldown; // 是否冷却中
     public bool _bDealDamage; // 是否进行伤害判定
     public SkillBar _skillbar; // 技能栏
-    public Player _owner;
+    public Player _owner; // 技能释放者
 }

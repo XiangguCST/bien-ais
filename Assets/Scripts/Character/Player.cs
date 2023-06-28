@@ -13,6 +13,7 @@ public class Player : Character
         _attr.maxEnergy = 10;
         _attr.atk = 500;
         _attr.speed = 100;
+        _targetFinder._maxFindDistance = 6f;
     }
 
     public void OnSkillEffect(Skill skill)
