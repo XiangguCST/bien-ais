@@ -7,7 +7,8 @@ public class Skill
     public Skill(string name, string animName, int energyCost, int energyRecover,
         CharacterStatusType addStatus, float statusTime,
         float rate, bool bRequiredTarget, float requiredTargetDistance,
-        float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime)
+        float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
+        MovementDirection movementDirection, float movementDistance)
     {
         _name = name;
         _animName = animName;
@@ -23,6 +24,8 @@ public class Skill
         _castTime = castTime;
         _damageDelay = damageDelay;
         _globalCooldownTime = globalCooldownTime;
+        _movementDirection = movementDirection;
+        _movementDistance = movementDistance;
         _cooldownTimer = 0f;
         _damageDelayTimer = 0f;
         _bIsCooldown = false;
@@ -57,6 +60,8 @@ public class Skill
         _damageDelayTimer = _damageDelay;
         _skillbar._isCasting = true;
         _bDealDamage = false;
+        Vector3 movementVector = MovementUtils.GetMovementVector(_owner._dir, _movementDirection);
+        _targetMovePosition = _owner.transform.position + movementVector * _movementDistance;
         CoroutineRunner.Instance.StartCoroutine(CastRoutine());
 
         // 技能冷却
@@ -73,13 +78,38 @@ public class Skill
     // 技能释放
     private IEnumerator CastRoutine()
     {
+        _owner._targetFinder.EnableEnemyCollisions(false);
+        float movementSpeed = _movementDistance / _castTime; // 计算移动速度
         while (_castTimer > 0f)
         {
             _castTimer -= Time.deltaTime;
+
+            _damageDelayTimer -= Time.deltaTime;
+            if (!_bDealDamage && _damageDelayTimer <= 0)
+            {
+                if (CheckHit())
+                {
+                    DealDamage();
+                }
+                _bDealDamage = true;
+            }
+
+            // 计算当前移动距离
+            float distanceToTarget = Vector3.Distance(_owner.transform.position, _targetMovePosition);
+
+            // 判断是否到达目标位置
+            if (distanceToTarget >= 0.01f)
+            {
+                // 移动技能释放者
+                _owner.transform.position = Vector3.MoveTowards(_owner.transform.position, _targetMovePosition, movementSpeed * Time.deltaTime);
+            }
+
             yield return null;
         }
 
         _skillbar._isCasting = false;
+        _owner.transform.position = _targetMovePosition; // 移动到目标位置
+        _owner._targetFinder.EnableEnemyCollisions(true);
     }
 
     // 技能冷却
@@ -88,15 +118,7 @@ public class Skill
         while (_cooldownTimer > 0f)
         {
             _cooldownTimer -= Time.deltaTime;
-            _damageDelayTimer -= Time.deltaTime;
-            if(!_bDealDamage  && _damageDelayTimer <= 0)
-            {
-                if(CheckHit())
-                {
-                    DealDamage();
-                }
-                _bDealDamage = true;
-            }
+            
             yield return null;
         }
 
@@ -139,7 +161,8 @@ public class Skill
     public float _castTime; // 释放时间
     public float _damageDelay; // 伤害判定延迟
     public float _globalCooldownTime; // gcd
-
+    public MovementDirection _movementDirection; // 位移方向
+    public float _movementDistance; // 位移距离
 
     public float _cooldownTimer; // 冷却计时器
     public float _castTimer; // 技能释放计时器
@@ -148,4 +171,11 @@ public class Skill
     public bool _bDealDamage; // 是否进行伤害判定
     public SkillBar _skillbar; // 技能栏
     public Player _owner; // 技能释放者
+    Vector3 _targetMovePosition; // 目标移动位置
+}
+
+public enum MovementDirection
+{
+    Forward,
+    Backward
 }

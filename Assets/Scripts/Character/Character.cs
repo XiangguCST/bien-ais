@@ -145,8 +145,8 @@ public class Character : MonoBehaviour
     protected CapsuleCollider2D _collider;
     protected Animator _animator;
     public TargetFinder _targetFinder = new TargetFinder();
-    [SerializeField]
-    public CharacterStatusManager _stateManager = new CharacterStatusManager(); 
+    public CharacterStatusManager _stateManager = new CharacterStatusManager();
+    public BuffManager _buffManager = new BuffManager();
 }
 
 // 人物朝向

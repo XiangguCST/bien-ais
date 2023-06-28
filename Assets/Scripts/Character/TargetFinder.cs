@@ -73,6 +73,17 @@ public class TargetFinder
         UpdateTarget();
     }
 
+    public void EnableEnemyCollisions(bool bEnable)
+    {
+        foreach (Character enemy in _enemys)
+        {
+            Collider2D enemyCollider = enemy.GetComponent<Collider2D>();
+            Collider2D ownerCollider = _owner.GetComponent<Collider2D>();
+            Physics2D.IgnoreCollision(ownerCollider, enemyCollider, !bEnable);
+        }
+    }
+
+
     public float _maxFindDistance; // 最大发现目标距离
 
     public bool _isFindTarget; // 是否发现目标
