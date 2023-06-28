@@ -47,6 +47,7 @@ public class SkillBar : MonoBehaviour
             KeyCode hotKey = pair.Key;
             Skill skill = pair.Value;
             skill._owner = owner;
+            skill._skillbar = this;
             // 在技能栏下新建格子
             GameObject slotGO = Instantiate(Resources.Load<GameObject>("UI/SkillSlot"));
             slotGO.transform.SetParent(this.transform); 
@@ -66,7 +67,7 @@ public class SkillBar : MonoBehaviour
             Debug.LogError("Skill not found: " + skill._name);
             return;
         }
-        if (!skill._bIsCooldown && !_isGlobalCooldown && !_isCasting)
+        if (skill.IsSkillUsable())
         {
             // 调用技能效果的方法
             skill.ActivateEffect();

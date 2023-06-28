@@ -4,11 +4,15 @@ using UnityEngine;
 // 技能类
 public class Skill
 {
-    public Skill(SkillBar skillbar, string name, float rate, float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime)
+    public Skill(string name, string animName, int energyCost, int energyRecover, float rate, bool bRequiredTarget, float requiredTargetDistance, float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime)
     {
-        _skillbar = skillbar;
         _name = name;
+        _animName = animName;
+        _energyCost = energyCost;
+        _energyRecover = energyRecover;
         _rate = rate;
+        _bRequiredTarget = bRequiredTarget; 
+        _requiredTargetDistance = requiredTargetDistance; 
         _range = range;
         _cooldownTime = cooldownTime;
         _castTime = castTime;
@@ -19,15 +23,35 @@ public class Skill
         _bIsCooldown = false;
     }
 
+    // 技能是否可用
+    public bool IsSkillUsable()
+    {
+        if (_bIsCooldown || _skillbar._isGlobalCooldown || _skillbar._isCasting)
+            return false;
+        if(_bRequiredTarget)
+        {
+            var finder = _owner._targetFinder;
+            if (!finder._isFindTarget)
+                return false;
+            if ( finder._targetDistance > _requiredTargetDistance)
+                return false;
+        }
+
+        if (_owner._energy < _energyCost)
+            return false;
+        return true;
+    }
+
     public void ActivateEffect()
     {
-        // 触发技能效果的逻辑
-        _owner.OnSkillEffect(this);
+        // 技能消耗
+        _owner.ConsumeEnergy(_energyCost);
 
         // 释放技能
         _castTimer = _castTime;
         _damageDelayTimer = _damageDelay;
         _skillbar._isCasting = true;
+        _bDealDamage = false;
         CoroutineRunner.Instance.StartCoroutine(CastRoutine());
 
         // 技能冷却
@@ -35,6 +59,9 @@ public class Skill
         _bIsCooldown = true;
         CoroutineRunner.Instance.StartCoroutine(CooldownRoutine());
 
+        // 触发技能效果的逻辑
+        _owner.OnSkillEffect(this);
+        _owner.TriggerAnimator(_animName);
     }
 
 
@@ -57,12 +84,13 @@ public class Skill
         {
             _cooldownTimer -= Time.deltaTime;
             _damageDelayTimer -= Time.deltaTime;
-            if(_damageDelayTimer <= 0)
+            if(!_bDealDamage  && _damageDelayTimer <= 0)
             {
                 if(CheckHit())
                 {
                     DealDamage();
                 }
+                _bDealDamage = true;
             }
             yield return null;
         }
@@ -70,6 +98,7 @@ public class Skill
         _bIsCooldown = false;
     }
 
+    // 命中判定
     bool CheckHit()
     {
         var finder = _owner._targetFinder;
@@ -80,16 +109,23 @@ public class Skill
         return true;
     }
 
-    // 处理伤害判定
+    // 处理伤害
     void DealDamage()
     {
-        var target = _owner._targetFinder._target;
-        int damage = (int)(_owner._attr.atk * _rate);
+        _owner.ConsumeEnergy(-_energyRecover);
+        var target = _owner._targetFinder._nearestEnemy;
+        int rawDamage = (int)(_owner._attr.atk * _rate);
+        int damage = (int)Random.Range(0.7f * rawDamage, 1.3f * rawDamage);
         target.TakeDamage(damage);
     }
 
     public string _name; // 技能名称
+    public string _animName; // 技能动画名称
+    public int _energyCost; // 技能消耗的能量值
+    public int _energyRecover; // 技能回复的能量值
     public float _rate; // 技能倍率
+    public bool _bRequiredTarget; // 技能释放是否需要目标
+    public float _requiredTargetDistance; // 表示技能释放所需的目标距离
     public float _range; // 范围(小于0表示无限范围)
     public float _cooldownTime; // 冷却时间
     public float _castTime; // 释放时间
@@ -101,7 +137,7 @@ public class Skill
     public float _castTimer; // 技能释放计时器
     public float _damageDelayTimer; // 伤害延迟判定计时器
     public bool _bIsCooldown; // 是否冷却中
-
-    SkillBar _skillbar; // 技能栏
+    public bool _bDealDamage; // 是否进行伤害判定
+    public SkillBar _skillbar; // 技能栏
     public Player _owner;
 }

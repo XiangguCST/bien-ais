@@ -189,10 +189,11 @@ MonoBehaviour:
   _dir: 0
   _bIsMoving: 0
   _attr:
-    maxHP: 0
-    maxNeiLi: 0
-    atk: 0
-    speed: 0
+    maxHP: 50000
+    maxNeiLi: 10
+    atk: 500
+    speed: 100
+  _targetFinder: {fileID: 0}
   _skillBar: {fileID: 0}
 --- !u!50 &7736194846012521161
 Rigidbody2D:
@@ -246,5 +247,6 @@ MonoBehaviour:
   _isFindTarget: 0
   _targetDistance: 0
   _maxFindDistance: 6
+  _owner: {fileID: 0}
   _target: {fileID: 0}
   _enemys: []

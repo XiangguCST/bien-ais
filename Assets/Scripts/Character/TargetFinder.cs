@@ -16,9 +16,9 @@ public class TargetFinder : MonoBehaviour
     }
 
     // 是否面朝目标
-    public bool IsFaceToTarget()
+    bool IsFaceToTarget()
     {
-        var dirX = _target.transform.position.x - transform.position.x;
+        var dirX = _nearestEnemy.transform.position.x - transform.position.x;
         return (_owner._dir == CharacterDir.eLeft && dirX < 0
             || _owner._dir == CharacterDir.eRight && dirX > 0);
     }
@@ -32,7 +32,7 @@ public class TargetFinder : MonoBehaviour
 
     void UpdateTarget()
     {
-        _targetDistance = Vector2.Distance(transform.position, _target.transform.position);
+        _targetDistance = Vector2.Distance(transform.position, _nearestEnemy.transform.position);
         _isFindTarget = IsFaceToTarget() && _targetDistance <= _maxFindDistance;
         if(_isFindTarget)
         {
@@ -59,14 +59,14 @@ public class TargetFinder : MonoBehaviour
                 minDistance = distance;
             }
         }
-        _target = target;
-        _targetUI.SetTarget(_target.transform);
+        _nearestEnemy = target;
+        _targetUI.SetTarget(_nearestEnemy.transform);
         UpdateTarget();
     }
 
     void Update()
     {
-        if (_target == null) return;
+        if (_nearestEnemy == null) return;
         
         UpdateTarget();
     }
@@ -76,7 +76,7 @@ public class TargetFinder : MonoBehaviour
     public float _maxFindDistance; // 最大发现目标距离
 
     public Character _owner; 
-    public Character _target; // 目标
+    public Character _nearestEnemy; // 最近敌人
     public List<Character> _enemys = new List<Character>(); // 敌人列表
     private TargetUI _targetUI;
 }

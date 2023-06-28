@@ -64,7 +64,7 @@ public class Character : MonoBehaviour
     void ApplyAttribute()
     {
         _hp = _attr.maxHP;
-        _neiLi = _attr.maxNeiLi;
+        _energy = _attr.maxEnergy;
         UpdateDirShow();
     }
 
@@ -72,6 +72,11 @@ public class Character : MonoBehaviour
     void UpdateAnimation()
     {
         _animator.SetBool("isMoving", _bIsMoving);
+    }
+
+    public void TriggerAnimator(string param)
+    {
+        _animator.SetTrigger(param);
     }
 
     // 刷新方向显示
@@ -103,15 +108,21 @@ public class Character : MonoBehaviour
 
     virtual public void TakeDamage(int damage)
     {
-        _hp -= damage;
-        if(_hp <= 0)
+        _hp = Mathf.Clamp(_hp - damage, 0, _attr.maxHP);
+        if (_hp <= 0)
         {
             Die();
         }
     }
 
+    // 消耗内力
+    virtual public void ConsumeEnergy(int cost)
+    {
+        _energy = Mathf.Clamp(_energy - cost, 0, _attr.maxEnergy);
+    }
+
     public int _hp; // 血量
-    public int _neiLi; // 内力
+    public int _energy; // 内力
     public CharacterDir _dir; // 朝向
     public bool _bIsMoving;// 是否移动中
     protected bool _bDie = false; // 是否死亡
@@ -137,7 +148,7 @@ public enum CharacterDir
 public struct CharacterAttribute
 {
     public int maxHP; // 最大血量
-    public int maxNeiLi; // 最大内力
+    public int maxEnergy; // 最大内力
     public int atk; // 攻击力
     public float speed; // 移动速度
 }

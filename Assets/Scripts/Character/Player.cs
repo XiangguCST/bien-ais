@@ -10,7 +10,7 @@ public class Player : Character
     {
         base.InitAttribute();
         _attr.maxHP = 50000;
-        _attr.maxNeiLi = 10;
+        _attr.maxEnergy = 10;
         _attr.atk = 500;
         _attr.speed = 100;
     }
@@ -19,11 +19,6 @@ public class Player : Character
     {
         // 停止移动
         Stand();
-
-        if (skill._name == "普攻")
-        {
-            _animator.SetTrigger("attack");
-        }
     }
 
     override public void Move(CharacterDir dir)
@@ -42,6 +37,12 @@ public class Player : Character
     public override void TakeDamage(int damage)
     {
         base.TakeDamage(damage);
+        _playerUI.UpdateUI();
+    }
+
+    public override void ConsumeEnergy(int cost)
+    {
+        base.ConsumeEnergy(cost);
         _playerUI.UpdateUI();
     }
 

@@ -21,9 +21,9 @@ public class PlayerUI : MonoBehaviour
     public void UpdateUI()
     {
         _txtHP.text = _owner._hp.ToString();
-        _txtNeiLi.text = _owner._neiLi.ToString();
+        _txtNeiLi.text = _owner._energy.ToString();
         _hpSlider.value = (float)_owner._hp / _owner._attr.maxHP;
-        _neiLiSlider.value = (float)_owner._neiLi/ _owner._attr.maxNeiLi;
+        _neiLiSlider.value = (float)_owner._energy/ _owner._attr.maxEnergy;
     }
 
     public Slider _hpSlider;
