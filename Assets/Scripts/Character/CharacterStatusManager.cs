@@ -68,9 +68,17 @@ public class CharacterStatusManager
                 currentStatus = status;
             }
         }
+
+        if(currentStatus != CharacterStatusType.None)
+        {
+            // 异常状态角色应该停下
+            _owner.Stand();
+        }
+        _owner.SetAnimatorInteger("state", (int)currentStatus);
     }
     private ConcurrentDictionary<CharacterStatusType, float> statusTimers;  // 异常状态计时器
     public CharacterStatusType currentStatus;  // 当前异常状态
+    public Character _owner; // 当前角色
 }
 
 public enum CharacterStatusType

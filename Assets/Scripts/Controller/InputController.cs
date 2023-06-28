@@ -9,10 +9,10 @@ public class InputController : MonoSingleton<InputController>
     {
         // 初始化技能栏
         _skillBar1.AddSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1,CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.67f, 0.67f, 0.2f, 0));
-        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0,CharacterStatusType.Stun, 3f, 6, true, 3f, -1f, 1.67f, 1.67f, 1f, 0));
+        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0,CharacterStatusType.Weakness, 3f, 6, true, 3f, 3f, 1.67f, 1.67f, 1f, 0));
         _skillBar1.ApplySkills(_player1);
         _skillBar2.AddSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.67f, 0.67f, 0.2f, 0));
-        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, CharacterStatusType.Stun, 3f, 6, true, 3f, -1f, 1.67f, 1.67f, 1f, 0));
+        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, CharacterStatusType.Stun, 3f, 6, true, 3f, 3f, 1.67f, 1.67f, 1f, 0));
         _skillBar2.ApplySkills(_player2);
     }
 
@@ -21,47 +21,52 @@ public class InputController : MonoSingleton<InputController>
         if (_isGameOver)
             return;
 
-        // 移动
-        if(Input.GetKey(KeyCode.A))
+        if(_player1._stateManager.GetCurrentStatus() == CharacterStatusType.None)
         {
-            _player1.Move(CharacterDir.eLeft);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            _player1.Move(CharacterDir.eRight);
-        }
-        else
-        {
-            _player1.Stand();
-        }
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            _player2.Move(CharacterDir.eLeft);
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            _player2.Move(CharacterDir.eRight);
-        }
-        else
-        {
-            _player2.Stand();
-        }
+            if (Input.GetKey(KeyCode.A))
+            {
+                _player1.Move(CharacterDir.eLeft);
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                _player1.Move(CharacterDir.eRight);
+            }
+            else
+            {
+                _player1.Stand();
+            }
 
-        // 使用技能
-        foreach (var slot in _skillBar1._skills)
-        {
-            if(Input.GetKey(slot._hotKey))
+            foreach (var slot in _player1._skillBar._skills)
             {
-                _skillBar1.ActivateSkill(slot._skill);
+                if (Input.GetKey(slot._hotKey))
+                {
+                    _player1._skillBar.ActivateSkill(slot._skill);
+                }
             }
         }
-        foreach (var slot in _skillBar2._skills)
+        if (_player2._stateManager.GetCurrentStatus() == CharacterStatusType.None)
         {
-            if (Input.GetKey(slot._hotKey))
+            if (Input.GetKey(KeyCode.LeftArrow))
             {
-                _skillBar2.ActivateSkill(slot._skill);
+                _player2.Move(CharacterDir.eLeft);
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                _player2.Move(CharacterDir.eRight);
+            }
+            else
+            {
+                _player2.Stand();
+            }
+            foreach (var slot in _player2._skillBar._skills)
+            {
+                if (Input.GetKey(slot._hotKey))
+                {
+                    _player2._skillBar.ActivateSkill(slot._skill);
+                }
             }
         }
+            
     }
 
     public void SetGameOver(bool bGameOver)

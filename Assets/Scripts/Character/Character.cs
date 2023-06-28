@@ -15,6 +15,7 @@ public class Character : MonoBehaviour
         _collider = GetComponent<CapsuleCollider2D>();
         _animator = GetComponentInChildren<Animator>();
         _targetFinder._owner = this;
+        _stateManager._owner = this;
 
         InitAttribute();
         ApplyAttribute();
@@ -82,6 +83,11 @@ public class Character : MonoBehaviour
     public void TriggerAnimator(string param)
     {
         _animator.SetTrigger(param);
+    }
+
+    public void SetAnimatorInteger(string name, int value)
+    {
+        _animator.SetInteger(name, value);
     }
 
     // 刷新方向显示
