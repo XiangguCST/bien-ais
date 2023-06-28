@@ -1,11 +1,12 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 // 技能类
 public class Skill
 {
     public Skill(string name, string animName, int energyCost, int energyRecover,
-        CharacterStatusType addStatus, float statusTime,
+        List<CharacterStatusType> requireStatus, CharacterStatusType addStatus, float statusTime,
         float rate, bool bRequiredTarget, float requiredTargetDistance,
         float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
         MovementDirection movementDirection, float movementDistance)
@@ -14,6 +15,7 @@ public class Skill
         _animName = animName;
         _energyCost = energyCost;
         _energyRecover = energyRecover;
+        _removeStatuses = requireStatus;
         _addStatus = addStatus;
         _statusTime = statusTime;
         _rate = rate;
@@ -34,6 +36,19 @@ public class Skill
     // 技能是否可用
     public bool IsSkillUsable()
     {
+        // 检查解除异常状态的技能是否满足使用条件
+        bool canRemoveState = false;
+        foreach (var state in _removeStatuses)
+        {
+            if (state == _owner._stateManager.GetCurrentStatus())
+            {
+                canRemoveState = true;
+                break;
+            }
+        }
+        if (_removeStatuses.Count > 0 && !canRemoveState)
+            return false;
+
         if (_bIsCooldown || _skillbar._isGlobalCooldown || _skillbar._isCasting)
             return false;
         if(_bRequiredTarget)
@@ -78,6 +93,12 @@ public class Skill
     // 技能释放
     private IEnumerator CastRoutine()
     {
+        // 移除异常状态
+        if (_removeStatuses.Count > 0)
+        {
+            _owner._stateManager.RemoveAllStatuses();
+        }
+
         _owner._targetFinder.EnableEnemyCollisions(false);
         float movementSpeed = _movementDistance / _castTime; // 计算移动速度
         while (_castTimer > 0f)
@@ -151,6 +172,7 @@ public class Skill
     public string _animName; // 技能动画名称
     public int _energyCost; // 技能消耗的能量值
     public int _energyRecover; // 技能回复的能量值
+    public List<CharacterStatusType> _removeStatuses = new List<CharacterStatusType>(); // 解除异常状态
     public CharacterStatusType _addStatus; // 附加异常状态
     public float _statusTime; // 异常状态时间
     public float _rate; // 技能倍率

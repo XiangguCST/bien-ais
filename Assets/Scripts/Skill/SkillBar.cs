@@ -62,6 +62,8 @@ public class SkillBar : MonoBehaviour
 
     public void ActivateSkill(Skill skill)
     {
+        Debug.Log("使用了" + skill._name);
+
         if (skill == null)
         {
             Debug.LogError("Skill not found: " + skill._name);

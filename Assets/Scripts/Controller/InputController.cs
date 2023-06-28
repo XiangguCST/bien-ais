@@ -7,14 +7,19 @@ public class InputController : MonoSingleton<InputController>
 {
     void Awake()
     {
+        List<CharacterStatusType> noneState = new List<CharacterStatusType> {  };
+        List<CharacterStatusType> allState = new List<CharacterStatusType> { CharacterStatusType.Stun, CharacterStatusType.Weakness, CharacterStatusType.Knockdown};
+
         // 初始化技能栏
-        _skillBar1.AddSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1,CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.5f, 0.33f, 0.1f, 0, MovementDirection.Forward, 0));
-        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0, CharacterStatusType.Stun, 2f, 6, true, 3f, 3f, 1f, 0.83f, 0.5f, 0, MovementDirection.Forward, 0));
-        _skillBar1.AddSkill(KeyCode.S, new Skill("逆风行", "nifengxing", 0, 0,CharacterStatusType.None, 0f, 0, false, 0f, 0f, 8f, 0.43f, 0f, 0, MovementDirection.Backward, 6));
+        _skillBar1.AddSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1, noneState, CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.5f, 0.33f, 0.1f, 0, MovementDirection.Forward, 0));
+        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0, noneState, CharacterStatusType.Weakness, 2f, 12, true, 3f, 3f, 1f, 0.83f, 0.5f, 0, MovementDirection.Forward, 0));
+        _skillBar1.AddSkill(KeyCode.S, new Skill("逆风行", "nifengxing", 0, 0, noneState, CharacterStatusType.None, 0f, 0, false, 0f, 0f, 8f, 0.43f, 0f, 0, MovementDirection.Backward, 6));
+        _skillBar1.AddSkill(KeyCode.O, new Skill("闪光", "tab", 0, 0, allState, CharacterStatusType.Stun, 2f, 0, false, 0f, 3f, 1f, 0.83f, 0f, 0, MovementDirection.Backward, 6));
         _skillBar1.ApplySkills(_player1);
-        _skillBar2.AddSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.5f, 0.33f, 0.1f, 0, MovementDirection.Forward, 0));
-        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, CharacterStatusType.Stun, 2f, 6, true, 3f, 3f, 1f, 0.83f, 0.5f, 0, MovementDirection.Forward, 0));
-        _skillBar2.AddSkill(KeyCode.DownArrow, new Skill("逆风行", "nifengxing", 0, 0, CharacterStatusType.None, 0f, 0, false, 0f, 0f, 8f, 0.43f, 0f, 0, MovementDirection.Backward, 6));
+        _skillBar2.AddSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, noneState, CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.5f, 0.33f, 0.1f, 0, MovementDirection.Forward, 0));
+        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, noneState, CharacterStatusType.Weakness, 2f, 12, true, 3f, 3f, 1f, 0.83f, 0.5f, 0, MovementDirection.Forward, 0));
+        _skillBar2.AddSkill(KeyCode.DownArrow, new Skill("逆风行", "nifengxing", 0, 0, noneState, CharacterStatusType.None, 0f, 0, false, 0f, 0f, 8f, 0.43f, 0f, 0, MovementDirection.Backward, 6));
+        _skillBar2.AddSkill(KeyCode.Keypad6, new Skill("闪光", "tab", 0, 0, allState, CharacterStatusType.Stun, 2f, 0, false, 0f, 3f, 1f, 0.83f, 0f, 0, MovementDirection.Backward, 6));
         _skillBar2.ApplySkills(_player2);
     }
 
@@ -37,14 +42,6 @@ public class InputController : MonoSingleton<InputController>
             {
                 _player1.Stand();
             }
-
-            foreach (var slot in _player1._skillBar._skills)
-            {
-                if (Input.GetKey(slot._hotKey))
-                {
-                    _player1._skillBar.ActivateSkill(slot._skill);
-                }
-            }
         }
         if (_player2._stateManager.GetCurrentStatus() == CharacterStatusType.None)
         {
@@ -60,15 +57,21 @@ public class InputController : MonoSingleton<InputController>
             {
                 _player2.Stand();
             }
-            foreach (var slot in _player2._skillBar._skills)
+        }
+        foreach (var slot in _player1._skillBar._skills)
+        {
+            if (Input.GetKeyDown(slot._hotKey))
             {
-                if (Input.GetKey(slot._hotKey))
-                {
-                    _player2._skillBar.ActivateSkill(slot._skill);
-                }
+                _player1._skillBar.ActivateSkill(slot._skill);
             }
         }
-            
+        foreach (var slot in _player2._skillBar._skills)
+        {
+            if (Input.GetKeyDown(slot._hotKey))
+            {
+                _player2._skillBar.ActivateSkill(slot._skill);
+            }
+        }
     }
 
     public void SetGameOver(bool bGameOver)

@@ -22,6 +22,13 @@ public class CharacterStatusManager
         UpdateCurrentStatus();
     }
 
+    // 移除所有异常状态
+    public void RemoveAllStatuses()
+    {
+        statusTimers.Clear();
+        UpdateCurrentStatus();
+    }
+
     // 更新异常状态
     public void UpdateStatus(float deltaTime)
     {
@@ -90,15 +97,4 @@ public enum CharacterStatusType
     Knockdown // 倒地
 }
 
-// 示例
-//CharacterStatusManager statusManager = new CharacterStatusManager();
 
-//// 添加异常状态
-//statusManager.AddStatus(StatusType.Stun, 5f);      // 眩晕，持续5秒
-//statusManager.AddStatus(StatusType.Weakness, 10f); // 虚弱，持续10秒
-
-//// 更新异常状态
-//statusManager.UpdateStatus(Time.deltaTime);
-
-//// 获取当前异常状态
-//StatusType currentStatus = statusManager.GetCurrentStatus();
