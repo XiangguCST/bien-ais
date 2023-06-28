@@ -7,6 +7,7 @@ using YFrameWork;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(TargetFinder))]
 public class Character : MonoBehaviour
 {
     public void Awake()
@@ -14,14 +15,17 @@ public class Character : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CapsuleCollider2D>();
         _animator = GetComponentInChildren<Animator>();
+        _targetFinder = GetComponent<TargetFinder>(); 
 
         InitAttribute();
         ApplyAttribute();
     }
 
     // 人物移动
-    public void Move(CharacterDir dir)
+    virtual public void Move(CharacterDir dir)
     {
+        if (_bDie)
+            return;
         float inputX = 0;
         if (dir == CharacterDir.eLeft)
             inputX = -1;
@@ -37,12 +41,14 @@ public class Character : MonoBehaviour
     // 人物站立（停止移动）
     public void Stand()
     {
+        if (_bDie)
+            return;
         _rb.velocity = new Vector2(0, _rb.velocity.y);
         _bIsMoving = false;
         UpdateAnimation();
     }
 
-    // 初始化属性（子类可设置不同属性）
+    // 初始化属性（子类可重写以设置更多属性）
     virtual protected void InitAttribute()
     {
         _bIsMoving = false;
@@ -50,6 +56,8 @@ public class Character : MonoBehaviour
             _dir = CharacterDir.eLeft;
         else if (_animator.transform.localScale.x > 0)
             _dir = CharacterDir.eRight;
+
+        _targetFinder.Init();
     }
 
     // 应用属性
@@ -86,14 +94,20 @@ public class Character : MonoBehaviour
         _rb.freezeRotation = true;
     }
 
-    virtual public void GetDamage(Character other)
-    {
-       
-    }
-
     virtual protected void Die()
     {
+        _bDie = true;
+        InputController.Instance.SetGameOver(true);
         Destroy(gameObject);
+    }
+
+    virtual public void TakeDamage(int damage)
+    {
+        _hp -= damage;
+        if(_hp <= 0)
+        {
+            Die();
+        }
     }
 
     public int _hp; // 血量
@@ -108,6 +122,7 @@ public class Character : MonoBehaviour
     protected Rigidbody2D _rb;
     protected CapsuleCollider2D _collider;
     protected Animator _animator;
+    public TargetFinder _targetFinder;
 }
 
 // 人物朝向

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using YFrameWork;
 
-public class BaseController : MonoBehaviour, IController
+public class BaseController : IController
 {
     public IApp GetApp()
     {
@@ -11,3 +11,10 @@ public class BaseController : MonoBehaviour, IController
     }
 }
 
+public class BaseMonoController : MonoBehaviour, IController
+{
+    public IApp GetApp()
+    {
+        return BnsApp.Instance;
+    }
+}

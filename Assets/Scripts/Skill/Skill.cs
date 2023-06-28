@@ -3,34 +3,41 @@ using UnityEngine;
 
 // 技能类
 public class Skill
-
 {
-    public Skill(SkillBar manager, string name, float cooldownTime, float duringTime, float globalCooldownTime)
+    public Skill(SkillBar skillbar, string name, float rate, float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime)
     {
-        _manager = manager;
+        _skillbar = skillbar;
         _name = name;
+        _rate = rate;
+        _range = range;
         _cooldownTime = cooldownTime;
-        _castTime = duringTime;
+        _castTime = castTime;
+        _damageDelay = damageDelay;
         _globalCooldownTime = globalCooldownTime;
         _cooldownTimer = 0f;
+        _damageDelayTimer = 0f;
         _bIsCooldown = false;
     }
 
     public void ActivateEffect()
     {
         // 触发技能效果的逻辑
-        Debug.Log("Skill activated: " + _name);
-        // ...
+        _owner.OnSkillEffect(this);
 
-        // 设置技能释放时间
+        // 释放技能
         _castTimer = _castTime;
-        _manager._isCasting = true;
-
-        // 启动技能持续计时器
+        _damageDelayTimer = _damageDelay;
+        _skillbar._isCasting = true;
         CoroutineRunner.Instance.StartCoroutine(CastRoutine());
+
+        // 技能冷却
+        _cooldownTimer = _cooldownTime;
+        _bIsCooldown = true;
+        CoroutineRunner.Instance.StartCoroutine(CooldownRoutine());
+
     }
 
-    
+
     // 技能释放
     private IEnumerator CastRoutine()
     {
@@ -40,14 +47,7 @@ public class Skill
             yield return null;
         }
 
-        _manager._isCasting = false;
-
-        // 技能释放结束后开始计算冷却时间
-        _cooldownTimer = _cooldownTime;
-        _bIsCooldown = true;
-
-        // 启动技能冷却计时器
-        CoroutineRunner.Instance.StartCoroutine(CooldownRoutine());
+        _skillbar._isCasting = false;
     }
 
     // 技能冷却
@@ -56,20 +56,52 @@ public class Skill
         while (_cooldownTimer > 0f)
         {
             _cooldownTimer -= Time.deltaTime;
+            _damageDelayTimer -= Time.deltaTime;
+            if(_damageDelayTimer <= 0)
+            {
+                if(CheckHit())
+                {
+                    DealDamage();
+                }
+            }
             yield return null;
         }
 
         _bIsCooldown = false;
     }
 
+    bool CheckHit()
+    {
+        var finder = _owner._targetFinder;
+        if (!finder._isFindTarget)
+            return false;
+        if (_range > 0 &&　finder._targetDistance > _range)
+            return false;
+        return true;
+    }
+
+    // 处理伤害判定
+    void DealDamage()
+    {
+        var target = _owner._targetFinder._target;
+        int damage = (int)(_owner._attr.atk * _rate);
+        target.TakeDamage(damage);
+    }
+
     public string _name; // 技能名称
+    public float _rate; // 技能倍率
+    public float _range; // 范围(小于0表示无限范围)
     public float _cooldownTime; // 冷却时间
     public float _castTime; // 释放时间
+    public float _damageDelay; // 伤害判定延迟
     public float _globalCooldownTime; // gcd
+
 
     public float _cooldownTimer; // 冷却计时器
     public float _castTimer; // 技能释放计时器
+    public float _damageDelayTimer; // 伤害延迟判定计时器
     public bool _bIsCooldown; // 是否冷却中
 
-    SkillBar _manager;
+    SkillBar _skillbar; // 技能栏
+    public Player _owner;
 }

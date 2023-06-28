@@ -19,8 +19,14 @@ public class SkillSlot : MonoBehaviour
         if (_skill == null) return;
         if(_skill._bIsCooldown)
         {
+            // 更新技能格子显示
             _imgMask.fillAmount = Mathf.Lerp(0, 1, _skill._cooldownTimer / _skill._cooldownTime);
             _txtCooldown.text = _skill._cooldownTimer.ToString("f1");
+        }
+        else
+        {
+            if (_txtCooldown.text != "")
+                _txtCooldown.text = "";
         }
     }
 

@@ -40,12 +40,13 @@ public class SkillBar : MonoBehaviour
     }
 
     // 应用技能
-    public void ApplySkills()
+    public void ApplySkills(Player owner)
     {
         foreach (var pair in _addList)
         {
             KeyCode hotKey = pair.Key;
             Skill skill = pair.Value;
+            skill._owner = owner;
             // 在技能栏下新建格子
             GameObject slotGO = Instantiate(Resources.Load<GameObject>("UI/SkillSlot"));
             slotGO.transform.SetParent(this.transform); 
@@ -53,6 +54,8 @@ public class SkillBar : MonoBehaviour
             slot.InitSlot(hotKey, skill);
             _skills.Add(slot);
         }
+        _owner = owner;
+        _owner._skillBar = this;
         _addList.Clear();
     }
 
@@ -80,4 +83,5 @@ public class SkillBar : MonoBehaviour
 
     private Dictionary<KeyCode, Skill> _addList = new Dictionary<KeyCode, Skill>(); // 技能添加列表
     public List<SkillSlot> _skills = new List<SkillSlot>(); // 技能列表
+    private Player _owner;
 }
