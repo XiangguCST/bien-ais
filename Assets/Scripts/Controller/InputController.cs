@@ -8,11 +8,13 @@ public class InputController : MonoSingleton<InputController>
     void Awake()
     {
         // 初始化技能栏
-        _skillBar1.AddSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1,CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.67f, 0.67f, 0.2f, 0, MovementDirection.Forward, 0));
-        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0,CharacterStatusType.Weakness, 3f, 6, true, 3f, 3f, 1.67f, 1.67f, 1f, 0, MovementDirection.Forward, 0));
+        _skillBar1.AddSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1,CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.5f, 0.33f, 0.1f, 0, MovementDirection.Forward, 0));
+        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0, CharacterStatusType.Stun, 2f, 6, true, 3f, 3f, 1f, 0.83f, 0.5f, 0, MovementDirection.Forward, 0));
+        _skillBar1.AddSkill(KeyCode.S, new Skill("逆风行", "nifengxing", 0, 0,CharacterStatusType.None, 0f, 0, false, 0f, 0f, 8f, 0.43f, 0f, 0, MovementDirection.Backward, 6));
         _skillBar1.ApplySkills(_player1);
-        _skillBar2.AddSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.67f, 0.67f, 0.2f, 0, MovementDirection.Forward, 0));
-        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, CharacterStatusType.Stun, 3f, 6, true, 3f, 3f, 1.67f, 1.67f, 1f, 0, MovementDirection.Forward, 0));
+        _skillBar2.AddSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, CharacterStatusType.None, 0f, 1, false, 0f, 2.5f, 0.5f, 0.33f, 0.1f, 0, MovementDirection.Forward, 0));
+        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, CharacterStatusType.Stun, 2f, 6, true, 3f, 3f, 1f, 0.83f, 0.5f, 0, MovementDirection.Forward, 0));
+        _skillBar2.AddSkill(KeyCode.DownArrow, new Skill("逆风行", "nifengxing", 0, 0, CharacterStatusType.None, 0f, 0, false, 0f, 0f, 8f, 0.43f, 0f, 0, MovementDirection.Backward, 6));
         _skillBar2.ApplySkills(_player2);
     }
 
