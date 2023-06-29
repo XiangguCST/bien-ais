@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -71,6 +72,7 @@ public class SkillBar : MonoBehaviour
         }
         if (skill.IsSkillUsable())
         {
+            _castingSkill = skill;
             // 调用技能效果的方法
             skill.ActivateEffect();
         }
@@ -80,6 +82,11 @@ public class SkillBar : MonoBehaviour
         }
     }
 
+    public Skill GetCastingSkill()
+    {
+        return _castingSkill;
+    }
+
     public bool _isGlobalCooldown; // 是否gcd结束
     public bool _isCasting; // 是否释放技能中
     private float globalCooldownTime; // gcd
@@ -87,4 +94,5 @@ public class SkillBar : MonoBehaviour
     private Dictionary<KeyCode, Skill> _addList = new Dictionary<KeyCode, Skill>(); // 技能添加列表
     public List<SkillSlot> _skills = new List<SkillSlot>(); // 技能列表
     private Player _owner;
+    public Skill _castingSkill;
 }

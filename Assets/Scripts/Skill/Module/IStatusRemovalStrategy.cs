@@ -6,6 +6,7 @@ public interface IStatusRemovalStrategy
     void BeforeSkillCast(Player owner, Skill skill);
     void OnSkillCasting(Player owner, Skill skill);
     void AfterSkillCast(Player owner, Skill skill);
+    void InterruptSkill(Player owner, Skill skill);
 }
 
 public class RemoveAllStatuses : IStatusRemovalStrategy
@@ -37,6 +38,10 @@ public class RemoveAllStatuses : IStatusRemovalStrategy
         return _requireStatus.Contains(owner._stateManager.GetCurrentStatus());
     }
 
+    public void InterruptSkill(Player owner, Skill skill)
+    {
+    }
+
     List<CharacterStatusType> _requireStatus;
 }
 
@@ -47,6 +52,9 @@ public class DoNotRemoveStatuses : IStatusRemovalStrategy
         _requireStatus = new List<CharacterStatusType> { CharacterStatusType.None};
     }
 
+    public void InterruptSkill(Player owner, Skill skill)
+    {
+    }
 
     public void BeforeSkillCast(Player owner, Skill skill)
     {

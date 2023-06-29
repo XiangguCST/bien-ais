@@ -8,6 +8,7 @@ public interface IMovementStrategy
     void BeforeSkillCast(Player owner, Skill skill);
     void OnSkillCasting(Player owner, Skill skill);
     void AfterSkillCast(Player owner, Skill skill);
+    void InterruptSkill(Player owner, Skill skill);
 }
 
 /// <summary>
@@ -46,6 +47,10 @@ public class FixedDirectionMovement : IMovementStrategy
         }
     }
 
+    public void InterruptSkill(Player owner, Skill skill)
+    {
+    }
+
     public MovementDirection _movementDirection; // 位移方向
     public float _movementDistance; // 位移距离
 
@@ -61,6 +66,10 @@ public class RushToTargetMovement : IMovementStrategy
     public RushToTargetMovement()
     {
         _rushDistance = 1;// 突进到目标1米处
+    }
+
+    public void InterruptSkill(Player owner, Skill skill)
+    {
     }
 
     public void BeforeSkillCast(Player owner, Skill skill)
@@ -103,6 +112,10 @@ public class RushToTargetMovement : IMovementStrategy
 /// </summary>
 public class NoMovement : IMovementStrategy
 {
+    public void InterruptSkill(Player owner, Skill skill)
+    {
+    }
+
     public void AfterSkillCast(Player owner, Skill skill)
     {
     }
