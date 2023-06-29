@@ -33,11 +33,11 @@ public class TargetFinder
     {
         if (_nearestEnemy == null) return;
 
-        _targetDistance = Vector2.Distance(_owner.transform.position, _nearestEnemy.transform.position);
-        _isFindTarget = IsFaceToTarget() && _targetDistance <= _maxFindDistance;
+        _nearestDistance = Vector2.Distance(_owner.transform.position, _nearestEnemy.transform.position);
+        _isFindTarget = IsFaceToTarget() && _nearestDistance <= _maxFindDistance;
         if(_isFindTarget)
         {
-            _targetUI.UpdateDistance(_targetDistance);
+            _targetUI.UpdateDistance(_nearestDistance);
         }
         else
         {
@@ -73,21 +73,10 @@ public class TargetFinder
         UpdateTarget();
     }
 
-    public void EnableEnemyCollisions(bool bEnable)
-    {
-        foreach (Character enemy in _enemys)
-        {
-            Collider2D enemyCollider = enemy.GetComponent<Collider2D>();
-            Collider2D ownerCollider = _owner.GetComponent<Collider2D>();
-            Physics2D.IgnoreCollision(ownerCollider, enemyCollider, !bEnable);
-        }
-    }
-
-
     public float _maxFindDistance; // 最大发现目标距离
 
     public bool _isFindTarget; // 是否发现目标
-    public float _targetDistance; // 距离目标距离
+    public float _nearestDistance; // 距离目标距离
 
     public Character _owner; 
     public Character _nearestEnemy; // 最近敌人

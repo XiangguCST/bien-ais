@@ -2,64 +2,51 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 技能接口
+public interface ISkill
+{
+    bool IsSkillUsable();
+    void ActivateEffect();
+}
+
 // 技能类
-public class Skill
+public class Skill : ISkill
 {
     public Skill(string name, string animName, int energyCost, int energyRecover,
-        List<CharacterStatusType> requireStatus, CharacterStatusType addStatus, float statusTime,
-        float rate, bool bRequiredTarget, float requiredTargetDistance,
-        float range, float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
-        MovementDirection movementDirection, float movementDistance)
+        float rate,float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
+        IStatusRemovalStrategy statusRemovalStrategy, IStatusAdditionStrategy statusAdditionStrategy,
+        ITargetRequirementStrategy targetRequirementStrategy, IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy)
     {
         _name = name;
         _animName = animName;
         _energyCost = energyCost;
         _energyRecover = energyRecover;
-        _removeStatuses = requireStatus;
-        _addStatus = addStatus;
-        _statusTime = statusTime;
         _rate = rate;
-        _bRequiredTarget = bRequiredTarget;
-        _requiredTargetDistance = requiredTargetDistance;
-        _range = range;
         _cooldownTime = cooldownTime;
         _castTime = castTime;
         _damageDelay = damageDelay;
         _globalCooldownTime = globalCooldownTime;
-        _movementDirection = movementDirection;
-        _movementDistance = movementDistance;
+        _statusRemovalStrategy = statusRemovalStrategy;
+        _statusAdditionStrategy = statusAdditionStrategy;
+        _targetRequirementStrategy = targetRequirementStrategy;
+        _movementStrategy = movementStrategy;
+        _hitCheckStrategy = hitCheckStrategy;
+
         _cooldownTimer = 0f;
         _damageDelayTimer = 0f;
         _bIsCooldown = false;
     }
 
+
     // 技能是否可用
     public bool IsSkillUsable()
     {
-        // 检查解除异常状态的技能是否满足使用条件
-        bool canRemoveState = false;
-        foreach (var state in _removeStatuses)
-        {
-            if (state == _owner._stateManager.GetCurrentStatus())
-            {
-                canRemoveState = true;
-                break;
-            }
-        }
-        if (_removeStatuses.Count > 0 && !canRemoveState)
+        if (!_statusRemovalStrategy.IsSkillUsable(_owner, this))
             return false;
-
+        if (!_targetRequirementStrategy.IsSkillUsable(_owner, this))
+            return false;
         if (_bIsCooldown || _skillbar._isGlobalCooldown || _skillbar._isCasting)
             return false;
-        if(_bRequiredTarget)
-        {
-            var finder = _owner._targetFinder;
-            if (!finder._isFindTarget)
-                return false;
-            if ( finder._targetDistance > _requiredTargetDistance)
-                return false;
-        }
-
         if (_owner._energy < _energyCost)
             return false;
         return true;
@@ -75,8 +62,6 @@ public class Skill
         _damageDelayTimer = _damageDelay;
         _skillbar._isCasting = true;
         _bDealDamage = false;
-        Vector3 movementVector = MovementUtils.GetMovementVector(_owner._dir, _movementDirection);
-        _targetMovePosition = _owner.transform.position + movementVector * _movementDistance;
         CoroutineRunner.Instance.StartCoroutine(CastRoutine());
 
         // 技能冷却
@@ -93,14 +78,11 @@ public class Skill
     // 技能释放
     private IEnumerator CastRoutine()
     {
-        // 移除异常状态
-        if (_removeStatuses.Count > 0)
-        {
-            _owner._stateManager.RemoveAllStatuses();
-        }
+        // 技能释放前
+        _movementStrategy.BeforeSkillCast(_owner, this);
+        _statusRemovalStrategy.BeforeSkillCast(_owner, this);
 
-        _owner._targetFinder.EnableEnemyCollisions(false);
-        float movementSpeed = _movementDistance / _castTime; // 计算移动速度
+        PlayerCollisionManager.Instance.DisableCollision(_owner);
         while (_castTimer > 0f)
         {
             _castTimer -= Time.deltaTime;
@@ -115,22 +97,19 @@ public class Skill
                 _bDealDamage = true;
             }
 
-            // 计算当前移动距离
-            float distanceToTarget = Vector3.Distance(_owner.transform.position, _targetMovePosition);
-
-            // 判断是否到达目标位置
-            if (distanceToTarget >= 0.01f)
-            {
-                // 移动技能释放者
-                _owner.transform.position = Vector3.MoveTowards(_owner.transform.position, _targetMovePosition, movementSpeed * Time.deltaTime);
-            }
+            // 技能释放过程中
+            _movementStrategy.OnSkillCasting(_owner, this);
+            _statusRemovalStrategy.OnSkillCasting(_owner, this);
 
             yield return null;
         }
 
+        // 技能释放结束
         _skillbar._isCasting = false;
-        _owner.transform.position = _targetMovePosition; // 移动到目标位置
-        _owner._targetFinder.EnableEnemyCollisions(true);
+        _movementStrategy.AfterSkillCast(_owner, this);
+        _statusRemovalStrategy.AfterSkillCast(_owner, this);
+
+        PlayerCollisionManager.Instance.EnableCollision(_owner);
     }
 
     // 技能冷却
@@ -149,12 +128,7 @@ public class Skill
     // 命中判定
     bool CheckHit()
     {
-        var finder = _owner._targetFinder;
-        if (!finder._isFindTarget)
-            return false;
-        if (_range > 0 &&　finder._targetDistance > _range)
-            return false;
-        return true;
+        return _hitCheckStrategy.CheckHit(_owner, this);
     }
 
     // 处理伤害
@@ -164,7 +138,7 @@ public class Skill
         var target = _owner._targetFinder._nearestEnemy;
         int rawDamage = (int)(_owner._attr.atk * _rate);
         int damage = (int)Random.Range(0.7f * rawDamage, 1.3f * rawDamage);
-        target._stateManager.AddStatus(_addStatus, _statusTime);
+        _statusAdditionStrategy.OnDealDamage(_owner, target, this);
         target.TakeDamage(damage);
     }
 
@@ -172,19 +146,12 @@ public class Skill
     public string _animName; // 技能动画名称
     public int _energyCost; // 技能消耗的能量值
     public int _energyRecover; // 技能回复的能量值
-    public List<CharacterStatusType> _removeStatuses = new List<CharacterStatusType>(); // 解除异常状态
-    public CharacterStatusType _addStatus; // 附加异常状态
-    public float _statusTime; // 异常状态时间
+    
     public float _rate; // 技能倍率
-    public bool _bRequiredTarget; // 技能释放是否需要目标
-    public float _requiredTargetDistance; // 表示技能释放所需的目标距离
-    public float _range; // 范围(小于0表示无限范围)
     public float _cooldownTime; // 冷却时间
     public float _castTime; // 释放时间
     public float _damageDelay; // 伤害判定延迟
     public float _globalCooldownTime; // gcd
-    public MovementDirection _movementDirection; // 位移方向
-    public float _movementDistance; // 位移距离
 
     public float _cooldownTimer; // 冷却计时器
     public float _castTimer; // 技能释放计时器
@@ -193,11 +160,12 @@ public class Skill
     public bool _bDealDamage; // 是否进行伤害判定
     public SkillBar _skillbar; // 技能栏
     public Player _owner; // 技能释放者
-    Vector3 _targetMovePosition; // 目标移动位置
+
+    public IMovementStrategy _movementStrategy; // 技能移动策略
+    public IStatusRemovalStrategy _statusRemovalStrategy; // 解除异常状态策略
+    public IStatusAdditionStrategy _statusAdditionStrategy; // 附加异常状态策略
+    public ITargetRequirementStrategy _targetRequirementStrategy; // 技能释放是否需要目标策略
+    public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
 }
 
-public enum MovementDirection
-{
-    Forward,
-    Backward
-}
+
