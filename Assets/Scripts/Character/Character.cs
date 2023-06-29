@@ -25,6 +25,7 @@ public class Character : MonoBehaviour
     {
         _targetFinder.UpdateTarget();
         _stateManager.UpdateStatus(Time.deltaTime);
+        _buffManager.UpdateBuffs(Time.deltaTime);
     }
 
     // 人物移动
@@ -146,7 +147,7 @@ public class Character : MonoBehaviour
     protected Animator _animator;
     public TargetFinder _targetFinder = new TargetFinder();
     public CharacterStatusManager _stateManager = new CharacterStatusManager();
-    public BuffManager _buffManager = new BuffManager();
+    public CharacterBuffManager _buffManager = new CharacterBuffManager();
 }
 
 // 人物朝向

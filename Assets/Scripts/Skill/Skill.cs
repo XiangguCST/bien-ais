@@ -18,7 +18,8 @@ public class Skill : ISkill
         float rate,float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
         bool canInterruptOtherSkills, bool canBeInterrupted,
         IStatusRemovalStrategy statusRemovalStrategy, IStatusAdditionStrategy statusAdditionStrategy,
-        ITargetRequirementStrategy targetRequirementStrategy, IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy)
+        ITargetRequirementStrategy targetRequirementStrategy, IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy,
+        IBuffAdditionStrategy buffAdditionStrategy)
     {
         _name = name;
         _animName = animName;
@@ -37,6 +38,7 @@ public class Skill : ISkill
         _targetRequirementStrategy = targetRequirementStrategy;
         _movementStrategy = movementStrategy;
         _hitCheckStrategy = hitCheckStrategy;
+        _buffAdditionStrategy = buffAdditionStrategy;
 
         _cooldownTimer = 0f;
         _damageDelayTimer = 0f;
@@ -107,6 +109,7 @@ public class Skill : ISkill
         // 技能释放前
         _movementStrategy.BeforeSkillCast(_owner, this);
         _statusRemovalStrategy.BeforeSkillCast(_owner, this);
+        _buffAdditionStrategy.BeforeSkillCast(_owner, this);
         BeforeSkillCast();
         while (_castTimer > 0f)
         {
@@ -163,7 +166,18 @@ public class Skill : ISkill
     // 命中判定
     bool CheckHit()
     {
-        return _hitCheckStrategy.CheckHit(_owner, this);
+        var target = _owner._targetFinder._nearestEnemy;
+        if (!_hitCheckStrategy.CheckHit(_owner, target, this))
+            return false;
+
+        // 检查目标身上的buff
+        if(target._buffManager.HasBuff(BuffType.ImmunityAll))
+        {
+            target._buffManager.DecreaseBuffCount(BuffType.ImmunityAll, 1);
+            return false;
+        }
+
+        return true;
     }
 
     // 处理伤害
@@ -208,14 +222,14 @@ public class Skill : ISkill
     public bool _bDealDamage; // 是否进行伤害判定
     public SkillBar _skillbar; // 技能栏
     public Player _owner; // 技能释放者
+    private Coroutine _castCoroutine;
 
     public IMovementStrategy _movementStrategy; // 技能移动策略
     public IStatusRemovalStrategy _statusRemovalStrategy; // 解除异常状态策略
     public IStatusAdditionStrategy _statusAdditionStrategy; // 附加异常状态策略
     public ITargetRequirementStrategy _targetRequirementStrategy; // 技能释放是否需要目标策略
     public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
-
-    private Coroutine _castCoroutine;
+    public IBuffAdditionStrategy _buffAdditionStrategy; // buff添加策略
 }
 
 

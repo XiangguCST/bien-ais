@@ -1,144 +1,91 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-public abstract class Buff
+public class CharacterBuffManager
 {
-    public string AbilityType { get; protected set; } // Buff的能力类型
-    public DurationBuffType Type { get; protected set; } // Buff的持续类型
-    public bool IsExpired { get; protected set; } // Buff是否已过期
-
-    public abstract void Update();
-}
-
-public class DurationBuff : Buff
-{
-    private float duration;
-    private float elapsedTime;
-
-    public DurationBuff(string abilityType, float duration)
+    public CharacterBuffManager()
     {
-        AbilityType = abilityType;
-        Type = DurationBuffType.Duration;
-        this.duration = duration;
-        elapsedTime = 0f;
-        IsExpired = false;
+        buffTimers = new ConcurrentDictionary<BuffType, float>();
+        buffCounts = new ConcurrentDictionary<BuffType, int>();
     }
 
-    public override void Update()
+    public void AddBuffTime(BuffType buffType, float duration)
     {
-        elapsedTime += Time.deltaTime;
-        if (elapsedTime >= duration)
+        if (buffTimers.TryGetValue(buffType, out float remainingDuration))
         {
-            IsExpired = true;
+            duration = Math.Max(duration, remainingDuration);
         }
-    }
-}
 
-public class CountBuff : Buff
-{
-    private int remainingCount;
-
-    public CountBuff(string abilityType, int count)
-    {
-        AbilityType = abilityType;
-        Type = DurationBuffType.Count;
-        remainingCount = count;
-        IsExpired = false;
+        buffTimers.AddOrUpdate(buffType, duration, (_, existingDuration) => Math.Max(existingDuration, duration));
     }
 
-    public override void Update()
+    public void AddBuffCount(BuffType buffType, int count)
     {
-        // 不需要在此更新计数的逻辑，因为次数用完后Buff会自动消失
+        buffCounts.AddOrUpdate(buffType, count, (_, existingCount) => existingCount + count);
     }
 
-    public void ConsumeCount()
+    public void DecreaseBuffCount(BuffType buffType, int count)
     {
-        remainingCount--;
-        if (remainingCount <= 0)
+        if (buffCounts.TryGetValue(buffType, out int existingCount))
         {
-            IsExpired = true;
-        }
-    }
-}
-
-public class BuffManager
-{
-    private List<Buff> buffs; // 存储角色的Buff
-
-    public BuffManager()
-    {
-        buffs = new List<Buff>();
-    }
-
-    // 添加Buff
-    public void AddBuff(Buff buff)
-    {
-        buffs.Add(buff);
-    }
-
-    // 根据能力类型判断是否存在对应Buff
-    public bool HasBuff(string abilityType)
-    {
-        foreach (var buff in buffs)
-        {
-            if (buff.AbilityType == abilityType)
+            int newCount = Math.Max(existingCount - count, 0);
+            if (newCount == 0)
             {
-                return true;
+                buffCounts.TryRemove(buffType, out _);
             }
-        }
-        return false;
-    }
-
-    // 根据能力类型获取对应的Buff
-    public Buff GetBuff(string abilityType)
-    {
-        foreach (var buff in buffs)
-        {
-            if (buff.AbilityType == abilityType)
+            else
             {
-                return buff;
-            }
-        }
-        return null;
-    }
-
-    // 减少能力类型对应Buff的次数
-    public void DecreaseBuffCount(string abilityType)
-    {
-        foreach (var buff in buffs)
-        {
-            if (buff.AbilityType == abilityType && buff.Type == DurationBuffType.Count)
-            {
-                var countBuff = buff as CountBuff;
-                countBuff?.ConsumeCount();
-                break;
+                buffCounts[buffType] = newCount;
             }
         }
     }
 
-    // 更新Buff状态
-    public void UpdateBuffs()
+    public bool HasBuff(BuffType buffType)
     {
-        for (int i = buffs.Count - 1; i >= 0; i--)
-        {
-            buffs[i].Update();
+        return buffTimers.ContainsKey(buffType) || buffCounts.ContainsKey(buffType);
+    }
 
-            if (buffs[i].IsExpired)
+    public void UpdateBuffs(float deltaTime)
+    {
+        List<BuffType> buffsToRemove = null;
+        foreach (var kvp in buffTimers)
+        {
+            var buffType = kvp.Key;
+            buffTimers[buffType] -= deltaTime;
+            if (buffTimers[buffType] <= 0f)
             {
-                buffs.RemoveAt(i);
+                if (buffsToRemove == null)
+                {
+                    buffsToRemove = new List<BuffType>();
+                }
+                buffsToRemove.Add(buffType);
+            }
+        }
+
+        if (buffsToRemove != null)
+        {
+            foreach (var buffType in buffsToRemove)
+            {
+                buffTimers.TryRemove(buffType, out _);
             }
         }
     }
+
+    private ConcurrentDictionary<BuffType, float> buffTimers; // buff计时器
+    private ConcurrentDictionary<BuffType, int> buffCounts; // buff计数器
 }
 
-public enum DurationBuffType
+public enum BuffType
 {
-    Duration, // 表示根据持续时间的Buff
-    Count // 表示根据固定次数的Buff
+    ImmunityAll,           // 免疫所有
+    Evasion,               // 闪避
+    ImmunityStatusEffect   // 免疫异常状态
 }
 
-public enum AbilityBuffType
-{
-    Dodge, // 闪避能力类型的Buff
-    Resistance // 抵抗能力类型的Buff
-}
+
+
+
+
+
+

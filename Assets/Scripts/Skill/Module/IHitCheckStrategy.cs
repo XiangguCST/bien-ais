@@ -1,6 +1,6 @@
 ﻿public interface IHitCheckStrategy
 {
-    bool CheckHit(Player owner, Skill skill);
+    bool CheckHit(Player owner, Character target, Skill skill);
 }
 
 public class RangeHitCheck : IHitCheckStrategy
@@ -10,7 +10,7 @@ public class RangeHitCheck : IHitCheckStrategy
         _range = range;
     }
 
-    public bool CheckHit(Player owner, Skill skill)
+    public bool CheckHit(Player owner, Character target, Skill skill)
     {
         var finder = owner._targetFinder;
         return _range < 0 || finder._nearestDistance <= _range;
@@ -25,7 +25,7 @@ public class FaceTargetHitCheck : IHitCheckStrategy
         _range = range;
     }
 
-    public bool CheckHit(Player owner, Skill skill)
+    public bool CheckHit(Player owner, Character target, Skill skill)
     {
         var finder = owner._targetFinder;
         if (!finder._isFindTarget)
