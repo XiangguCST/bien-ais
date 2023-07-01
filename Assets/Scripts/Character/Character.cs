@@ -17,6 +17,12 @@ public class Character : MonoBehaviour
         _targetFinder._owner = this;
         _stateManager._owner = this;
 
+        var damageCanvas = Resources.Load<GameObject>("Prefabs/UI/DamageCanvas");
+        _damageCanvas = Instantiate(damageCanvas).GetComponent<DamageCanvas>();
+        _damageCanvas.transform.SetParent(transform);
+        _damageCanvas.transform.localPosition = Vector2.zero;
+        _damageCanvas._owner = this;
+
         InitAttribute();
         ApplyAttribute();
     }
@@ -118,8 +124,9 @@ public class Character : MonoBehaviour
         Destroy(gameObject);
     }
 
-    virtual public void TakeDamage(int damage)
+    virtual public void TakeDamage(int damage, bool bCritical = false)
     {
+        _damageCanvas.ShowDamage(damage, bCritical);
         _hp = Mathf.Clamp(_hp - damage, 0, _attr.maxHP);
         if (_hp <= 0)
         {
@@ -145,6 +152,7 @@ public class Character : MonoBehaviour
     protected Rigidbody2D _rb;
     protected CapsuleCollider2D _collider;
     protected Animator _animator;
+    protected DamageCanvas _damageCanvas;
     public TargetFinder _targetFinder = new TargetFinder();
     public CharacterStatusManager _stateManager = new CharacterStatusManager();
     public CharacterBuffManager _buffManager = new CharacterBuffManager();

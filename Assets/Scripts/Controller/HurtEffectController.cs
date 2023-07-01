@@ -18,7 +18,7 @@ public class HurtEffectController
         if (material == null) yield return 0;
 
         // 受伤效果的总持续时间
-        float duration = 0.2f;
+        float duration = 0.3f;
         // 受伤时的填充阶段值
         float hurtValue = 0.75f;
         // 受伤前的填充阶段值

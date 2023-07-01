@@ -203,10 +203,16 @@ public class Skill : ISkill
         var target = _owner._targetFinder._nearestEnemy;
         int rawDamage = (int)(_owner._attr.atk * _rate);
         int damage = (int)UnityEngine.Random.Range(0.7f * rawDamage, 1.3f * rawDamage);
+        // 暴击
+        bool bCrit = CommonUtility.IsCrit(0.2f);
+        if (bCrit)
+        {
+            damage *= 3;
+        }
         _statusAdditionStrategy.OnDealDamage(_owner, target, this);
         if(damage > 0)
         {
-            target.TakeDamage(damage);
+            target.TakeDamage(damage, bCrit);
             HurtEffectController.ShowHurtEffect(target);
         }
     }

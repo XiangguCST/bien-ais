@@ -24,7 +24,7 @@ public class TargetFinder
 
     void InitUI()
     {
-        GameObject uiGO = GameObject.Instantiate(Resources.Load<GameObject>("UI/TargetUI"));
+        GameObject uiGO = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/TargetUI"));
         _targetUI = uiGO.GetComponent<TargetUI>();
         _targetUI.Init();
     }
