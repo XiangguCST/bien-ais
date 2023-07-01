@@ -7,11 +7,12 @@ using UnityEngine;
 public interface ISkill
 {
     bool IsSkillUsable();
-    void ActivateEffect();
+    void Activate();
     void InterruptSkill();
 }
 
 // 技能类
+[Serializable]
 public class Skill : ISkill
 {
     public Skill(string name, string animName, int energyCost, int energyRecover,
@@ -49,6 +50,7 @@ public class Skill : ISkill
     // 技能是否可用
     public bool IsSkillUsable()
     {
+        if (_skillbar == null) return false;
         if(_skillbar._isCasting)
         {
             if (_canInterruptOtherSkills)
@@ -56,7 +58,7 @@ public class Skill : ISkill
                 Skill skill = _skillbar.GetCastingSkill();
                 if (skill._canBeInterrupted)
                 {
-                    skill.InterruptSkill();
+                    return true;
                 }
                 else
                 {
@@ -80,15 +82,25 @@ public class Skill : ISkill
         return true;
     }
 
-    public void ActivateEffect()
+    /// <summary>
+    /// 释放技能
+    /// </summary>
+    public void Activate()
     {
+        // 打断正在释放的技能
+        if(_skillbar._isCasting)
+        {
+            Skill skill = _skillbar.GetCastingSkill();
+            if (skill != null)
+                skill.InterruptSkill();
+        }
+
         // 技能消耗
         _owner.ConsumeEnergy(_energyCost);
 
         // 释放技能
         _castTimer = _castTime;
         _damageDelayTimer = _damageDelay;
-        _skillbar._isCasting = true;
         _bDealDamage = false;
         _castCoroutine = CoroutineRunner.Instance.StartCoroutine(CastRoutine());
 
@@ -114,8 +126,8 @@ public class Skill : ISkill
         while (_castTimer > 0f)
         {
             _castTimer -= Time.deltaTime;
-
             _damageDelayTimer -= Time.deltaTime;
+
             if (!_bDealDamage && _damageDelayTimer <= 0)
             {
                 if (CheckHit())
@@ -140,11 +152,15 @@ public class Skill : ISkill
 
     private void BeforeSkillCast()
     {
+        _skillbar._isCasting = true;
+        _skillbar._castingSkill = this;
         PlayerCollisionManager.Instance.DisableCollision(_owner);
     }
 
     private void AfterSkillCast()
     {
+        if (_skillbar == null)
+            return;
         _skillbar._isCasting = false;
         _skillbar._castingSkill = null;
         PlayerCollisionManager.Instance.EnableCollision(_owner);
@@ -166,6 +182,7 @@ public class Skill : ISkill
     // 命中判定
     bool CheckHit()
     {
+        Debug.Log("CheckHit");
         var target = _owner._targetFinder._nearestEnemy;
         if (!_hitCheckStrategy.CheckHit(_owner, target, this))
             return false;

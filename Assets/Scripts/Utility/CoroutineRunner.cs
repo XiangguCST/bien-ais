@@ -36,7 +36,8 @@ public class CoroutineRunner
 
     public void StopCoroutine(Coroutine routine)
     {
-        coroutineOwner.StopCoroutine(routine);
+        if(routine != null)
+            coroutineOwner.StopCoroutine(routine);
     }
 
     private class CoroutineOwner : MonoBehaviour { }

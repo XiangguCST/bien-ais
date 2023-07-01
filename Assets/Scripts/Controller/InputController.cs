@@ -8,21 +8,22 @@ public class InputController : MonoSingleton<InputController>
     void Awake()
     {
         // 初始化技能栏
-        _skillBar1.AddSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1, 1, 0.5f, 0.33f, 0.1f, 0, false, true, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new NoMovement(), new FaceTargetHitCheck(2.5f), new DoNotAddBuff()));
-        _skillBar1.AddSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0, 12, 1f, 0.83f, 0.5f, 0, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Weakness, 2f), new TargetRequired(3f), new NoMovement(), new FaceTargetHitCheck(3f), new DoNotAddBuff()));
-        _skillBar1.AddSkill(KeyCode.L, new Skill("瞬步", "shunbu", 0, 1, 0, 16f, 0.2f, 0f, 0, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Forward, 6), new FaceTargetHitCheck(0f), new AddBuffDuration(BuffType.ImmunityAll, 1)));
-        _skillBar1.AddSkill(KeyCode.U, new Skill("莲华脚", "lianhuajiao", 2, 0, 12, 24f, 0.22f, 0.2f, 0, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new TargetRequired(6f), new RushToTargetMovement(), new FaceTargetHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 1)));
-        _skillBar1.AddSkill(KeyCode.S, new Skill("逆风行", "nifengxing", 0, 0, 0,  8f, 0.43f, 0f, 0, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Backward, 6), new FaceTargetHitCheck(0f), new AddBuffDuration(BuffType.ImmunityAll, 0.43f)));
-        _skillBar1.AddSkill(KeyCode.O, new Skill("闪光", "tab", 0, 5, 0,  36f, 0.83f, 0f, 0, true, false, new RemoveAllStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Backward, 6), new RangeHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 0.83f)));
-        _skillBar1.ApplySkills(_player1);
+        _skillBar1.InitSkillBar();
+        _skillBar2.InitSkillBar();
 
-        _skillBar2.AddSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, 1, 0.5f, 0.33f, 0.1f, 0, false, true, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new NoMovement(), new FaceTargetHitCheck(2.5f), new DoNotAddBuff()));
-        _skillBar2.AddSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, 12, 1f, 0.83f, 0.5f, 0, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Weakness, 2f), new TargetRequired(3f), new NoMovement(), new FaceTargetHitCheck(3f), new DoNotAddBuff()));
-        _skillBar2.AddSkill(KeyCode.Keypad3, new Skill("瞬步", "shunbu", 0, 1, 0, 16f, 0.2f, 0f, 0, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Forward, 6), new FaceTargetHitCheck(0f), new AddBuffDuration(BuffType.ImmunityAll, 1)));
-        _skillBar2.AddSkill(KeyCode.Keypad4, new Skill("莲华脚", "lianhuajiao", 2, 0, 12, 24f, 0.22f, 0.2f, 0, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new TargetRequired(6f), new RushToTargetMovement(), new FaceTargetHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 1)));
-        _skillBar2.AddSkill(KeyCode.DownArrow, new Skill("逆风行", "nifengxing", 0, 0, 0, 8f, 0.43f, 0f, 0, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Backward, 6), new FaceTargetHitCheck(0f), new AddBuffDuration(BuffType.ImmunityAll, 0.43f)));
-        _skillBar2.AddSkill(KeyCode.Keypad6, new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0, true, false, new RemoveAllStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Backward, 6), new RangeHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 0.83f)));
-        _skillBar2.ApplySkills(_player2);
+        _skillBar1.AttachSkill(KeyCode.J, new Skill("普攻", "attack", 0, 1, 1, 0.5f, 0.33f, 0.1f, 0, false, true, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new NoMovement(), new FaceTargetHitCheck(2.5f), new DoNotAddBuff()));
+        _skillBar1.AttachSkill(KeyCode.K, new Skill("刺心", "cixin", 3, 0, 12, 1f, 0.83f, 0.5f, 0, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Weakness, 2f), new TargetRequired(3f), new NoMovement(), new FaceTargetHitCheck(3f), new DoNotAddBuff()));
+        _skillBar1.AttachSkill(KeyCode.L, new Skill("瞬步", "shunbu", 0, 1, 0, 16f, 0.2f, 0f, 0, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Forward, 6), new FaceTargetHitCheck(0f), new AddBuffDuration(BuffType.ImmunityAll, 1)));
+        _skillBar1.AttachSkill(KeyCode.U, new Skill("莲华脚", "lianhuajiao", 2, 0, 12, 24f, 0.22f, 0.2f, 0, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new TargetRequired(6f), new RushToTargetMovement(), new FaceTargetHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 1)));
+        _skillBar1.AttachSkill(KeyCode.S, new Skill("逆风行", "nifengxing", 0, 0, 0,  8f, 0.43f, 0f, 0, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Backward, 6), new FaceTargetHitCheck(0f), new AddBuffDuration(BuffType.ImmunityAll, 0.43f)));
+        _skillBar1.AttachSkill(KeyCode.O, new Skill("闪光", "tab", 0, 5, 0,  36f, 0.83f, 0f, 0, true, false, new RemoveAllStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Backward, 6), new RangeHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 0.83f)));
+
+        _skillBar2.AttachSkill(KeyCode.Keypad1, new Skill("普攻", "attack", 0, 1, 1, 0.5f, 0.33f, 0.1f, 0, false, true, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new NoMovement(), new FaceTargetHitCheck(2.5f), new DoNotAddBuff()));
+        _skillBar2.AttachSkill(KeyCode.Keypad2, new Skill("刺心", "cixin", 3, 0, 12, 1f, 0.83f, 0.5f, 0, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Weakness, 2f), new TargetRequired(3f), new NoMovement(), new FaceTargetHitCheck(3f), new DoNotAddBuff()));
+        _skillBar2.AttachSkill(KeyCode.Keypad3, new Skill("瞬步", "shunbu", 0, 1, 0, 16f, 0.2f, 0f, 0, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Forward, 6), new FaceTargetHitCheck(0f), new AddBuffDuration(BuffType.ImmunityAll, 1)));
+        _skillBar2.AttachSkill(KeyCode.Keypad4, new Skill("莲华脚", "lianhuajiao", 2, 0, 12, 24f, 0.22f, 0.2f, 0, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new TargetRequired(6f), new RushToTargetMovement(), new FaceTargetHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 1)));
+        _skillBar2.AttachSkill(KeyCode.DownArrow, new Skill("逆风行", "nifengxing", 0, 0, 0, 8f, 0.43f, 0f, 0, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Backward, 6), new FaceTargetHitCheck(0f), new AddBuffDuration(BuffType.ImmunityAll, 0.43f)));
+        _skillBar2.AttachSkill(KeyCode.Keypad6, new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0, true, false, new RemoveAllStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new NoTargetRequired(), new FixedDirectionMovement(MovementDirection.Backward, 6), new RangeHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 0.83f)));
     }
 
     void Update()
@@ -60,20 +61,9 @@ public class InputController : MonoSingleton<InputController>
                 _player2.Stand();
             }
         }
-        foreach (var slot in _player1._skillBar._skills)
-        {
-            if (Input.GetKeyDown(slot._hotKey))
-            {
-                _player1._skillBar.ActivateSkill(slot._skill);
-            }
-        }
-        foreach (var slot in _player2._skillBar._skills)
-        {
-            if (Input.GetKeyDown(slot._hotKey))
-            {
-                _player2._skillBar.ActivateSkill(slot._skill);
-            }
-        }
+        _player1._skillBar.UpdateSkillBar(Time.deltaTime);
+        _player2._skillBar.UpdateSkillBar(Time.deltaTime);
+
     }
 
     public void SetGameOver(bool bGameOver)

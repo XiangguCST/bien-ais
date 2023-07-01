@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,37 +12,54 @@ public class SkillSlot : MonoBehaviour
     private void Start()
     {
         _imgMask = transform.Find("Mask").GetComponent<Image>();
-        _txtCooldown = transform.Find("Text").GetComponent<Text>();
     }
 
     private void Update()
     {
-        if (_skill == null) return;
-        if(_skill._bIsCooldown)
+        if (_skill == null)
+        {
+            _imgMask.fillAmount = 0;
+            return;
+        }
+        if (_skill._bIsCooldown)
         {
             // 更新技能格子显示
             _imgMask.fillAmount = Mathf.Lerp(0, 1, _skill._cooldownTimer / _skill._cooldownTime);
-            _txtCooldown.text = _skill._cooldownTimer.ToString("f1");
         }
         else
         {
-            if (_txtCooldown.text != "")
-                _txtCooldown.text = "";
+            _imgMask.fillAmount = _skill.IsSkillUsable() ? 0 : 1;
+        }
+    }
+    public void SetSkill(Skill skill)
+    {
+        _skill = skill;
+    }
+
+    public Skill GetSkill()
+    {
+        return _skill;
+    }
+
+    public void Activate()
+    {
+        if (_skill == null)
+        {
+            return;
+        }
+        if (_skill.IsSkillUsable())
+        {
+            // 调用技能效果的方法
+            _skill.Activate();
+        }
+        else
+        {
+            Debug.Log(_skill._name + "暂时无法使用");
         }
     }
 
-    // 初始化技能格子
-    public void InitSlot(KeyCode hotKey, Skill skill)
-    {
-        if (skill == null)
-            Debug.Log("技能不存在，未成功绑定到技能格子");
-
-        _skill = skill;
-        _hotKey = hotKey;
-    }
-
-    public Skill _skill; // 技能
     public KeyCode _hotKey; // 绑定快捷键
+    [SerializeField]
+    public Skill _skill; // 技能
     Image _imgMask; // 遮挡
-    Text _txtCooldown; // 冷却时间
 }
