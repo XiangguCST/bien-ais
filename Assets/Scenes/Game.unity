@@ -1241,6 +1241,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 359417214}
   m_CullTransparentMesh: 0
+--- !u!4 &401267783 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7736194846012521167, guid: 1967d4a9387b28149a00d38b6b75bac9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1227627207}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &467919250
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,6 +1390,7 @@ GameObject:
   - component: {fileID: 490667637}
   - component: {fileID: 490667636}
   - component: {fileID: 490667635}
+  - component: {fileID: 490667638}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1455,6 +1462,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &490667638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490667634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de2269d683badc48bc6a54279206d58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player1: {fileID: 401267783}
+  player2: {fileID: 1537808933}
+  cameraPadding: 2
 --- !u!1 &498755085
 GameObject:
   m_ObjectHideFlags: 0
@@ -2378,6 +2400,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1507836993}
   m_CullTransparentMesh: 0
+--- !u!4 &1537808933 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7736194846012521167, guid: 1967d4a9387b28149a00d38b6b75bac9,
+    type: 3}
+  m_PrefabInstance: {fileID: 136190095}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1551546242
 GameObject:
   m_ObjectHideFlags: 0
