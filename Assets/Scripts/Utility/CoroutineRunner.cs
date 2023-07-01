@@ -1,68 +1,60 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// 携程运行器（在不继承Mono类中使用携程） 
-/// </summary>
 public class CoroutineRunner
 {
-    private static CoroutineRunner instance;
-    private MonoBehaviour coroutineOwner;
+    private static CoroutineOwner coroutineOwner;
 
-    private CoroutineRunner()
+    static CoroutineRunner()
     {
-        // 创建一个空的GameObject并将其附加到场景中，以获得MonoBehaviour
-        var coroutineObject = new UnityEngine.GameObject("CoroutineRunner");
-        UnityEngine.Object.DontDestroyOnLoad(coroutineObject);
+        // Create an empty GameObject and attach it to the scene to get a CoroutineOwner
+        var coroutineObject = new GameObject("CoroutineRunner");
+        Object.DontDestroyOnLoad(coroutineObject);
         coroutineOwner = coroutineObject.AddComponent<CoroutineOwner>();
     }
 
-    public static CoroutineRunner Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = new CoroutineRunner();
-            }
-            return instance;
-        }
-    }
-
-    public Coroutine StartCoroutine(IEnumerator routine)
+    // Wrap the IEnumerator version of StartCoroutine
+    public static Coroutine StartCoroutine(IEnumerator routine)
     {
         return coroutineOwner.StartCoroutine(routine);
     }
 
-    public void StopCoroutine(Coroutine routine)
+    // Wrap the string method name version of StartCoroutine
+    public static Coroutine StartCoroutine(string methodName)
     {
-        if(routine != null)
-            coroutineOwner.StopCoroutine(routine);
+        return coroutineOwner.StartCoroutine(methodName);
     }
 
+    // Wrap the string method name and value version of StartCoroutine
+    public static Coroutine StartCoroutine(string methodName, object value)
+    {
+        return coroutineOwner.StartCoroutine(methodName, value);
+    }
+
+    // Wrap StopAllCoroutines
+    public static void StopAllCoroutines()
+    {
+        coroutineOwner.StopAllCoroutines();
+    }
+
+    // Wrap the IEnumerator version of StopCoroutine
+    public static void StopCoroutine(IEnumerator routine)
+    {
+        coroutineOwner.StopCoroutine(routine);
+    }
+
+    // Wrap the Coroutine version of StopCoroutine
+    public static void StopCoroutine(Coroutine routine)
+    {
+        coroutineOwner.StopCoroutine(routine);
+    }
+
+    // Wrap the string method name version of StopCoroutine
+    public static void StopCoroutine(string methodName)
+    {
+        coroutineOwner.StopCoroutine(methodName);
+    }
+
+    // This class is only used for its MonoBehaviour
     private class CoroutineOwner : MonoBehaviour { }
 }
-
-/* 示例代码
-public class MyCustomClass
-{
-    private CoroutineRunner coroutineRunner;
-
-    public MyCustomClass()
-    {
-        coroutineRunner = CoroutineRunner.Instance;
-    }
-
-    public void StartMyCoroutine()
-    {
-        coroutineRunner.StartCoroutine(MyCoroutine());
-    }
-
-    private IEnumerator MyCoroutine()
-    {
-        // 协程逻辑
-        yield return new WaitForSeconds(2f);
-        Debug.Log("Coroutine completed");
-    }
-}
- */

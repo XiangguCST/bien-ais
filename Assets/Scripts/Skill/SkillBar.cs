@@ -46,7 +46,7 @@ public class SkillBar : MonoBehaviour
         {
             _isGlobalCooldown = true;
             globalCooldownTime = cooldownTime;
-            CoroutineRunner.Instance.StartCoroutine(GlobalCooldownRoutine());
+            CoroutineRunner.StartCoroutine(GlobalCooldownRoutine());
         }
     }
 

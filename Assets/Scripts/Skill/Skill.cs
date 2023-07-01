@@ -102,12 +102,12 @@ public class Skill : ISkill
         _castTimer = _castTime;
         _damageDelayTimer = _damageDelay;
         _bDealDamage = false;
-        _castCoroutine = CoroutineRunner.Instance.StartCoroutine(CastRoutine());
+        _castCoroutine = CoroutineRunner.StartCoroutine(CastRoutine());
 
         // 技能冷却
         _cooldownTimer = _cooldownTime;
         _bIsCooldown = true;
-        CoroutineRunner.Instance.StartCoroutine(CooldownRoutine());
+        CoroutineRunner.StartCoroutine(CooldownRoutine());
 
         // 触发技能效果的逻辑
         _owner.OnSkillEffect(this);
@@ -182,7 +182,6 @@ public class Skill : ISkill
     // 命中判定
     bool CheckHit()
     {
-        Debug.Log("CheckHit");
         var target = _owner._targetFinder._nearestEnemy;
         if (!_hitCheckStrategy.CheckHit(_owner, target, this))
             return false;
@@ -205,12 +204,16 @@ public class Skill : ISkill
         int rawDamage = (int)(_owner._attr.atk * _rate);
         int damage = (int)UnityEngine.Random.Range(0.7f * rawDamage, 1.3f * rawDamage);
         _statusAdditionStrategy.OnDealDamage(_owner, target, this);
-        target.TakeDamage(damage);
+        if(damage > 0)
+        {
+            target.TakeDamage(damage);
+            HurtEffectController.ShowHurtEffect(target);
+        }
     }
 
     public void InterruptSkill()
     {
-        CoroutineRunner.Instance.StopCoroutine(_castCoroutine);
+        CoroutineRunner.StopCoroutine(_castCoroutine);
         AfterSkillCast();
         _movementStrategy.InterruptSkill(_owner, this);
         _statusRemovalStrategy.InterruptSkill(_owner, this);
