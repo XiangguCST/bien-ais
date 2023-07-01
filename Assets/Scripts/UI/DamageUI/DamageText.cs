@@ -70,6 +70,8 @@ public class DamageText : MonoBehaviour
     // 每帧更新
     private void Update()
     {
+        if (InputController.Instance._isGameOver) return;
+
         if (IsVisible())
         {
             _timer += Time.deltaTime;

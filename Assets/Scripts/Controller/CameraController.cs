@@ -28,6 +28,7 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+        if (InputController.Instance._isGameOver) return;
         // 计算两个玩家之间的中心点
         Vector3 centerPoint = (player1.position + player2.position) / 2f;
 

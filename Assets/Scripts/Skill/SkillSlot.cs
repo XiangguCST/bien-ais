@@ -16,6 +16,8 @@ public class SkillSlot : MonoBehaviour
 
     private void Update()
     {
+        if (InputController.Instance._isGameOver) return;
+
         if (_skill == null)
         {
             _imgMask.fillAmount = 0;

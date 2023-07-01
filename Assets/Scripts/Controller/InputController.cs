@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using YFrameWork;
 
 public class InputController : MonoSingleton<InputController>
@@ -31,7 +32,19 @@ public class InputController : MonoSingleton<InputController>
         if (_isGameOver)
             return;
 
-        if(_player1._stateManager.GetCurrentStatus() == CharacterStatusType.None)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isPaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
+        }
+
+        if (_player1._stateManager.GetCurrentStatus() == CharacterStatusType.None)
         {
             if (Input.GetKey(KeyCode.A))
             {
@@ -66,15 +79,49 @@ public class InputController : MonoSingleton<InputController>
 
     }
 
-    public void SetGameOver(bool bGameOver)
+    public void ReloadScene()
     {
-        _isGameOver = (bGameOver);
+        Time.timeScale = 1f; // 将时间缩放因子设为1，恢复游戏运行
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
+    }
+
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+    }
+
+    public void SetGameOver()
+    {
+        Time.timeScale = 0f; // 将时间缩放因子设为0，暂停游戏运行
+        _isGameOver = true;
+        _resultPanel.SetActive(true);
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0f; // 将时间缩放因子设为0，暂停游戏运行
+        _pausePanel.SetActive(true);
+        isPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1f; // 将时间缩放因子设为1，恢复游戏运行
+        _pausePanel.SetActive(false);
+        isPaused = false;
     }
 
     public Player _player1;
     public Player _player2;
     public SkillBar _skillBar1;
     public SkillBar _skillBar2;
-
-    bool _isGameOver = false;
+    public GameObject _pausePanel;
+    public GameObject _resultPanel;
+    private bool isPaused = false;
+    public bool _isGameOver = false;
 }

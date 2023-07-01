@@ -16,6 +16,7 @@ public class Character : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         _targetFinder._owner = this;
         _stateManager._owner = this;
+        lastPosition = transform.position;
 
         var damageCanvas = Resources.Load<GameObject>("Prefabs/UI/DamageCanvas");
         _damageCanvas = Instantiate(damageCanvas).GetComponent<DamageCanvas>();
@@ -29,9 +30,21 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
+        if (InputController.Instance._isGameOver) return;
+
         _targetFinder.UpdateTarget();
         _stateManager.UpdateStatus(Time.deltaTime);
         _buffManager.UpdateBuffs(Time.deltaTime);
+
+        if (transform.position != lastPosition)
+        {
+            OnCharacterPositionChanged(lastPosition, transform.position);
+        }
+    }
+
+    protected void OnCharacterPositionChanged(Vector3 lastPosition, Vector3 nowPosition)
+    {
+        transform.position = WorldLimit.CheckLimitPos(nowPosition);
     }
 
     // 人物移动
@@ -120,7 +133,7 @@ public class Character : MonoBehaviour
     virtual protected void Die()
     {
         _bDie = true;
-        InputController.Instance.SetGameOver(true);
+        InputController.Instance.SetGameOver();
         Destroy(gameObject);
     }
 
@@ -145,6 +158,7 @@ public class Character : MonoBehaviour
     public CharacterDir _dir; // 朝向
     public bool _bIsMoving;// 是否移动中
     protected bool _bDie = false; // 是否死亡
+    private Vector3 lastPosition;
 
     [SerializeField]
     public CharacterAttribute _attr = new CharacterAttribute(); // 角色属性

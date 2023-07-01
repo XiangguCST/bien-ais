@@ -28,6 +28,8 @@ public class TargetUI : MonoBehaviour
 
     private void Update()
     {
+        if (InputController.Instance._isGameOver) return;
+
         if (_target == null) return;
         transform.position = _target.position;
     }
