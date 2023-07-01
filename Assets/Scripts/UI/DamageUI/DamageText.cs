@@ -12,8 +12,8 @@ public class DamageText : MonoBehaviour
     private Vector3 _initialScale; // 文本的初始大小
     private float _timer = 0; // 计时器
     private const float DISPLAY_DURATION = 1f; // 斜抛效果文本显示的时间
-    private const float SCALEEFFECT_DISPLAY_DURATION = 1.5f; // 放大效果文本显示的时间
-    private float _scaleEffectWaitTime = 1f; // 放大效果等待的时间
+    private const float SCALEEFFECT_DISPLAY_DURATION = 1f; // 放大效果文本显示的时间
+    private float _scaleEffectWaitTime = 0.75f; // 放大效果等待的时间
     private const float GRAVITY = -4f; // 模拟重力，调整为适当的值以控制掉落速度
 
     public void Awake()
@@ -94,7 +94,7 @@ public class DamageText : MonoBehaviour
             else
             {
                 var percent = _timer / SCALEEFFECT_DISPLAY_DURATION;
-                float kickTime = _scaleEffectWaitTime *0.5f;
+                float kickTime = _scaleEffectWaitTime *0.25f;
 
                 // 放大然后消失的方式
                 if (_timer > _scaleEffectWaitTime)
