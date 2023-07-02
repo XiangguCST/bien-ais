@@ -21,6 +21,15 @@ public class AddStatusEffect : IStatusAdditionStrategy
         else if (_addStatus == CharacterStatusType.Weakness) target.ShowStatus("虚弱");
         else if (_addStatus == CharacterStatusType.Knockdown) target.ShowStatus("击倒");
         target._stateManager.AddStatus(_addStatus, _statusTime);
+
+        // 打断对方正在释放的技能
+        Player other = target as Player;
+        if(other != null)
+        {
+            var castingSkill = other._skillBar._castingSkill;
+            if(castingSkill != null)
+                castingSkill.InterruptSkill();
+        }
     }
 
     CharacterStatusType _addStatus; // 附加异常状态
