@@ -56,11 +56,7 @@ public class Skill : ISkill
             if (_canInterruptOtherSkills)
             {
                 Skill skill = _skillbar.GetCastingSkill();
-                if (skill._canBeInterrupted)
-                {
-                    return true;
-                }
-                else
+                if (!skill._canBeInterrupted)
                 {
                     return false;
                 }
