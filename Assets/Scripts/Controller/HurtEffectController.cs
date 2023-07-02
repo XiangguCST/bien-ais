@@ -24,7 +24,7 @@ public class HurtEffectController
         for (int i = 0; i < flashCount; i++)
         {
             mpb.SetColor(fillColorProperty, flashColor);
-            mpb.SetFloat(fillPhaseProperty, 1f);
+            mpb.SetFloat(fillPhaseProperty, 0.5f);
             if(meshRenderer != null)
                 meshRenderer.SetPropertyBlock(mpb);
             yield return wait;
@@ -42,9 +42,9 @@ public class HurtEffectController
     public static string fillPhaseProperty = "_FillPhase";
     public static string fillColorProperty = "_FillColor";
 
-    static int DefaultFlashCount = 3;
+    static int DefaultFlashCount = 2;
 
     static public int flashCount = DefaultFlashCount;
-    static public Color flashColor = Color.white;
-    static public float interval = 1f / 60f;
+    static public Color flashColor = Color.red;
+    static public float interval = 1f / 20f;
 }
