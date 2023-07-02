@@ -86,6 +86,8 @@ public class RushToTargetMovement : IMovementStrategy
 
     public void OnSkillCasting(Player owner, Skill skill)
     {
+        if (owner == null) return;
+
         // 计算当前移动距离
         float distanceToTarget = Vector3.Distance(owner.transform.position, _targetMovePosition);
 
