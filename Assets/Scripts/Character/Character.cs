@@ -17,7 +17,7 @@ public class Character : MonoBehaviour
         _targetFinder._owner = this;
         _stateManager._owner = this;
         lastPosition = transform.position;
-
+        CommonUtility. SetCharacterColor(this, _defaultColor);
         var damageCanvas = Resources.Load<GameObject>("Prefabs/UI/DamageCanvas");
         _damageCanvas = Instantiate(damageCanvas).GetComponent<DamageCanvas>();
         _damageCanvas.transform.SetParent(transform);
@@ -159,7 +159,7 @@ public class Character : MonoBehaviour
     public bool _bIsMoving;// 是否移动中
     protected bool _bDie = false; // 是否死亡
     private Vector3 lastPosition;
-
+    public Color _defaultColor = Color.black; // 角色默认颜色
     [SerializeField]
     public CharacterAttribute _attr = new CharacterAttribute(); // 角色属性
 

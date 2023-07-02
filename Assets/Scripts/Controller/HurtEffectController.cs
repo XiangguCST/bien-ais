@@ -6,53 +6,45 @@ public class HurtEffectController
     // 显示受伤效果
     static public void ShowHurtEffect(Character other)
     {
-        if (other == null) return;
-
-        Renderer renderer = other.GetComponentInChildren<Renderer>();
-        CoroutineRunner.StartCoroutine(HurtEffectRoutine(renderer.material));
+        CoroutineRunner.StartCoroutine(FlashRoutine(other));
     }
 
-    // 受伤效果的协程
-    static IEnumerator HurtEffectRoutine(Material material)
+    static IEnumerator FlashRoutine(Character other)
     {
-        if (material == null) yield return 0;
+        var  mpb = new MaterialPropertyBlock();
+        var meshRenderer = other.GetComponentInChildren<MeshRenderer>();
+        meshRenderer.GetPropertyBlock(mpb);
 
-        // 受伤效果的总持续时间
-        float duration = 0.3f;
-        // 受伤时的填充阶段值
-        float hurtValue = 0.75f;
-        // 受伤前的填充阶段值
-        float originalValue = material.GetFloat("_FillPhase");
-        // 当前的持续时间
-        float currentDuration = 0;
+        if (flashCount < 0) flashCount = DefaultFlashCount;
+        Color oriColor = mpb.GetColor(fillColorProperty);
+        float oriPhase = mpb.GetFloat(fillPhaseProperty);
 
-        // 受伤效果闪烁阶段
-        while (currentDuration < duration / 2f)
+        var wait = new WaitForSeconds(interval);
+
+        for (int i = 0; i < flashCount; i++)
         {
-            currentDuration += Time.deltaTime;
-            // 计算插值值
-            float lerpValue = currentDuration / (duration / 2f);
-            // 平滑过渡填充阶段值
-            material.SetFloat("_FillPhase", Mathf.Lerp(originalValue, hurtValue, lerpValue));
+            mpb.SetColor(fillColorProperty, flashColor);
+            mpb.SetFloat(fillPhaseProperty, 1f);
+            if(meshRenderer != null)
+                meshRenderer.SetPropertyBlock(mpb);
+            yield return wait;
 
-            yield return null;
+            mpb.SetColor(fillColorProperty, oriColor);
+            mpb.SetFloat(fillPhaseProperty, oriPhase);
+            if(meshRenderer != null)
+                meshRenderer.SetPropertyBlock(mpb);
+            yield return wait;
         }
 
-        // 受伤效果淡出阶段
-        while (currentDuration < duration)
-        {
-            currentDuration += Time.deltaTime;
-            // 计算插值值
-            float lerpValue = currentDuration / duration;
-            // 平滑过渡填充阶段值
-            material.SetFloat("_FillPhase", Mathf.Lerp(hurtValue, originalValue, lerpValue));
-
-            yield return null;
-        }
-
-        // 重置填充阶段值到原始值
-        material.SetFloat("_FillPhase", originalValue);
-
-        yield return 0;
+        yield return null;
     }
+
+    public static string fillPhaseProperty = "_FillPhase";
+    public static string fillColorProperty = "_FillColor";
+
+    static int DefaultFlashCount = 3;
+
+    static public int flashCount = DefaultFlashCount;
+    static public Color flashColor = Color.white;
+    static public float interval = 1f / 60f;
 }

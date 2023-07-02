@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 
 public class CommonUtility
 {
@@ -12,4 +14,17 @@ public class CommonUtility
 
         return isCrit;
     }
+
+    public static void SetCharacterColor(Character other, Color newColor)
+    {
+        var mpb = new MaterialPropertyBlock();
+        var meshRenderer = other.GetComponentInChildren<MeshRenderer>();
+        meshRenderer.GetPropertyBlock(mpb);
+        mpb.SetColor(fillColorProperty, newColor);
+        mpb.SetFloat(fillPhaseProperty, 0.5f);
+        meshRenderer.SetPropertyBlock(mpb);
+    }
+
+    public static string fillPhaseProperty = "_FillPhase";
+    public static string fillColorProperty = "_FillColor";
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7633028326609923392}
   - component: {fileID: 7633028326609923394}
   - component: {fileID: 7633028326609923395}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Distance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 7633028326923613188}
   - component: {fileID: 7633028326923613189}
   - component: {fileID: 114472679379607782}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: TargetUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,8 +134,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1323940615
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &7633028326923613189
 MonoBehaviour:
