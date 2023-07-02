@@ -26,9 +26,12 @@ public class AddStatusEffect : IStatusAdditionStrategy
         Player other = target as Player;
         if(other != null)
         {
-            var castingSkill = other._skillBar._castingSkill;
-            if(castingSkill != null)
-                castingSkill.InterruptSkill();
+            if(other._skillBar._isCasting)
+            {
+                var castingSkill = other._skillBar._castingSkill;
+                if (castingSkill != null)
+                    castingSkill.InterruptSkill();
+            }
         }
     }
 
