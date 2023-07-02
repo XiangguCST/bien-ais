@@ -216,7 +216,8 @@ public class Skill : ISkill
 
     public void InterruptSkill()
     {
-        CoroutineRunner.StopCoroutine(_castCoroutine);
+        if(_castCoroutine != null)
+            CoroutineRunner.StopCoroutine(_castCoroutine);
         AfterSkillCast();
         _movementStrategy.InterruptSkill(_owner, this);
         _statusRemovalStrategy.InterruptSkill(_owner, this);
