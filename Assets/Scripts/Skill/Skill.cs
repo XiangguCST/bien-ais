@@ -190,6 +190,7 @@ public class Skill : ISkill
         if(target._buffManager.HasBuff(BuffType.ImmunityAll))
         {
             target._buffManager.DecreaseBuffCount(BuffType.ImmunityAll, 1);
+            target.ShowStatus("抗性");
             return false;
         }
 

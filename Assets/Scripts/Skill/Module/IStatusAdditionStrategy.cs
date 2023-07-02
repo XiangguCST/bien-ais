@@ -16,6 +16,10 @@ public class AddStatusEffect : IStatusAdditionStrategy
 
     public void OnDealDamage(Player owner, Character target, Skill skill)
     {
+        if (_addStatus == CharacterStatusType.None) return;
+        else if (_addStatus == CharacterStatusType.Stun) target.ShowStatus("眩晕");
+        else if (_addStatus == CharacterStatusType.Weakness) target.ShowStatus("虚弱");
+        else if (_addStatus == CharacterStatusType.Knockdown) target.ShowStatus("击倒");
         target._stateManager.AddStatus(_addStatus, _statusTime);
     }
 

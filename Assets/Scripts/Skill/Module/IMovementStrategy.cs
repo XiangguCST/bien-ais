@@ -58,9 +58,6 @@ public class FixedDirectionMovement : IMovementStrategy
     float _movementSpeed; // 移动速度
 }
 
-/// <summary>
-/// 突进
-/// </summary>
 public class RushToTargetMovement : IMovementStrategy
 {
     public RushToTargetMovement()
@@ -75,26 +72,25 @@ public class RushToTargetMovement : IMovementStrategy
     public void BeforeSkillCast(Player owner, Skill skill)
     {
         var target = owner._targetFinder._nearestEnemy;
-
-        // 计算移动的目标位置，即目标的位置减去距离目标的距离
         _targetMovePosition = target.transform.position - (target.transform.position - owner.transform.position).normalized * _rushDistance;
-
-        // 计算移动速度
-        float distance = Vector3.Distance(owner.transform.position, _targetMovePosition);
-        _movementSpeed = distance / skill._castTime;
+        _movementSpeed = Vector3.Distance(owner.transform.position, _targetMovePosition) / skill._castTime;
     }
 
     public void OnSkillCasting(Player owner, Skill skill)
     {
         if (owner == null) return;
 
-        // 计算当前移动距离
+        // 如果敌人距离移动目标位置小于等于突进距离，说明敌人已经移动，需要更新突进目标位置
+        var target = owner._targetFinder._nearestEnemy;
+        if (Vector3.Distance(target.transform.position, _targetMovePosition) <= _rushDistance)
+        {
+            _targetMovePosition = target.transform.position - (target.transform.position - owner.transform.position).normalized * _rushDistance;
+        }
+
         float distanceToTarget = Vector3.Distance(owner.transform.position, _targetMovePosition);
 
-        // 判断是否到达目标位置
         if (distanceToTarget >= 0.01f)
         {
-            // 移动技能释放者
             owner.transform.position = Vector3.MoveTowards(owner.transform.position, _targetMovePosition, _movementSpeed * Time.deltaTime);
         }
     }
@@ -108,6 +104,8 @@ public class RushToTargetMovement : IMovementStrategy
     private Vector3 _targetMovePosition; // 目标移动位置
     private float _movementSpeed; // 移动速度
 }
+
+
 
 /// <summary>
 /// 无移动

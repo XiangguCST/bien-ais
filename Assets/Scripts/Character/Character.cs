@@ -147,6 +147,11 @@ public class Character : MonoBehaviour
         }
     }
 
+    virtual public void ShowStatus(string statusTip)
+    {
+        _damageCanvas.ShowStatus(statusTip);
+    }
+
     // 消耗内力
     virtual public void ConsumeEnergy(int cost)
     {

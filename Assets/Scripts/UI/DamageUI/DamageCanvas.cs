@@ -30,6 +30,22 @@ public class DamageCanvas : MonoBehaviour
         txtDamage.ShowDamage(damage, bCritical);
     }
 
+    // 显示异常状态
+    public void ShowStatus(string statusTip)
+    {
+        var txtDamage = GetFreeDamageText();
+        float originX = UnityEngine.Random.Range(-0.1f, 0.1f);
+        // 设定伤害文本的起始位置
+        txtDamage.transform.localPosition = new Vector2(originX, 0);
+
+        // 根据是否为暴击设定不同的颜色
+        txtDamage.SetColor(normalDamageColor);
+
+        // 显示伤害
+        txtDamage.ShowStatus(statusTip);
+    }
+
+
     // 获取一个未显示的伤害文本对象，如果当前没有未显示的对象则创建一个新的对象
     DamageText GetFreeDamageText()
     {
