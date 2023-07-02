@@ -71,7 +71,7 @@ public class Skill : ISkill
             return false;
         if (!_targetRequirementStrategy.IsSkillUsable(_owner, this))
             return false;
-        if (_bIsCooldown || _skillbar._isGlobalCooldown || _skillbar._isCasting)
+        if (_bIsCooldown || _skillbar._isGlobalCooldown)
             return false;
         if (_owner._energy < _energyCost)
             return false;
