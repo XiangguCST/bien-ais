@@ -21,10 +21,8 @@ public class CommonUtility
         var meshRenderer = other.GetComponentInChildren<MeshRenderer>();
         meshRenderer.GetPropertyBlock(mpb);
         mpb.SetColor(fillColorProperty, newColor);
-        mpb.SetFloat(fillPhaseProperty, 0.5f);
         meshRenderer.SetPropertyBlock(mpb);
     }
 
-    public static string fillPhaseProperty = "_FillPhase";
     public static string fillColorProperty = "_FillColor";
 }

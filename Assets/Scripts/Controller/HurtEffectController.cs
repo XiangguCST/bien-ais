@@ -16,35 +16,39 @@ public class HurtEffectController
         meshRenderer.GetPropertyBlock(mpb);
 
         if (flashCount < 0) flashCount = DefaultFlashCount;
-        Color oriColor = mpb.GetColor(fillColorProperty);
-        float oriPhase = mpb.GetFloat(fillPhaseProperty);
-
-        var wait = new WaitForSeconds(interval);
+        Color oriColor = other._defaultColor;
 
         for (int i = 0; i < flashCount; i++)
         {
-            mpb.SetColor(fillColorProperty, flashColor);
-            mpb.SetFloat(fillPhaseProperty, 0.5f);
-            if(meshRenderer != null)
-                meshRenderer.SetPropertyBlock(mpb);
-            yield return wait;
+            for (float t = 0; t <= 1; t += Time.deltaTime / interval)
+            {
+                Color currentColor = Color.Lerp(oriColor, flashColor, t);
+                mpb.SetColor(fillColorProperty, currentColor);
+                if(meshRenderer != null)
+                    meshRenderer.SetPropertyBlock(mpb);
+                yield return null;
+            }
 
-            mpb.SetColor(fillColorProperty, oriColor);
-            mpb.SetFloat(fillPhaseProperty, oriPhase);
-            if(meshRenderer != null)
-                meshRenderer.SetPropertyBlock(mpb);
-            yield return wait;
+            for (float t = 0; t <= 1; t += Time.deltaTime / interval)
+            {
+                Color currentColor = Color.Lerp(flashColor, oriColor, t);
+                mpb.SetColor(fillColorProperty, currentColor);
+                if(meshRenderer != null)
+                    meshRenderer.SetPropertyBlock(mpb);
+                yield return null;
+            }
         }
-
+        mpb.SetColor(fillColorProperty, oriColor);
+        if (meshRenderer != null)
+            meshRenderer.SetPropertyBlock(mpb);
         yield return null;
     }
 
-    public static string fillPhaseProperty = "_FillPhase";
     public static string fillColorProperty = "_FillColor";
 
     static int DefaultFlashCount = 2;
 
     static public int flashCount = DefaultFlashCount;
     static public Color flashColor = Color.red;
-    static public float interval = 1f / 20f;
+    static public float interval = 1f / 10f;
 }

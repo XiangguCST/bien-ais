@@ -14,11 +14,15 @@ public class TargetUI : MonoBehaviour
     public void UpdateDistance(float distance)
     {
         _text.text = distance.ToString("f1") + "米";
+        if(!_text.gameObject.activeSelf)
+            _text.gameObject.SetActive(true);
     }
 
     public void Hide()
     {
         _text.text = "";
+        if(_text.gameObject.activeSelf)
+            _text.gameObject.SetActive(false);
     }
 
     public void Init()
