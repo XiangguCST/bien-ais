@@ -100,6 +100,7 @@ public class RushToTargetMovement : IMovementStrategy
 
         // 如果敌人距离移动目标位置小于等于突进距离，说明敌人已经移动，需要更新突进目标位置
         var target = owner._targetFinder._nearestEnemy;
+        if (target == null) return;
         if (Vector3.Distance(target.transform.position, _targetMovePosition) <= _rushDistance)
         {
             _targetMovePosition = target.transform.position - (target.transform.position - owner.transform.position).normalized * _rushDistance;

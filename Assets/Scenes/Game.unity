@@ -511,11 +511,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1567716775}
     m_Modifications:
-    - target: {fileID: 119373107343638396, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -20
-      objectReference: {fileID: 0}
     - target: {fileID: 413693464401466589, guid: 2b11aee037d731c498f6a2dfa2e195ad,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -600,16 +595,6 @@ PrefabInstance:
         type: 3}
       propertyPath: _hotKey
       value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2972382537637439528, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_Spacing.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2972382537637439528, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_Spacing.y
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3286974468845461570, guid: 2b11aee037d731c498f6a2dfa2e195ad,
         type: 3}
@@ -821,11 +806,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkillBar (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 4844737586396083466, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 5175635014716585997, guid: 2b11aee037d731c498f6a2dfa2e195ad,
         type: 3}
       propertyPath: _hotKey
@@ -870,16 +850,6 @@ PrefabInstance:
         type: 3}
       propertyPath: _hotKey
       value: 108
-      objectReference: {fileID: 0}
-    - target: {fileID: 5905987596121791096, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_Spacing.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5905987596121791096, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_Spacing.y
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6099119039131441351, guid: 2b11aee037d731c498f6a2dfa2e195ad,
         type: 3}
@@ -4254,11 +4224,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1567716775}
     m_Modifications:
-    - target: {fileID: 119373107343638396, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -20
-      objectReference: {fileID: 0}
     - target: {fileID: 413693464401466589, guid: 2b11aee037d731c498f6a2dfa2e195ad,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -4343,16 +4308,6 @@ PrefabInstance:
         type: 3}
       propertyPath: _hotKey
       value: 275
-      objectReference: {fileID: 0}
-    - target: {fileID: 2972382537637439528, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_Spacing.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2972382537637439528, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_Spacing.y
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3286974468845461570, guid: 2b11aee037d731c498f6a2dfa2e195ad,
         type: 3}
@@ -4564,11 +4519,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkillBar (2)
       objectReference: {fileID: 0}
-    - target: {fileID: 4844737586396083466, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 5175635014716585997, guid: 2b11aee037d731c498f6a2dfa2e195ad,
         type: 3}
       propertyPath: _hotKey
@@ -4608,16 +4558,6 @@ PrefabInstance:
         type: 3}
       propertyPath: _hotKey
       value: 259
-      objectReference: {fileID: 0}
-    - target: {fileID: 5905987596121791096, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_Spacing.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5905987596121791096, guid: 2b11aee037d731c498f6a2dfa2e195ad,
-        type: 3}
-      propertyPath: m_Spacing.y
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6099119039131441351, guid: 2b11aee037d731c498f6a2dfa2e195ad,
         type: 3}

@@ -47,33 +47,31 @@ public class Skill : ISkill
     }
 
 
-    // 技能是否可用
-    public bool IsSkillUsable()
+    // 新增方法: IsSkillUsableIgnoringCooldown()
+    public bool IsSkillUsableIgnoringCooldown()
     {
-        if (_skillbar == null) return false;
-        if(_skillbar._isCasting)
+        if (_skillbar == null || _skillbar._isCasting && !_canInterruptOtherSkills) return false;
+        if (_skillbar._isCasting && _canInterruptOtherSkills)
         {
-            if (_canInterruptOtherSkills)
-            {
-                Skill skill = _skillbar.GetCastingSkill();
-                if (!skill._canBeInterrupted)
-                {
-                    return false;
-                }
-            }
-            else
+            Skill skill = _skillbar.GetCastingSkill();
+            if (!skill._canBeInterrupted)
             {
                 return false;
             }
         }
-        
-        if (!_statusRemovalStrategy.IsSkillUsable(_owner, this))
+
+        if (!_statusRemovalStrategy.IsSkillUsable(_owner, this) ||
+            !_targetRequirementStrategy.IsSkillUsable(_owner, this) ||
+            _owner._energy < _energyCost)
             return false;
-        if (!_targetRequirementStrategy.IsSkillUsable(_owner, this))
-            return false;
-        if (_bIsCooldown || _skillbar._isGlobalCooldown)
-            return false;
-        if (_owner._energy < _energyCost)
+
+        return true;
+    }
+
+    // 简化后的IsSkillUsable()方法
+    public bool IsSkillUsable()
+    {
+        if (!IsSkillUsableIgnoringCooldown() || _bIsCooldown || _skillbar._isGlobalCooldown)
             return false;
         return true;
     }
@@ -81,7 +79,7 @@ public class Skill : ISkill
     /// <summary>
     /// 释放技能
     /// </summary>
-    public void Activate()
+        public void Activate()
     {
         // 打断正在释放的技能
         if(_skillbar._isCasting)
