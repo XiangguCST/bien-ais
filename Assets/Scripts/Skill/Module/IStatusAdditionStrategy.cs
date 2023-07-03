@@ -17,21 +17,13 @@ public class AddStatusEffect : IStatusAdditionStrategy
     public void OnDealDamage(Player owner, Character target, Skill skill)
     {
         if (_addStatus == CharacterStatusType.None) return;
-        else if (_addStatus == CharacterStatusType.Stun) target.ShowStatus("眩晕");
-        else if (_addStatus == CharacterStatusType.Weakness) target.ShowStatus("虚弱");
-        else if (_addStatus == CharacterStatusType.Knockdown) target.ShowStatus("击倒");
         target._stateManager.AddStatus(_addStatus, _statusTime);
 
         // 打断对方正在释放的技能
         Player other = target as Player;
         if(other != null)
         {
-            if(other._skillBar._isCasting)
-            {
-                var castingSkill = other._skillBar._castingSkill;
-                if (castingSkill != null)
-                    castingSkill.InterruptSkill();
-            }
+            other.InterruptSkill();
         }
     }
 

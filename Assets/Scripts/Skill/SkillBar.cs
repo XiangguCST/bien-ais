@@ -60,7 +60,7 @@ public class SkillBar : MonoBehaviour
     // 添加技能
     public void AttachSkill(KeyCode hotKey, Skill skill)
     {
-        if (!_slots.ContainsKey(hotKey)) return;
+        if (skill == null || !_slots.ContainsKey(hotKey)) return;
         _slots[hotKey].SetSkill(skill);
         skill._owner = _owner;
         skill._skillbar = this;

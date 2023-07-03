@@ -18,6 +18,10 @@ public class CharacterStatusManager
     // 添加异常状态
     public void AddStatus(CharacterStatusType status, float duration)
     {
+        if (status == CharacterStatusType.None) return;
+        else if (status == CharacterStatusType.Stun) _owner.ShowStatus("眩晕");
+        else if (status == CharacterStatusType.Weakness) _owner.ShowStatus("虚弱");
+        else if (status == CharacterStatusType.Knockdown) _owner.ShowStatus("击倒");
         statusTimers.AddOrUpdate(status, duration, (_, existingDuration) => Math.Max(existingDuration, duration));
         UpdateCurrentStatus();
     }

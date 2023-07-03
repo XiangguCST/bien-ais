@@ -35,6 +35,16 @@ public class Player : Character
         _playerUI = ui;
     }
 
+    public void InterruptSkill()
+    {
+        if (_skillBar._isCasting)
+        {
+            var castingSkill = _skillBar._castingSkill;
+            if (castingSkill != null)
+                castingSkill.InterruptSkill();
+        }
+    }
+
     public override void TakeDamage(int damage, bool bCritical = false)
     {
         base.TakeDamage(damage, bCritical);

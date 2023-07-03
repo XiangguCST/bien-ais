@@ -80,7 +80,8 @@ public enum BuffType
 {
     ImmunityAll,           // 免疫所有
     Evasion,               // 闪避
-    ImmunityStatusEffect   // 免疫异常状态
+    ImmunityStatusEffect,   // 免疫异常状态
+    ShadowClone, // 替身
 }
 
 
