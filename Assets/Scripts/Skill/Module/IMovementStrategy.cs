@@ -24,7 +24,7 @@ public class FixedDirectionMovement : IMovementStrategy
 
     public void BeforeSkillCast(Player owner, Skill skill)
     {
-        Vector3 movementVector = MovementUtils.GetMovementVector(owner._dir, _movementDirection);
+        Vector3 movementVector = GetMovementVector(owner._dir, _movementDirection);
         _targetMovePosition = owner.transform.position + movementVector * _movementDistance;
         _movementSpeed = _movementDistance / skill._castTime; // 计算移动速度
     }
@@ -49,6 +49,24 @@ public class FixedDirectionMovement : IMovementStrategy
 
     public void InterruptSkill(Player owner, Skill skill)
     {
+    }
+
+    private Vector2 GetMovementVector(CharacterDir characterDir, MovementDirection movementDirection)
+    {
+        Vector2 movementVector = Vector2.zero;
+
+        // 根据人物朝向和移动方向设置移动向量
+        switch (characterDir)
+        {
+            case CharacterDir.eLeft:
+                movementVector.x = (movementDirection == MovementDirection.Forward) ? -1f : 1f;
+                break;
+            case CharacterDir.eRight:
+                movementVector.x = (movementDirection == MovementDirection.Forward) ? 1f : -1f;
+                break;
+        }
+
+        return movementVector;
     }
 
     public MovementDirection _movementDirection; // 位移方向
