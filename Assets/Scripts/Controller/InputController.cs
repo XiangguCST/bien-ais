@@ -101,8 +101,15 @@ public class InputController : MonoSingleton<InputController>
 
     public void SetGameOver()
     {
-        Time.timeScale = 0f; // 将时间缩放因子设为0，暂停游戏运行
+        Time.timeScale = 0.05f; // 减慢游戏运行
         _isGameOver = true;
+        StartCoroutine(ShowGameOverPanelAfterDelay());
+    }
+
+    IEnumerator ShowGameOverPanelAfterDelay()
+    {
+        yield return new WaitForSeconds(0.1f);
+        Time.timeScale = 0f; // 将时间缩放因子设为0，暂停游戏运行
         _resultPanel.SetActive(true);
     }
 
