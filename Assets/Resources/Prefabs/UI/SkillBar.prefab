@@ -75,7 +75,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3286974468845461570}
-  - component: {fileID: 3286974468845461573}
   m_Layer: 5
   m_Name: SkillBar
   m_TagString: Untagged
@@ -104,40 +103,6 @@ RectTransform:
   m_AnchoredPosition: {x: -293, y: -172}
   m_SizeDelta: {x: 130.23291, y: 90.930176}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3286974468845461573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4800360501391648489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aee2db813cf9bbc43a7d8729b3d650eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _owner: {fileID: 0}
-  _isGlobalCooldown: 0
-  _isCasting: 0
-  _castingSkill:
-    _name: 
-    _animName: 
-    _energyCost: 0
-    _energyRecover: 0
-    _rate: 0
-    _cooldownTime: 0
-    _castTime: 0
-    _damageDelay: 0
-    _globalCooldownTime: 0
-    _canInterruptOtherSkills: 0
-    _canBeInterrupted: 0
-    _cooldownTimer: 0
-    _castTimer: 0
-    _damageDelayTimer: 0
-    _bIsCooldown: 0
-    _bDealDamage: 0
-    _skillbar: {fileID: 0}
-    _owner: {fileID: 0}
 --- !u!1 &5430809037967760989
 GameObject:
   m_ObjectHideFlags: 0

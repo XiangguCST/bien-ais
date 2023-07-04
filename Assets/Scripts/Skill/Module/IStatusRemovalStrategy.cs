@@ -2,11 +2,11 @@
 
 public interface IStatusRemovalStrategy
 {
-    bool IsSkillUsable(Player owner, Skill skill);
-    void BeforeSkillCast(Player owner, Skill skill);
-    void OnSkillCasting(Player owner, Skill skill);
-    void AfterSkillCast(Player owner, Skill skill);
-    void InterruptSkill(Player owner, Skill skill);
+    bool IsSkillUsable(SkillInstance skill);
+    void BeforeSkillCast(Character owner, SkillInstance skill);
+    void OnSkillCasting(Character owner, SkillInstance skill);
+    void AfterSkillCast(Character owner, SkillInstance skill);
+    void InterruptSkill(Character owner, SkillInstance skill);
 }
 
 public class RemoveAllStatuses : IStatusRemovalStrategy
@@ -17,28 +17,28 @@ public class RemoveAllStatuses : IStatusRemovalStrategy
     }
 
 
-    public void BeforeSkillCast(Player owner, Skill skill)
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
         // 移除异常状态
         owner._stateManager.RemoveAllStatuses();
     }
 
-    public void OnSkillCasting(Player owner, Skill skill)
+    public void OnSkillCasting(Character owner, SkillInstance skill)
     {
         // 技能释放过程中不做任何操作
     }
 
-    public void AfterSkillCast(Player owner, Skill skill)
+    public void AfterSkillCast(Character owner, SkillInstance skill)
     {
         // 技能释放结束后不做任何操作
     }
 
-    public bool IsSkillUsable(Player owner, Skill skill)
+    public bool IsSkillUsable(SkillInstance skill)
     {
-        return _requireStatus.Contains(owner._stateManager.GetCurrentStatus());
+        return _requireStatus.Contains(skill._owner._stateManager.GetCurrentStatus());
     }
 
-    public void InterruptSkill(Player owner, Skill skill)
+    public void InterruptSkill(Character owner, SkillInstance skill)
     {
     }
 
@@ -52,29 +52,29 @@ public class DoNotRemoveStatuses : IStatusRemovalStrategy
         _requireStatus = new List<CharacterStatusType> { CharacterStatusType.None};
     }
 
-    public void InterruptSkill(Player owner, Skill skill)
+    public void InterruptSkill(Character owner, SkillInstance skill)
     {
     }
 
-    public void BeforeSkillCast(Player owner, Skill skill)
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
         // 移除异常状态
         owner._stateManager.RemoveAllStatuses();
     }
 
-    public void OnSkillCasting(Player owner, Skill skill)
+    public void OnSkillCasting(Character owner, SkillInstance skill)
     {
         // 技能释放过程中不做任何操作
     }
 
-    public void AfterSkillCast(Player owner, Skill skill)
+    public void AfterSkillCast(Character owner, SkillInstance skill)
     {
         // 技能释放结束后不做任何操作
     }
 
-    public bool IsSkillUsable(Player owner, Skill skill)
+    public bool IsSkillUsable(SkillInstance skill)
     {
-        return _requireStatus.Contains(owner._stateManager.GetCurrentStatus());
+        return _requireStatus.Contains(skill._owner._stateManager.GetCurrentStatus());
     }
 
     List<CharacterStatusType> _requireStatus;

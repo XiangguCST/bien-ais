@@ -4,39 +4,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 技能栏
+/// 角色技能管理
 /// </summary>
-public class SkillBar : MonoBehaviour
+public class CharacterSkillMgr
 {
-    public SkillBar()
+    public CharacterSkillMgr(Character owner)
     {
         _isGlobalCooldown = false;
         _isCasting = false;
         globalCooldownTime = 0f;
-    }
-
-    public void InitSkillBar()
-    {
-        // 获取所有技能格子
-        var slots = GetComponentsInChildren<SkillSlot>();
-        foreach (var slot in slots)
-        {
-            _slots[slot._hotKey] = slot;
-        }
-
-        _owner._skillBar = this;
+        _owner = owner;
     }
 
     public void UpdateSkillBar(float deltaTime)
     {
-        foreach (var pair in _slots)
-        {
-            var slot = pair.Value;
-            if (Input.GetKeyDown(slot._hotKey))
-            {
-                slot.Activate();
-            }
-        }
+        
     }
 
     // 开始gcd
@@ -60,22 +42,26 @@ public class SkillBar : MonoBehaviour
     // 添加技能
     public void AttachSkill(KeyCode hotKey, Skill skill)
     {
-        if (skill == null || !_slots.ContainsKey(hotKey)) return;
-        _slots[hotKey].SetSkill(skill);
-        skill._owner = _owner;
-        skill._skillbar = this;
+        if (skill == null) return;
+        var skillSlot = InputController.Instance.GetSkillSlotByHotKey(hotKey);
+        if (skillSlot == null) return;
+
+        var skillInstance = new SkillInstance(skill);
+        skillSlot.SetSkill(skillInstance);
+        skillInstance._owner = _owner;
+        skillInstance._skillbar = this;
     }
 
-    public Skill GetCastingSkill()
+    public SkillInstance GetCastingSkill()
     {
         return _castingSkill;
     }
 
-    public Player _owner;
+    public Character _owner;
     public bool _isGlobalCooldown; // 是否gcd结束
     public bool _isCasting; // 是否释放技能中
     private float globalCooldownTime; // gcd
 
-    private Dictionary<KeyCode, SkillSlot> _slots = new Dictionary<KeyCode, SkillSlot>(); // 技能格子列表
-    public Skill _castingSkill = null;
+    private Dictionary<KeyCode, SkillInstance> _skills = new Dictionary<KeyCode, SkillInstance>(); // 技能格子列表
+    public SkillInstance _castingSkill = null;
 }

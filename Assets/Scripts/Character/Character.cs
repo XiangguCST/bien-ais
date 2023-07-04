@@ -11,21 +11,32 @@ public class Character : MonoBehaviour
 {
     public void Awake()
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _collider = GetComponent<CapsuleCollider2D>();
-        _animator = GetComponentInChildren<Animator>();
-        _targetFinder._owner = this;
-        _stateManager._owner = this;
-        lastPosition = transform.position;
-        CommonUtility. SetCharacterColor(this, _defaultColor);
-        var damageCanvas = Resources.Load<GameObject>("Prefabs/UI/DamageCanvas");
-        _damageCanvas = Instantiate(damageCanvas).GetComponent<DamageCanvas>();
-        _damageCanvas.transform.SetParent(transform);
-        _damageCanvas.transform.localPosition = Vector2.zero;
-        _damageCanvas._owner = this;
+        InitCharacter();
+    }
 
-        InitAttribute();
-        ApplyAttribute();
+    public void InitCharacter()
+    {
+        lock (_lockObject)
+        {
+            if (_bInit) return;
+            _rb = GetComponent<Rigidbody2D>();
+            _collider = GetComponent<CapsuleCollider2D>();
+            _animator = GetComponentInChildren<Animator>();
+            _skillMgr = new CharacterSkillMgr(this);
+            _targetFinder._owner = this;
+            _stateManager._owner = this;
+            lastPosition = transform.position;
+            CommonUtility.SetCharacterColor(this, _defaultColor);
+            var damageCanvas = Resources.Load<GameObject>("Prefabs/UI/DamageCanvas");
+            _damageCanvas = Instantiate(damageCanvas).GetComponent<DamageCanvas>();
+            _damageCanvas.transform.SetParent(transform);
+            _damageCanvas.transform.localPosition = Vector2.zero;
+            _damageCanvas._owner = this;
+
+            InitAttribute();
+            ApplyAttribute();
+            _bInit = true;
+        }
     }
 
     private void Update()
@@ -40,6 +51,11 @@ public class Character : MonoBehaviour
         {
             OnCharacterPositionChanged(lastPosition, transform.position);
         }
+    }
+
+    public void AttachSkill(KeyCode keypad1, Skill skill)
+    {
+        _skillMgr.AttachSkill(keypad1, skill);
     }
 
     protected void OnCharacterPositionChanged(Vector3 lastPosition, Vector3 nowPosition)
@@ -158,6 +174,12 @@ public class Character : MonoBehaviour
         _energy = Mathf.Clamp(_energy - cost, 0, _attr.maxEnergy);
     }
 
+    public void OnSkillEffect(SkillInstance skill)
+    {
+        // 停止移动
+        Stand();
+    }
+
     public int _hp; // 血量
     public int _energy; // 内力
     public CharacterDir _dir; // 朝向
@@ -170,11 +192,15 @@ public class Character : MonoBehaviour
 
     protected Rigidbody2D _rb;
     protected CapsuleCollider2D _collider;
+    protected CharacterSkillMgr _skillMgr;
     protected Animator _animator;
     protected DamageCanvas _damageCanvas;
     public TargetFinder _targetFinder = new TargetFinder();
     public CharacterStatusManager _stateManager = new CharacterStatusManager();
     public CharacterBuffManager _buffManager = new CharacterBuffManager();
+
+    private object _lockObject = new object();
+    private bool _bInit = false;
 }
 
 // 人物朝向

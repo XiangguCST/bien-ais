@@ -5,10 +5,10 @@
 /// </summary>
 public interface IMovementStrategy
 {
-    void BeforeSkillCast(Player owner, Skill skill);
-    void OnSkillCasting(Player owner, Skill skill);
-    void AfterSkillCast(Player owner, Skill skill);
-    void InterruptSkill(Player owner, Skill skill);
+    void BeforeSkillCast(Character owner, SkillInstance skill);
+    void OnSkillCasting(Character owner, SkillInstance skill);
+    void AfterSkillCast(Character owner, SkillInstance skill);
+    void InterruptSkill(Character owner, SkillInstance skill);
 }
 
 /// <summary>
@@ -22,19 +22,19 @@ public class FixedDirectionMovement : IMovementStrategy
         _movementDistance = movementDistance;
     }
 
-    public void BeforeSkillCast(Player owner, Skill skill)
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
         Vector3 movementVector = GetMovementVector(owner._dir, _movementDirection);
         _targetMovePosition = owner.transform.position + movementVector * _movementDistance;
-        _movementSpeed = _movementDistance / skill._castTime; // 计算移动速度
+        _movementSpeed = _movementDistance / skill.SkillInfo._castTime; // 计算移动速度
     }
 
-    public void AfterSkillCast(Player owner, Skill skill)
+    public void AfterSkillCast(Character owner, SkillInstance skill)
     {
         owner.transform.position = _targetMovePosition; // 移动到目标位置
     }
 
-    public void OnSkillCasting(Player owner, Skill skill)
+    public void OnSkillCasting(Character owner, SkillInstance skill)
     {
         // 计算当前移动距离
         float distanceToTarget = Vector3.Distance(owner.transform.position, _targetMovePosition);
@@ -47,7 +47,7 @@ public class FixedDirectionMovement : IMovementStrategy
         }
     }
 
-    public void InterruptSkill(Player owner, Skill skill)
+    public void InterruptSkill(Character owner, SkillInstance skill)
     {
     }
 
@@ -83,18 +83,18 @@ public class RushToTargetMovement : IMovementStrategy
         _rushDistance = 1;// 突进到目标1米处
     }
 
-    public void InterruptSkill(Player owner, Skill skill)
+    public void InterruptSkill(Character owner, SkillInstance skill)
     {
     }
 
-    public void BeforeSkillCast(Player owner, Skill skill)
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
         var target = owner._targetFinder._nearestEnemy;
         _targetMovePosition = target.transform.position - (target.transform.position - owner.transform.position).normalized * _rushDistance;
-        _movementSpeed = Vector3.Distance(owner.transform.position, _targetMovePosition) / skill._castTime;
+        _movementSpeed = Vector3.Distance(owner.transform.position, _targetMovePosition) / skill.SkillInfo._castTime;
     }
 
-    public void OnSkillCasting(Player owner, Skill skill)
+    public void OnSkillCasting(Character owner, SkillInstance skill)
     {
         if (owner == null) return;
 
@@ -114,7 +114,7 @@ public class RushToTargetMovement : IMovementStrategy
         }
     }
 
-    public void AfterSkillCast(Player owner, Skill skill)
+    public void AfterSkillCast(Character owner, SkillInstance skill)
     {
         // 技能释放结束后不做额外操作
     }
@@ -131,19 +131,19 @@ public class RushToTargetMovement : IMovementStrategy
 /// </summary>
 public class NoMovement : IMovementStrategy
 {
-    public void InterruptSkill(Player owner, Skill skill)
+    public void InterruptSkill(Character owner, SkillInstance skill)
     {
     }
 
-    public void AfterSkillCast(Player owner, Skill skill)
+    public void AfterSkillCast(Character owner, SkillInstance skill)
     {
     }
 
-    public void BeforeSkillCast(Player owner, Skill skill)
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
     }
 
-    public void OnSkillCasting(Player owner, Skill skill)
+    public void OnSkillCasting(Character owner, SkillInstance skill)
     {
     }
 }

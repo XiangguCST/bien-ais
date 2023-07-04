@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,26 +10,43 @@ public class InputController : MonoSingleton<InputController>
     void Awake()
     {
         // 初始化技能栏
-        _skillBar1.InitSkillBar();
-        _skillBar2.InitSkillBar();
+        InitSkillSlots();
+        _player1.InitCharacter();
+        _player2.InitCharacter();
 
-        _skillBar1.AttachSkill(KeyCode.J, SkillLibrary.CreateSkillByName("迷雾斩"));
-        _skillBar1.AttachSkill(KeyCode.K, SkillLibrary.CreateSkillByName("刺心"));
-        _skillBar1.AttachSkill(KeyCode.L, SkillLibrary.CreateSkillByName("瞬步"));
-        _skillBar1.AttachSkill(KeyCode.U, SkillLibrary.CreateSkillByName("莲华脚"));
-        _skillBar1.AttachSkill(KeyCode.I, SkillLibrary.CreateSkillByName("替身术"));
-        _skillBar1.AttachSkill(KeyCode.O, SkillLibrary.CreateSkillByName("闪光"));
-        _skillBar1.AttachSkill(KeyCode.W, SkillLibrary.CreateSkillByName("潜行"));
-        _skillBar1.AttachSkill(KeyCode.S, SkillLibrary.CreateSkillByName("逆风行"));
+        _player1.AttachSkill(KeyCode.J, SkillLibrary.CreateSkillByName("迷雾斩"));
+        _player1.AttachSkill(KeyCode.K, SkillLibrary.CreateSkillByName("刺心"));
+        _player1.AttachSkill(KeyCode.L, SkillLibrary.CreateSkillByName("瞬步"));
+        _player1.AttachSkill(KeyCode.U, SkillLibrary.CreateSkillByName("莲华脚"));
+        _player1.AttachSkill(KeyCode.I, SkillLibrary.CreateSkillByName("替身术"));
+        _player1.AttachSkill(KeyCode.O, SkillLibrary.CreateSkillByName("闪光"));
+        _player1.AttachSkill(KeyCode.W, SkillLibrary.CreateSkillByName("潜行"));
+        _player1.AttachSkill(KeyCode.S, SkillLibrary.CreateSkillByName("逆风行"));
 
-        _skillBar2.AttachSkill(KeyCode.Keypad1, SkillLibrary.CreateSkillByName("迷雾斩"));
-        _skillBar2.AttachSkill(KeyCode.Keypad2, SkillLibrary.CreateSkillByName("刺心"));
-        _skillBar2.AttachSkill(KeyCode.Keypad3, SkillLibrary.CreateSkillByName("瞬步"));
-        _skillBar2.AttachSkill(KeyCode.Keypad4, SkillLibrary.CreateSkillByName("莲华脚"));
-        _skillBar2.AttachSkill(KeyCode.Keypad5, SkillLibrary.CreateSkillByName("替身术"));
-        _skillBar2.AttachSkill(KeyCode.Keypad6, SkillLibrary.CreateSkillByName("闪光"));
-        _skillBar2.AttachSkill(KeyCode.UpArrow, SkillLibrary.CreateSkillByName("潜行"));
-        _skillBar2.AttachSkill(KeyCode.DownArrow, SkillLibrary.CreateSkillByName("逆风行"));
+        _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.CreateSkillByName("迷雾斩"));
+        _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.CreateSkillByName("刺心"));
+        _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.CreateSkillByName("瞬步"));
+        _player2.AttachSkill(KeyCode.Keypad4, SkillLibrary.CreateSkillByName("莲华脚"));
+        _player2.AttachSkill(KeyCode.Keypad5, SkillLibrary.CreateSkillByName("替身术"));
+        _player2.AttachSkill(KeyCode.Keypad6, SkillLibrary.CreateSkillByName("闪光"));
+        _player2.AttachSkill(KeyCode.UpArrow, SkillLibrary.CreateSkillByName("潜行"));
+        _player2.AttachSkill(KeyCode.DownArrow, SkillLibrary.CreateSkillByName("逆风行"));
+    }
+
+    public SkillSlot GetSkillSlotByHotKey(KeyCode hotKey)
+    {
+        SkillSlot ret;
+        _skillSlots.TryGetValue(hotKey, out ret);
+        return ret;
+    }
+
+    private void InitSkillSlots()
+    {
+        var slots = GameObject.FindObjectsOfType<SkillSlot>();
+        foreach (var slot in slots)
+        {
+            _skillSlots.Add(slot._hotKey, slot);
+        }
     }
 
     void Update()
@@ -78,9 +96,16 @@ public class InputController : MonoSingleton<InputController>
                 _player2.Stand();
             }
         }
-        _player1._skillBar.UpdateSkillBar(Time.deltaTime);
-        _player2._skillBar.UpdateSkillBar(Time.deltaTime);
 
+        foreach (var pair in _skillSlots)
+        {
+            var _hotKey = pair.Key;
+            var slot = pair.Value;
+            if (Input.GetKeyDown(slot._hotKey))
+            {
+                slot.Activate();
+            }
+        }
     }
 
     public void ReloadScene()
@@ -129,10 +154,9 @@ public class InputController : MonoSingleton<InputController>
 
     public Player _player1;
     public Player _player2;
-    public SkillBar _skillBar1;
-    public SkillBar _skillBar2;
     public GameObject _pausePanel;
     public GameObject _resultPanel;
     private bool isPaused = false;
     public bool _isGameOver = false;
+    Dictionary<KeyCode, SkillSlot> _skillSlots = new Dictionary<KeyCode, SkillSlot>();
 }

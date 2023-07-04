@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IBuffAdditionStrategy
 {
-    void BeforeSkillCast(Player owner, Skill skill);
+    void BeforeSkillCast(Character owner, SkillInstance skill);
 }
 
 public class AddBuffDuration : IBuffAdditionStrategy
@@ -15,7 +15,7 @@ public class AddBuffDuration : IBuffAdditionStrategy
         _duration = duration;
     }
 
-    public void BeforeSkillCast(Player owner, Skill skill)
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
         owner._buffManager.AddBuffTime(_buffType, _duration);
     }
@@ -32,7 +32,7 @@ public class AddBuffCount : IBuffAdditionStrategy
         _count = count;
     }
 
-    public void BeforeSkillCast(Player owner, Skill skill)
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
         owner._buffManager.AddBuffCount(_buffType, _count);
     }
@@ -42,7 +42,7 @@ public class AddBuffCount : IBuffAdditionStrategy
 
 public class DoNotAddBuff : IBuffAdditionStrategy
 {
-    public void BeforeSkillCast(Player owner, Skill skill)
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
     }
 }

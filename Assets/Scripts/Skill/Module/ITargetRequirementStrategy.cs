@@ -1,11 +1,11 @@
 ﻿public interface ITargetRequirementStrategy
 {
-    bool IsSkillUsable(Player owner, Skill skill);
+    bool IsSkillUsable(SkillInstance skill);
 }
 
 public class NoTargetRequired : ITargetRequirementStrategy
 {
-    public bool IsSkillUsable(Player owner, Skill skill)
+    public bool IsSkillUsable(SkillInstance skill)
     {
         return true;
     }
@@ -18,9 +18,9 @@ public class TargetRequired : ITargetRequirementStrategy
         _requiredTargetDistance = requiredTargetDistance;
     }
 
-    public bool IsSkillUsable(Player owner, Skill skill)
+    public bool IsSkillUsable(SkillInstance skill)
     {
-        var finder = owner._targetFinder;
+        var finder = skill._owner._targetFinder;
         return finder._isFindTarget && finder._nearestDistance <= _requiredTargetDistance;
     }
 

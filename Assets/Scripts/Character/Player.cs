@@ -16,15 +16,9 @@ public class Player : Character
         _targetFinder._maxFindDistance = 6f;
     }
 
-    public void OnSkillEffect(Skill skill)
-    {
-        // 停止移动
-        Stand();
-    }
-
     override public void Move(CharacterDir dir)
     {
-        if (_skillBar == null || !_skillBar._isCasting)
+        if (_skillMgr == null || !_skillMgr._isCasting)
         {
             base.Move(dir);
         }
@@ -37,9 +31,9 @@ public class Player : Character
 
     public void InterruptSkill()
     {
-        if (_skillBar._isCasting)
+        if (_skillMgr._isCasting)
         {
-            var castingSkill = _skillBar._castingSkill;
+            var castingSkill = _skillMgr._castingSkill;
             if (castingSkill != null)
                 castingSkill.InterruptSkill();
         }
@@ -57,6 +51,5 @@ public class Player : Character
         _playerUI.UpdateUI();
     }
 
-    public SkillBar _skillBar;
     PlayerUI _playerUI;
 }

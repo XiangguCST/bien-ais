@@ -1,6 +1,6 @@
 ﻿public interface IStatusAdditionStrategy
 {
-    void OnDealDamage(Player owner, Character target, Skill skill);
+    void OnDealDamage(Character owner, Character target, SkillInstance skill);
 }
 
 /// <summary>
@@ -14,7 +14,7 @@ public class AddStatusEffect : IStatusAdditionStrategy
         _statusTime = statusTime;
     }
 
-    public void OnDealDamage(Player owner, Character target, Skill skill)
+    public void OnDealDamage(Character owner, Character target, SkillInstance skill)
     {
         if (_addStatus == CharacterStatusType.None) return;
         target._stateManager.AddStatus(_addStatus, _statusTime);
@@ -36,7 +36,7 @@ public class AddStatusEffect : IStatusAdditionStrategy
 /// </summary>
 public class DoNotAddStatusEffect : IStatusAdditionStrategy
 {
-    public void OnDealDamage(Player owner, Character target, Skill skill)
+    public void OnDealDamage(Character owner, Character target, SkillInstance skill)
     {
     }
 }

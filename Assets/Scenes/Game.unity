@@ -1734,6 +1734,7 @@ GameObject:
   - component: {fileID: 499229247}
   - component: {fileID: 499229246}
   - component: {fileID: 499229248}
+  - component: {fileID: 499229249}
   m_Layer: 5
   m_Name: ResultPanel
   m_TagString: Untagged
@@ -1814,9 +1815,26 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1323940615
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!114 &499229249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499229244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1301386320, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &538707071
 GameObject:
   m_ObjectHideFlags: 0
@@ -2261,7 +2279,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aee2db813cf9bbc43a7d8729b3d650eb, type: 3}
+  m_Script: {fileID: 11500000, guid: 2734abf8b1366c042ba69c7f6fb23082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &892719368
@@ -2436,7 +2454,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aee2db813cf9bbc43a7d8729b3d650eb, type: 3}
+  m_Script: {fileID: 11500000, guid: 2734abf8b1366c042ba69c7f6fb23082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1177772830
@@ -3878,6 +3896,7 @@ GameObject:
   - component: {fileID: 2051613999}
   - component: {fileID: 2051613998}
   - component: {fileID: 2051614000}
+  - component: {fileID: 2051614001}
   m_Layer: 5
   m_Name: PausePanel
   m_TagString: Untagged
@@ -3958,9 +3977,26 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1323940615
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!114 &2051614001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051613996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1301386320, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &2056372055
 GameObject:
   m_ObjectHideFlags: 0

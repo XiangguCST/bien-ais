@@ -31,11 +31,7 @@ public class SkillLibrary
         Skill skill;
         if (skillDictionary.TryGetValue(name, out skill))
         {
-            // 注意：此处返回技能的一个新的实例，防止不同的地方修改了同一个技能
-            return new Skill(skill._name, skill._animName, skill._energyCost, skill._energyRecover, skill._rate, skill._cooldownTime, 
-                skill._castTime, skill._damageDelay, skill._globalCooldownTime, skill._canInterruptOtherSkills, skill._canBeInterrupted,
-                skill._statusRemovalStrategy, skill._statusAdditionStrategy, skill._targetRequirementStrategy, skill._movementStrategy, 
-                skill._hitCheckStrategy, skill._buffAdditionStrategy);
+            return skill;
         }
 
         return null;  // 如果字典中不存在，则返回null

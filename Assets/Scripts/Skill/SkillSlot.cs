@@ -18,6 +18,7 @@ public class SkillSlot : MonoBehaviour
         _txtHotKey = transform.Find("Icon/HotKey").GetComponent<Text>();
         _txtName = transform.Find("SkillName").GetComponent<Text>();
         _txtName.text = "";
+        _txtCoolDown.text = ""; 
         UpdateHotKeyDisplay();
 
         // 给图标创建一个新的材质实例
@@ -102,7 +103,7 @@ public class SkillSlot : MonoBehaviour
 
         if (_skill._bIsCooldown)
         {
-            _imgMask.fillAmount = Mathf.Lerp(0, 1, _skill._cooldownTimer / _skill._cooldownTime);
+            _imgMask.fillAmount = Mathf.Lerp(0, 1, _skill._cooldownTimer / _skill.SkillInfo._cooldownTime);
             _txtCoolDown.text = Mathf.Ceil(_skill._cooldownTimer).ToString();
         }
         else
@@ -138,7 +139,7 @@ public class SkillSlot : MonoBehaviour
         _imgIcon.material.SetFloat("_GlowIntensity", 0); // 确保发光强度被设置回0
     }
 
-    public void SetSkill(Skill skill)
+    public void SetSkill(SkillInstance skill)
     {
         if (!_bInit) InitSkillSlot();
         if (skill == null)
@@ -146,15 +147,15 @@ public class SkillSlot : MonoBehaviour
             return;
         }
         _skill = skill;
-        _txtName.text = _skill._name;
+        _txtName.text = _skill.SkillInfo._name;
         // 检查冷却时间是否大于5秒
-        if (_skill._cooldownTime > 5.0f)
+        if (_skill.SkillInfo._cooldownTime > 5.0f)
         {
             _skill.OnCooldownCompleted += () => StartCoroutine(GlowEffect()); // 订阅事件
         }
     }
 
-    public Skill GetSkill()
+    public SkillInstance GetSkill()
     {
         return _skill;
     }
@@ -172,13 +173,13 @@ public class SkillSlot : MonoBehaviour
         }
         else
         {
-            Debug.Log(_skill._name + "暂时无法使用");
+            Debug.Log(_skill.SkillInfo._name + "暂时无法使用");
         }
     }
 
     public KeyCode _hotKey; // 绑定快捷键
     [SerializeField]
-    public Skill _skill; // 技能
+    public SkillInstance _skill; // 技能
     Image _imgOutline; // 外边框
     Image _imgIcon; // 图标
     Image _imgMask; // 遮挡
