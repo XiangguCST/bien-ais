@@ -171,6 +171,7 @@ public class Skill : ISkill
         }
 
         _bIsCooldown = false;
+        OnCooldownCompleted?.Invoke(); // 当冷却时间结束，触发事件
     }
 
     // 命中判定
@@ -276,6 +277,8 @@ public class Skill : ISkill
     public ITargetRequirementStrategy _targetRequirementStrategy; // 技能释放是否需要目标策略
     public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
     public IBuffAdditionStrategy _buffAdditionStrategy; // buff添加策略
+
+    public Action OnCooldownCompleted; // 冷却完成的事件
 }
 
 

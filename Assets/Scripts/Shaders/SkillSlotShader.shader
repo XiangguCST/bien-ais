@@ -1,9 +1,12 @@
-﻿Shader "Custom/Grayscale"
+﻿Shader "Custom/SkillSlotShader"
 {
 	Properties
 	{
 		_MainTex("Texture", 2D) = "white" {}
-		_GrayScale("Gray Scale", Range(0, 1)) = 1
+		_Color("Color", Color) = (1,1,1,1)
+		_EmissionColor("Emission", Color) = (1, 1, 1, 1)
+		_GlowIntensity("Glow Intensity", Range(0, 1)) = 0
+		_GrayScale("Gray Scale", Range(0, 1)) = 0
 	}
 		SubShader
 		{
@@ -30,6 +33,9 @@
 				};
 
 				sampler2D _MainTex;
+				float4 _Color;
+				float4 _EmissionColor;
+				float _GlowIntensity;
 				float _GrayScale;
 
 				v2f vert(appdata v)
@@ -42,9 +48,17 @@
 
 				fixed4 frag(v2f i) : SV_Target
 				{
-					fixed4 col = tex2D(_MainTex, i.uv);
-					float gray = dot(col.rgb, fixed3(0.3, 0.59, 0.11)) * _GrayScale;
-					return fixed4(gray, gray, gray, col.a);
+					fixed4 col = tex2D(_MainTex, i.uv) * _Color;
+					if (_GrayScale > 0.5)
+					{
+						float gray = dot(col.rgb, fixed3(0.3, 0.59, 0.11));
+						return fixed4(gray, gray, gray, col.a);
+					}
+					else
+					{
+						col.rgb += _EmissionColor.rgb * _GlowIntensity;
+						return col;
+					}
 				}
 				ENDCG
 			}

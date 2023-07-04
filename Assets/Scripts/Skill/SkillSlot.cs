@@ -11,13 +11,6 @@ public class SkillSlot : MonoBehaviour
 {
     private void InitSkillSlot()
     {
-        // 确保Material正确加载
-        _grayScaleMaterial = Resources.Load<Material>("Materials/matGray");
-        if (_grayScaleMaterial == null)
-        {
-            Debug.LogError("Failed to load GrayScale Material. Please make sure the material exists in Resources/Materials/ folder.");
-        }
-
         _imgIcon = transform.Find("Icon").GetComponent<Image>();
         _imgOutline = transform.Find("Icon/OutLine").GetComponent<Image>();
         _imgMask = transform.Find("Icon/Mask").GetComponent<Image>();
@@ -26,6 +19,10 @@ public class SkillSlot : MonoBehaviour
         _txtName = transform.Find("SkillName").GetComponent<Text>();
         _txtName.text = "";
         UpdateHotKeyDisplay();
+
+        // 给图标创建一个新的材质实例
+        Material newMat = Instantiate(_imgIcon.material);
+        _imgIcon.material = newMat;
 
         _bInit = true;
     }
@@ -90,29 +87,55 @@ public class SkillSlot : MonoBehaviour
         if (_skill == null)
         {
             _imgMask.fillAmount = 0;
-            _imgIcon.material = _grayScaleMaterial; // 技能不可用时，图标颜色为灰色
+            _imgIcon.material.SetFloat("_GrayScale", 1); // 技能不可用时，图标颜色为灰色
             return;
         }
 
         if (_skill.IsSkillUsableIgnoringCooldown())
         {
-            _imgIcon.material = null; // 技能可用时，图标颜色为原色
+            _imgIcon.material.SetFloat("_GrayScale", 0); // 技能可用时，图标颜色为原色
         }
         else
         {
-            _imgIcon.material = _grayScaleMaterial; // 技能不可用时，图标颜色为灰色
+            _imgIcon.material.SetFloat("_GrayScale", 1); // 技能不可用时，图标颜色为灰色
         }
 
         if (_skill._bIsCooldown)
         {
-            // 更新技能格子显示
             _imgMask.fillAmount = Mathf.Lerp(0, 1, _skill._cooldownTimer / _skill._cooldownTime);
-            _txtCoolDown.text = Mathf.Ceil(_skill._cooldownTimer).ToString(); // 显示冷却时间，如果需要保留小数，可适当调整
+            _txtCoolDown.text = Mathf.Ceil(_skill._cooldownTimer).ToString();
         }
         else
         {
-            _txtCoolDown.text = ""; // 技能可用不显示冷却时间
+            _txtCoolDown.text = ""; // 技能冷却结束不显示冷却时间
         }
+    }
+
+    IEnumerator GlowEffect()
+    {
+        float duration = 0.15f; // 发光效果持续时间
+        float elapsed = 0; // 已经过时间
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            _imgIcon.material.SetFloat("_GlowIntensity", Mathf.Lerp(0, 1, t)); // 插值到最大发光
+            yield return null;
+        }
+
+        elapsed = 0;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            _imgIcon.material.SetFloat("_GlowIntensity", Mathf.Lerp(1, 0, t)); // 插值回不发光
+            yield return null;
+        }
+
+        _imgIcon.material.SetFloat("_GlowIntensity", 0); // 确保发光强度被设置回0
     }
 
     public void SetSkill(Skill skill)
@@ -124,6 +147,11 @@ public class SkillSlot : MonoBehaviour
         }
         _skill = skill;
         _txtName.text = _skill._name;
+        // 检查冷却时间是否大于5秒
+        if (_skill._cooldownTime > 5.0f)
+        {
+            _skill.OnCooldownCompleted += () => StartCoroutine(GlowEffect()); // 订阅事件
+        }
     }
 
     public Skill GetSkill()
@@ -157,6 +185,5 @@ public class SkillSlot : MonoBehaviour
     Text _txtCoolDown; // 冷却显示
     Text _txtHotKey; // 快捷键显示
     Text _txtName; // 技能名称
-    public Material _grayScaleMaterial; // 灰度材质
     bool _bInit = false;
 }
