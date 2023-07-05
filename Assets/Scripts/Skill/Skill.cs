@@ -9,9 +9,9 @@ public class Skill
 {
     public Skill(string name, string animName, int energyCost, int energyRecover,
         float rate,float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
-        bool canInterruptOtherSkills, bool canBeInterrupted,
+        int priority, bool canInterruptOtherSkills, bool canBeInterrupted, bool bBreakDefense,
         IStatusRemovalStrategy statusRemovalStrategy, IStatusAdditionStrategy statusAdditionStrategy,
-        ITargetRequirementStrategy targetRequirementStrategy, IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy,
+        IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy,
         IBuffAdditionStrategy buffAdditionStrategy)
     {
         _name = name;
@@ -23,15 +23,26 @@ public class Skill
         _castTime = castTime;
         _damageDelay = damageDelay;
         _globalCooldownTime = globalCooldownTime;
+        _priority = priority;
         _canInterruptOtherSkills = canInterruptOtherSkills;
         _canBeInterrupted = canBeInterrupted;
+        _bBreakDefense = bBreakDefense;
 
         _statusRemovalStrategy = statusRemovalStrategy;
         _statusAdditionStrategy = statusAdditionStrategy;
-        _targetRequirementStrategy = targetRequirementStrategy;
         _movementStrategy = movementStrategy;
         _hitCheckStrategy = hitCheckStrategy;
         _buffAdditionStrategy = buffAdditionStrategy;
+    }
+
+    /// <summary>
+    /// 添加技能使用条件
+    /// </summary>
+    public Skill AddSkillUsability(ISkillUsability usabilitys)
+    {
+        if(usabilitys != null)
+            _usabilitys.Add(usabilitys);
+        return this;
     }
 
     public string _name; // 技能名称
@@ -44,16 +55,17 @@ public class Skill
     public float _castTime; // 释放时间
     public float _damageDelay; // 伤害判定延迟
     public float _globalCooldownTime; // gcd
+    public int _priority; // 技能优先级
     public bool _canInterruptOtherSkills; // 是否允许打断其他技能
     public bool _canBeInterrupted; // 是否允许被打断
+    public bool _bBreakDefense; // 是否无视防御
 
     public IMovementStrategy _movementStrategy; // 技能移动策略
     public IStatusRemovalStrategy _statusRemovalStrategy; // 解除异常状态策略
     public IStatusAdditionStrategy _statusAdditionStrategy; // 附加异常状态策略
-    public ITargetRequirementStrategy _targetRequirementStrategy; // 技能释放是否需要目标策略
     public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
     public IBuffAdditionStrategy _buffAdditionStrategy; // buff添加策略
-
+    public List<ISkillUsability> _usabilitys = new List<ISkillUsability>(); // 技能使用条件列表
 }
 
 

@@ -22,6 +22,7 @@ public class InputController : MonoSingleton<InputController>
         _player1.AttachSkill(KeyCode.O, SkillLibrary.CreateSkillByName("闪光"));
         _player1.AttachSkill(KeyCode.W, SkillLibrary.CreateSkillByName("潜行"));
         _player1.AttachSkill(KeyCode.S, SkillLibrary.CreateSkillByName("逆风行"));
+        _player1.AttachSkill(KeyCode.K, SkillLibrary.CreateSkillByName("空手入白刃"));
 
         _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.CreateSkillByName("迷雾斩"));
         _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.CreateSkillByName("刺心"));
@@ -31,6 +32,7 @@ public class InputController : MonoSingleton<InputController>
         _player2.AttachSkill(KeyCode.Keypad6, SkillLibrary.CreateSkillByName("闪光"));
         _player2.AttachSkill(KeyCode.UpArrow, SkillLibrary.CreateSkillByName("潜行"));
         _player2.AttachSkill(KeyCode.DownArrow, SkillLibrary.CreateSkillByName("逆风行"));
+        _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.CreateSkillByName("空手入白刃"));
     }
 
     public SkillSlot GetSkillSlotByHotKey(KeyCode hotKey)

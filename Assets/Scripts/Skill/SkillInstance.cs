@@ -37,8 +37,14 @@ public class SkillInstance
             }
         }
 
+        var usabilitys = SkillInfo._usabilitys;
+        foreach (var usability in usabilitys)
+        {
+            if (!usability.IsSkillUsable(this))
+                return false;
+        }
+
         if (!SkillInfo._statusRemovalStrategy.IsSkillUsable(this) ||
-            !SkillInfo._targetRequirementStrategy.IsSkillUsable(this) ||
             _owner._energy < SkillInfo._energyCost)
             return false;
 
@@ -154,8 +160,11 @@ public class SkillInstance
     bool CheckHit()
     {
         var target = _owner._targetFinder._nearestEnemy;
-        if (!SkillInfo._hitCheckStrategy.CheckHit(_owner, target, this))
+        bool bNeedCheckHit = true;
+        if (!SkillInfo._hitCheckStrategy.CheckHit(_owner, target, this, out bNeedCheckHit))
             return false;
+        if (!bNeedCheckHit)
+            return true;
 
         // 打中抵抗
         if (target._buffManager.HasBuff(BuffType.ImmunityAll))
@@ -174,19 +183,27 @@ public class SkillInstance
             {
                 other.InterruptSkill();
             }
-            // 打中替身虚弱2秒
-            if (_owner._buffManager.HasBuff(BuffType.ImmunityAll))
+            // 是否无视防御
+            if(SkillInfo._bBreakDefense)
             {
-                _owner._buffManager.DecreaseBuffCount(BuffType.ImmunityAll, 1);
-                _owner.ShowStatus("抗性");
+                return true;
             }
             else
             {
-                _owner._stateManager.AddStatus(CharacterStatusType.Weakness, 2.0f);
-                _owner.ConsumeEnergy(4);
-                target.ConsumeEnergy(-4);
+                // 打中替身虚弱2秒
+                if (_owner._buffManager.HasBuff(BuffType.ImmunityAll))
+                {
+                    _owner._buffManager.DecreaseBuffCount(BuffType.ImmunityAll, 1);
+                    _owner.ShowStatus("抗性");
+                }
+                else
+                {
+                    _owner._stateManager.AddStatus(CharacterStatusType.Weakness, 2.0f);
+                    _owner.ConsumeEnergy(4);
+                    target.ConsumeEnergy(-4);
+                }
+                return false;
             }
-            return false;
         }
 
         return true;

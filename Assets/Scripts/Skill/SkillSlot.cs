@@ -69,6 +69,9 @@ public class SkillSlot : MonoBehaviour
 
         if (!_bInit) InitSkillSlot();
 
+        // 按照技能优先级更新技能显示
+        UpdateHighestPrioritySkill();
+
         // 检测快捷键是否被按下
         if (Input.GetKey(_hotKey))
         {
@@ -112,6 +115,16 @@ public class SkillSlot : MonoBehaviour
         }
     }
 
+    // 更新最高优先级的技能
+    private void UpdateHighestPrioritySkill()
+    {
+        if (_skill == null) return;
+        _skill = _skill._skillbar.GetHighestPrioritySkill(_hotKey);
+        if (_skill == null) return;
+        _txtName.text = _skill.SkillInfo._name;
+    }
+
+    // 冷却完成技能图标发光效果
     IEnumerator GlowEffect()
     {
         float duration = 0.15f; // 发光效果持续时间
@@ -153,11 +166,6 @@ public class SkillSlot : MonoBehaviour
         {
             _skill.OnCooldownCompleted += () => StartCoroutine(GlowEffect()); // 订阅事件
         }
-    }
-
-    public SkillInstance GetSkill()
-    {
-        return _skill;
     }
 
     public void Activate()
