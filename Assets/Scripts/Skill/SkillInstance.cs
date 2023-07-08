@@ -156,7 +156,75 @@ public class SkillInstance
         OnCooldownCompleted?.Invoke(); // 当冷却时间结束，触发事件
     }
 
-    // 命中判定
+    // 检查目标是否有特定的buff并处理(返回是否能造成伤害)
+    private bool CheckAndHandleBuffs(Character target)
+    {
+        if (target._buffManager.HasBuff(BuffType.ImmunityAll))
+        {
+            HandleImmunityAll(target);
+            return false;
+        }
+        else if (target._buffManager.HasBuff(BuffType.ShadowClone))
+        {
+            return HandleShadowClone(target);
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// 处理命中抵抗buff
+    /// </summary>
+    /// <param name="target"></param>
+    private void HandleImmunityAll(Character target)
+    {
+        target._buffManager.DecreaseBuffCount(BuffType.ImmunityAll, 1);
+        target.ShowStatus("抗性");
+    }
+
+    private bool HandleShadowClone(Character target)
+    {
+        target._buffManager.DecreaseBuffCount(BuffType.ShadowClone, 1);
+        // 打断对方正在释放的技能
+        Player other = target as Player;
+        if (other != null)
+        {
+            other.InterruptSkill();
+        }
+        // 是否无视防御
+        if (SkillInfo._bBreakDefense)
+        {
+            return true;
+        }
+        else
+        {
+            // 打中替身虚弱2秒
+            HandleHitShadowClone();
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 处理命中替身buff
+    /// </summary>
+    private void HandleHitShadowClone()
+    {
+        if (_owner._buffManager.HasBuff(BuffType.ImmunityAll))
+        {
+            _owner._buffManager.DecreaseBuffCount(BuffType.ImmunityAll, 1);
+            _owner.ShowStatus("抗性");
+        }
+        else
+        {
+            _owner._stateManager.AddStatus(CharacterStatusType.Weakness, 2.0f);
+            _owner.ConsumeEnergy(4);
+            _owner._targetFinder._nearestEnemy.ConsumeEnergy(-4);
+        }
+    }
+
+    /// <summary>
+    /// 命中判定
+    /// </summary>
+    /// <returns></returns>
     bool CheckHit()
     {
         var target = _owner._targetFinder._nearestEnemy;
@@ -166,48 +234,9 @@ public class SkillInstance
         if (!bNeedCheckHit)
             return true;
 
-        // 打中抵抗
-        if (target._buffManager.HasBuff(BuffType.ImmunityAll))
-        {
-            target._buffManager.DecreaseBuffCount(BuffType.ImmunityAll, 1);
-            target.ShowStatus("抗性");
-            return false;
-        }
-        // 打中替身
-        else if (target._buffManager.HasBuff(BuffType.ShadowClone))
-        {
-            target._buffManager.DecreaseBuffCount(BuffType.ShadowClone, 1);
-            // 打断对方正在释放的技能
-            Player other = target as Player;
-            if (other != null)
-            {
-                other.InterruptSkill();
-            }
-            // 是否无视防御
-            if(SkillInfo._bBreakDefense)
-            {
-                return true;
-            }
-            else
-            {
-                // 打中替身虚弱2秒
-                if (_owner._buffManager.HasBuff(BuffType.ImmunityAll))
-                {
-                    _owner._buffManager.DecreaseBuffCount(BuffType.ImmunityAll, 1);
-                    _owner.ShowStatus("抗性");
-                }
-                else
-                {
-                    _owner._stateManager.AddStatus(CharacterStatusType.Weakness, 2.0f);
-                    _owner.ConsumeEnergy(4);
-                    target.ConsumeEnergy(-4);
-                }
-                return false;
-            }
-        }
-
-        return true;
+        return CheckAndHandleBuffs(target);
     }
+
 
     // 处理伤害
     void DealDamage()
