@@ -37,12 +37,17 @@ public class SkillInstance
             }
         }
 
+        //　技能可用性判断策略
         var usabilitys = SkillInfo._usabilitys;
         foreach (var usability in usabilitys)
         {
             if (!usability.IsSkillUsable(this))
                 return false;
         }
+
+        // 连锁技能在可用时间戳之前才能用
+        if (SkillInfo._isChainSkill && Time.time >= _chainSkillEnableUntil)
+            return false;
 
         if (!SkillInfo._statusRemovalStrategy.IsSkillUsable(this) ||
             _owner._energy < SkillInfo._energyCost)
@@ -89,6 +94,12 @@ public class SkillInstance
         // 触发技能效果的逻辑
         _owner.OnSkillEffect(this);
         _owner.TriggerAnimator(SkillInfo._animName);
+
+        // 启动连锁技能可用计时器
+        foreach (var chainSkill in _chainSkills)
+        {
+            chainSkill._chainSkillEnableUntil = Time.time + 3;
+        }
     }
 
     // 技能释放
@@ -279,5 +290,7 @@ public class SkillInstance
     public CharacterSkillMgr _skillbar; // 技能栏
     public Character _owner; // 技能释放者
     public Action OnCooldownCompleted; // 冷却完成的事件
+    public List<SkillInstance> _chainSkills = new List<SkillInstance>(); // 连锁技能列表
+    private float _chainSkillEnableUntil = 0f; // 记录连锁技能的可用时间戳
     private Coroutine _castCoroutine;
 }

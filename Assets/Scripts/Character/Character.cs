@@ -58,6 +58,11 @@ public class Character : MonoBehaviour
         _skillMgr.AttachSkill(keypad1, skill);
     }
 
+    public void ApplyAllSkills()
+    {
+        _skillMgr.ApplyAllSkills();
+    }
+
     protected void OnCharacterPositionChanged(Vector3 lastPosition, Vector3 nowPosition)
     {
         transform.position = WorldLimit.CheckLimitPos(nowPosition);

@@ -9,7 +9,7 @@ public class Skill
 {
     public Skill(string name, string animName, int energyCost, int energyRecover,
         float rate,float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
-        int priority, bool canInterruptOtherSkills, bool canBeInterrupted, bool bBreakDefense,
+        SkillPriority priority, bool canInterruptOtherSkills, bool canBeInterrupted, bool bBreakDefense,
         IStatusRemovalStrategy statusRemovalStrategy, IStatusAdditionStrategy statusAdditionStrategy,
         IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy,
         IBuffAdditionStrategy buffAdditionStrategy)
@@ -45,6 +45,16 @@ public class Skill
         return this;
     }
 
+    public Skill AddChainSkill(Skill skill)
+    {
+        if (skill != null)
+        {
+            skill._isChainSkill = true;
+            _chainSkills.Add(skill);
+        }
+        return this;
+    }
+
     public string _name; // 技能名称
     public string _animName; // 技能动画名称
     public int _energyCost; // 技能消耗的能量值
@@ -55,7 +65,7 @@ public class Skill
     public float _castTime; // 释放时间
     public float _damageDelay; // 伤害判定延迟
     public float _globalCooldownTime; // gcd
-    public int _priority; // 技能优先级
+    public SkillPriority _priority; // 技能优先级
     public bool _canInterruptOtherSkills; // 是否允许打断其他技能
     public bool _canBeInterrupted; // 是否允许被打断
     public bool _bBreakDefense; // 是否无视防御
@@ -66,6 +76,14 @@ public class Skill
     public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
     public IBuffAdditionStrategy _buffAdditionStrategy; // buff添加策略
     public List<ISkillUsability> _usabilitys = new List<ISkillUsability>(); // 技能使用条件列表
+    public List<Skill> _chainSkills = new List<Skill>(); // 连锁技能列表
+    public bool _isChainSkill = false; // 是否为连锁技能
 }
 
+public enum SkillPriority
+{
+    Normal = 0,    // 普通技能
+    Conditional,   // 条件技能
+    Chain          // 连锁技能
+}
 

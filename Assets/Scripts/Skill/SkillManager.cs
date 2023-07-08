@@ -87,6 +87,27 @@ public class CharacterSkillMgr
         return highestPrioritySkill;
     }
 
+    // 应用所有技能
+    public void ApplyAllSkills()
+    {
+        foreach (var pair in _skills)
+        {
+            foreach (var skillInstance in pair.Value)
+            {
+                // 在技能字典中查找连锁技能
+                foreach (var chainSkill in skillInstance.SkillInfo._chainSkills)
+                {
+                    var chainSkillKeyPair = _skills.FirstOrDefault(kvp => kvp.Value.Any(s => s.SkillInfo == chainSkill));
+                    if (!chainSkillKeyPair.Equals(default(KeyValuePair<KeyCode, List<SkillInstance>>)))
+                    {
+                        var chainSkillInstance = chainSkillKeyPair.Value.First(s => s.SkillInfo == chainSkill);
+                        skillInstance._chainSkills.Add(chainSkillInstance);
+                    }
+                }
+            }
+        }
+    }
+
     public Character _owner;
     public bool _isGlobalCooldown; // 是否gcd结束
     public bool _isCasting; // 是否释放技能中

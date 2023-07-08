@@ -14,25 +14,29 @@ public class InputController : MonoSingleton<InputController>
         _player1.InitCharacter();
         _player2.InitCharacter();
 
-        _player1.AttachSkill(KeyCode.J, SkillLibrary.CreateSkillByName("迷雾斩"));
-        _player1.AttachSkill(KeyCode.K, SkillLibrary.CreateSkillByName("刺心"));
-        _player1.AttachSkill(KeyCode.L, SkillLibrary.CreateSkillByName("瞬步"));
-        _player1.AttachSkill(KeyCode.U, SkillLibrary.CreateSkillByName("莲华脚"));
-        _player1.AttachSkill(KeyCode.I, SkillLibrary.CreateSkillByName("替身术"));
-        _player1.AttachSkill(KeyCode.O, SkillLibrary.CreateSkillByName("闪光"));
-        _player1.AttachSkill(KeyCode.W, SkillLibrary.CreateSkillByName("潜行"));
-        _player1.AttachSkill(KeyCode.S, SkillLibrary.CreateSkillByName("逆风行"));
-        _player1.AttachSkill(KeyCode.K, SkillLibrary.CreateSkillByName("空手入白刃"));
+        _player1.AttachSkill(KeyCode.J, SkillLibrary.GetSkill("迷雾斩"));
+        _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("刺心"));
+        _player1.AttachSkill(KeyCode.L, SkillLibrary.GetSkill("瞬步"));
+        _player1.AttachSkill(KeyCode.U, SkillLibrary.GetSkill("莲华脚"));
+        _player1.AttachSkill(KeyCode.I, SkillLibrary.GetSkill("替身术"));
+        _player1.AttachSkill(KeyCode.O, SkillLibrary.GetSkill("闪光"));
+        _player1.AttachSkill(KeyCode.W, SkillLibrary.GetSkill("潜行"));
+        _player1.AttachSkill(KeyCode.S, SkillLibrary.GetSkill("逆风行"));
+        _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("空手入白刃"));
+        _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("朔月脚"));
+        _player1.ApplyAllSkills();
 
-        _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.CreateSkillByName("迷雾斩"));
-        _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.CreateSkillByName("刺心"));
-        _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.CreateSkillByName("瞬步"));
-        _player2.AttachSkill(KeyCode.Keypad4, SkillLibrary.CreateSkillByName("莲华脚"));
-        _player2.AttachSkill(KeyCode.Keypad5, SkillLibrary.CreateSkillByName("替身术"));
-        _player2.AttachSkill(KeyCode.Keypad6, SkillLibrary.CreateSkillByName("闪光"));
-        _player2.AttachSkill(KeyCode.UpArrow, SkillLibrary.CreateSkillByName("潜行"));
-        _player2.AttachSkill(KeyCode.DownArrow, SkillLibrary.CreateSkillByName("逆风行"));
-        _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.CreateSkillByName("空手入白刃"));
+        _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.GetSkill("迷雾斩"));
+        _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("刺心"));
+        _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("瞬步"));
+        _player2.AttachSkill(KeyCode.Keypad4, SkillLibrary.GetSkill("莲华脚"));
+        _player2.AttachSkill(KeyCode.Keypad5, SkillLibrary.GetSkill("替身术"));
+        _player2.AttachSkill(KeyCode.Keypad6, SkillLibrary.GetSkill("闪光"));
+        _player2.AttachSkill(KeyCode.UpArrow, SkillLibrary.GetSkill("潜行"));
+        _player2.AttachSkill(KeyCode.DownArrow, SkillLibrary.GetSkill("逆风行"));
+        _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("空手入白刃"));
+        _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("朔月脚"));
+        _player2.ApplyAllSkills();
     }
 
     public SkillSlot GetSkillSlotByHotKey(KeyCode hotKey)
