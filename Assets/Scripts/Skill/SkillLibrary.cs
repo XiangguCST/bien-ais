@@ -17,7 +17,7 @@ public class SkillLibrary
         AddSkill(new Skill("替身术", "tishenshu", 0, 0, 0, 8f, 0.5f, 0.5f, 0, 0, false, true, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoMovement(), new DoNotHitCheck(), new AddBuffDuration(BuffType.ShadowClone, 0.5f)));
         AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0, 0, true, false, true, new RemoveAllStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new FixedDirectionMovement(MovementDirection.Backward, 6), new RangeHitCheck(3f), new AddBuffDuration(BuffType.ImmunityAll, 0.83f)));
         AddSkill(new Skill("逆风行", "nifengxing", 0, 0, 0, 8f, 0.43f, 0f, 0, 0, true, false, false, new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new FixedDirectionMovement(MovementDirection.Backward, 6), new DoNotHitCheck(), new AddBuffDuration(BuffType.ImmunityAll, 0.43f)));
-        AddSkill(new Skill("空手入白刃", "kongshourubairen", 0, 0, 1, 9f, 0.66f, 0.3f, 0, 1, false, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new NoMovement(), new RangeHitCheck(-1f), new DoNotAddBuff()).AddSkillUsability(new TargetRequired(3f)).AddSkillUsability(new TargetBuffRequired(BuffType.ShadowClone)));
+        AddSkill(new Skill("空手入白刃", "kongshourubairen", 0, 0, 1, 9f, 0.75f, 0.5f, 0, 1, false, false, true, new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), new NoMovement(), new RangeHitCheck(-1f), new DoNotAddBuff()).AddSkillUsability(new TargetRequired(3f)).AddSkillUsability(new TargetBuffRequired(BuffType.ShadowClone)));
     }
 
     private static void AddSkill(Skill skill)
