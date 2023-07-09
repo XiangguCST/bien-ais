@@ -24,6 +24,7 @@ public class CharacterStatusManager
         else if (status == CharacterStatusType.Knockdown) _owner.ShowStatus("击倒");
         statusTimers.AddOrUpdate(status, duration, (_, existingDuration) => Math.Max(existingDuration, duration));
         UpdateCurrentStatus();
+        OnStatusEffectApplied?.Invoke();
     }
 
     // 移除所有异常状态
@@ -90,6 +91,7 @@ public class CharacterStatusManager
     private ConcurrentDictionary<CharacterStatusType, float> statusTimers;  // 异常状态计时器
     public CharacterStatusType currentStatus;  // 当前异常状态
     public Character _owner; // 当前角色
+    public Action OnStatusEffectApplied; // 角色受到异常状态的事件
 }
 
 public enum CharacterStatusType
