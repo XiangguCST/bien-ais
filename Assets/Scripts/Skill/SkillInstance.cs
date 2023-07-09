@@ -27,11 +27,13 @@ public class SkillInstance
     // 新增方法: IsSkillUsableIgnoringCooldown()
     public bool IsSkillUsableIgnoringCooldown()
     {
-        if (_skillbar == null || _skillbar._isCasting && !SkillInfo._canInterruptOtherSkills) return false;
-        if (_skillbar._isCasting && SkillInfo._canInterruptOtherSkills)
+        if (_skillManager == null) return false;
+        if (_skillManager._isCasting)
         {
-            SkillInstance skill = _skillbar.GetCastingSkill();
-            if (!skill.SkillInfo._canBeInterrupted)
+            SkillInstance castingSkill = _skillManager.GetCastingSkill();
+            var castingPriority = castingSkill.SkillInfo._interruptPriority;
+            var curPriority = SkillInfo._interruptPriority;
+            if (curPriority <= castingPriority)
             {
                 return false;
             }
@@ -59,7 +61,7 @@ public class SkillInstance
     // 简化后的IsSkillUsable()方法
     public bool IsSkillUsable()
     {
-        if (!IsSkillUsableIgnoringCooldown() || _bIsCooldown || _skillbar._isGlobalCooldown)
+        if (!IsSkillUsableIgnoringCooldown() || _bIsCooldown || _skillManager._isGlobalCooldown)
             return false;
         return true;
     }
@@ -70,9 +72,9 @@ public class SkillInstance
     public void Activate()
     {
         // 打断正在释放的技能
-        if (_skillbar._isCasting)
+        if (_skillManager._isCasting)
         {
-            SkillInstance skill = _skillbar.GetCastingSkill();
+            SkillInstance skill = _skillManager.GetCastingSkill();
             if (skill != null)
                 skill.InterruptSkill();
         }
@@ -80,22 +82,25 @@ public class SkillInstance
         // 技能消耗
         _owner.ConsumeEnergy(SkillInfo._energyCost);
 
+        // 技能冷却
+        _cooldownTimer = SkillInfo._cooldownTime;
+        _bIsCooldown = true;
+        CoroutineRunner.StartCoroutine(CooldownRoutine());
+
         // 释放技能
         _castTimer = SkillInfo._castTime;
         _damageDelayTimer = SkillInfo._damageDelay;
         _bDealDamage = false;
         _castCoroutine = CoroutineRunner.StartCoroutine(CastRoutine());
 
-        // 技能冷却
-        _cooldownTimer = SkillInfo._cooldownTime;
-        _bIsCooldown = true;
-        CoroutineRunner.StartCoroutine(CooldownRoutine());
-
         // 触发技能效果的逻辑
         _owner.OnSkillEffect(this);
         _owner.TriggerAnimator(SkillInfo._animName);
 
-        // 启动连锁技能可用计时器
+        // 禁用所有连锁技能
+        _skillManager.DisableAllChainSkills();
+
+        // 启动连锁技能
         foreach (var chainSkill in _chainSkills)
         {
             chainSkill._chainSkillEnableUntil = Time.time + 3;
@@ -139,17 +144,17 @@ public class SkillInstance
 
     private void BeforeSkillCast()
     {
-        _skillbar._isCasting = true;
-        _skillbar._castingSkill = this;
+        _skillManager._isCasting = true;
+        _skillManager._castingSkill = this;
         PlayerCollisionManager.Instance.DisableCollision(_owner);
     }
 
     private void AfterSkillCast()
     {
-        if (_skillbar == null)
+        if (_skillManager == null)
             return;
-        _skillbar._isCasting = false;
-        _skillbar._castingSkill = null;
+        _skillManager._isCasting = false;
+        _skillManager._castingSkill = null;
         PlayerCollisionManager.Instance.EnableCollision(_owner);
     }
 
@@ -280,6 +285,15 @@ public class SkillInstance
         PlayerCollisionManager.Instance.EnableCollision(_owner);
     }
 
+    /// <summary>
+    /// 禁用连锁技能
+    /// </summary>
+    public void DisableChainSkill()
+    {
+        _chainSkillEnableUntil = 0f;
+    }
+
+
     public Skill SkillInfo { get; set; }
 
     public float _cooldownTimer; // 冷却计时器
@@ -287,7 +301,7 @@ public class SkillInstance
     public float _damageDelayTimer; // 伤害延迟判定计时器
     public bool _bIsCooldown; // 是否冷却中
     public bool _bDealDamage; // 是否进行伤害判定
-    public CharacterSkillMgr _skillbar; // 技能栏
+    public CharacterSkillMgr _skillManager; // 技能栏
     public Character _owner; // 技能释放者
     public Action OnCooldownCompleted; // 冷却完成的事件
     public List<SkillInstance> _chainSkills = new List<SkillInstance>(); // 连锁技能列表

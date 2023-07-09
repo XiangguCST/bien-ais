@@ -9,7 +9,7 @@ public class Skill
 {
     public Skill(string name, string animName, int energyCost, int energyRecover,
         float rate,float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
-        SkillPriority priority, bool canInterruptOtherSkills, bool canBeInterrupted, bool bBreakDefense,
+        SkillUsabilityPriority priority, SkillInterruptPriority interruptPriority, bool bBreakDefense,
         IStatusRemovalStrategy statusRemovalStrategy, IStatusAdditionStrategy statusAdditionStrategy,
         IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy,
         IBuffAdditionStrategy buffAdditionStrategy)
@@ -23,9 +23,8 @@ public class Skill
         _castTime = castTime;
         _damageDelay = damageDelay;
         _globalCooldownTime = globalCooldownTime;
-        _priority = priority;
-        _canInterruptOtherSkills = canInterruptOtherSkills;
-        _canBeInterrupted = canBeInterrupted;
+        _usabilityPriority = priority;
+        _interruptPriority = interruptPriority;
         _bBreakDefense = bBreakDefense;
 
         _statusRemovalStrategy = statusRemovalStrategy;
@@ -65,9 +64,8 @@ public class Skill
     public float _castTime; // 释放时间
     public float _damageDelay; // 伤害判定延迟
     public float _globalCooldownTime; // gcd
-    public SkillPriority _priority; // 技能优先级
-    public bool _canInterruptOtherSkills; // 是否允许打断其他技能
-    public bool _canBeInterrupted; // 是否允许被打断
+    public SkillUsabilityPriority _usabilityPriority; // 技能可用性优先级
+    public SkillInterruptPriority _interruptPriority; // 技能打断优先级（高优先级可打断低优先级）
     public bool _bBreakDefense; // 是否无视防御
 
     public IMovementStrategy _movementStrategy; // 技能移动策略
@@ -80,10 +78,18 @@ public class Skill
     public bool _isChainSkill = false; // 是否为连锁技能
 }
 
-public enum SkillPriority
+public enum SkillUsabilityPriority
 {
     Normal = 0,    // 普通技能
     Conditional,   // 条件技能
     Chain          // 连锁技能
 }
 
+public enum SkillInterruptPriority
+{
+    Lowest = 1,     // 最低级
+    Low = 2,        // 低级
+    Normal = 3,     // 普通
+    High = 4,       // 高级
+    Highest = 5     // 最高级
+}

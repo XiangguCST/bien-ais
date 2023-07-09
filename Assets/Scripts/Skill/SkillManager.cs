@@ -48,7 +48,7 @@ public class CharacterSkillMgr
 
         var skillInstance = new SkillInstance(skill);
         skillInstance._owner = _owner;
-        skillInstance._skillbar = this;
+        skillInstance._skillManager = this;
 
         // 保存到优先级列表中
         if (!_skills.ContainsKey(hotKey))
@@ -56,7 +56,7 @@ public class CharacterSkillMgr
             _skills[hotKey] = new List<SkillInstance>();
         }
         _skills[hotKey].Add(skillInstance);
-        _skills[hotKey] = _skills[hotKey].OrderByDescending(s => s.SkillInfo._priority).ToList();
+        _skills[hotKey] = _skills[hotKey].OrderByDescending(s => s.SkillInfo._usabilityPriority).ToList();
         skillSlot.SetSkill(GetHighestPrioritySkill(hotKey));
     }
 
@@ -104,6 +104,21 @@ public class CharacterSkillMgr
                         skillInstance._chainSkills.Add(chainSkillInstance);
                     }
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 禁用所有连锁技能
+    /// </summary>
+    public void DisableAllChainSkills()
+    {
+        foreach (var pair in _skills)
+        {
+            foreach (var skill in pair.Value)
+            {
+                if(skill.SkillInfo._isChainSkill)
+                    skill.DisableChainSkill();
             }
         }
     }

@@ -119,9 +119,15 @@ public class SkillSlot : MonoBehaviour
     private void UpdateHighestPrioritySkill()
     {
         if (_skill == null) return;
-        _skill = _skill._skillbar.GetHighestPrioritySkill(_hotKey);
-        if (_skill == null) return;
-        _txtName.text = _skill.SkillInfo._name;
+
+        SkillInstance highestPrioritySkill = _skill._skillManager.GetHighestPrioritySkill(_hotKey);
+        if (_skill != highestPrioritySkill)
+        {
+            _skill = highestPrioritySkill;
+            _txtName.text = _skill.SkillInfo._name;
+            _imgMask.fillAmount = _skill._bIsCooldown ? Mathf.Lerp(0, 1, _skill._cooldownTimer / _skill.SkillInfo._cooldownTime) : 0;
+            _txtCoolDown.text = _skill._bIsCooldown ? Mathf.Ceil(_skill._cooldownTimer).ToString() : "";
+        }
     }
 
     // 冷却完成技能图标发光效果
