@@ -123,10 +123,8 @@ public class SkillSlot : MonoBehaviour
         SkillInstance highestPrioritySkill = _skill._skillManager.GetHighestPrioritySkill(_hotKey);
         if (_skill != highestPrioritySkill)
         {
-            _skill = highestPrioritySkill;
-            _txtName.text = _skill.SkillInfo._name;
-            _imgMask.fillAmount = _skill._bIsCooldown ? Mathf.Lerp(0, 1, _skill._cooldownTimer / _skill.SkillInfo._cooldownTime) : 0;
-            _txtCoolDown.text = _skill._bIsCooldown ? Mathf.Ceil(_skill._cooldownTimer).ToString() : "";
+            SetSkill(highestPrioritySkill);
+            
         }
     }
 
@@ -165,8 +163,31 @@ public class SkillSlot : MonoBehaviour
         {
             return;
         }
+
+        // 如果已经设置过技能，则先取消之前的事件订阅
+        if (_skill != null)
+        {
+            _skill.OnCooldownCompleted -= () => StartCoroutine(GlowEffect());
+        }
+
         _skill = skill;
         _txtName.text = _skill.SkillInfo._name;
+        _imgMask.fillAmount = _skill._bIsCooldown ? Mathf.Lerp(0, 1, _skill._cooldownTimer / _skill.SkillInfo._cooldownTime) : 0;
+        _txtCoolDown.text = _skill._bIsCooldown ? Mathf.Ceil(_skill._cooldownTimer).ToString() : "";
+
+        // 加载Sprite资源
+        var sprite = ResourcesLoader.LoadResource<Sprite>($"Sprites/SkillIcons/{_skill.SkillInfo._name}");
+        if (sprite != null)
+        {
+            _imgIcon.sprite = sprite; // 设置图片
+        }
+        else
+        {
+            Debug.LogError($"Sprite for {_skill.SkillInfo._name} not found!");
+            var defSprite = ResourcesLoader.LoadResource<Sprite>($"Sprites/SkillIcons/defSkillIcon");
+            _imgIcon.sprite = defSprite; // 设置图片
+        }
+
         // 检查冷却时间是否大于5秒
         if (_skill.SkillInfo._cooldownTime > 5.0f)
         {
