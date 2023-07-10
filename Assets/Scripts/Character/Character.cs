@@ -23,7 +23,7 @@ public class Character : MonoBehaviour
             _collider = GetComponent<CapsuleCollider2D>();
             _animator = GetComponentInChildren<Animator>();
             _skillMgr = new CharacterSkillMgr(this);
-            _stateManager.OnStatusEffectApplied += _skillMgr.DisableAllChainSkills; // 角色受到异常状态禁用所有连锁技能
+            _stateManager.OnStatusEffectApplied += OnStatusEffectApplied; 
             _targetFinder._owner = this;
             _stateManager._owner = this;
             lastPosition = transform.position;
@@ -38,6 +38,12 @@ public class Character : MonoBehaviour
             ApplyAttribute();
             _bInit = true;
         }
+    }
+
+    private void OnStatusEffectApplied()
+    {
+        _animator.SetTrigger("status");
+        _skillMgr.DisableAllChainSkills(); // 角色受到异常状态禁用所有连锁技能
     }
 
     private void Update()

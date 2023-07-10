@@ -100,7 +100,7 @@ public enum CharacterStatusType
     Silence,  // 沉默状态（无法施放技能）
     Stun,     // 眩晕
     Weakness, // 虚弱
-    Knockdown // 倒地
+    Knockdown // 击倒
 }
 
 
