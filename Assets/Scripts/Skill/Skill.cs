@@ -80,10 +80,17 @@ public class Skill
 
 public enum SkillUsabilityPriority
 {
-    Normal = 0,    // 普通技能
-    Conditional,   // 条件技能
-    Chain          // 连锁技能
+    Normal = 0,              // 普通技能
+    NormalHigh1,             // 高级普通技能1
+    NormalHigh2,             // 高级普通技能2
+    Conditional,             // 条件技能
+    ConditionalHigh1,        // 高级条件技能1
+    ConditionalHigh2,        // 高级条件技能2
+    Chain,                    // 连锁技能
+    ChainHigh1,                    // 高级连锁技能1
+    ChainHigh2,                    // 高级连锁技能2
 }
+
 
 public enum SkillInterruptPriority
 {
