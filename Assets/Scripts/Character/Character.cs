@@ -60,9 +60,9 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void AttachSkill(KeyCode keypad1, Skill skill)
+    public void AttachSkill(KeyCode keypad1, Skill skill, bool bDoubleClick = false)
     {
-        _skillMgr.AttachSkill(keypad1, skill);
+        _skillMgr.AttachSkill(keypad1, skill, bDoubleClick);
     }
 
     public void ApplyAllSkills()

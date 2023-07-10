@@ -40,11 +40,11 @@ public class CharacterSkillMgr
         _isGlobalCooldown = false;
     }
 
-    public void AttachSkill(KeyCode hotKey, Skill skill)
+    public void AttachSkill(KeyCode hotKey, Skill skill, bool bDoubleClick = false)
     {
         if (skill == null) return;
         var skillSlot = InputController.Instance.GetSkillSlotByHotKey(hotKey);
-        if (skillSlot == null) return;
+        if (skillSlot == null || skillSlot._bDoubleClick != bDoubleClick) return;
 
         var skillInstance = new SkillInstance(skill);
         skillInstance._owner = _owner;

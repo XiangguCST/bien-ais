@@ -213,6 +213,7 @@ public class SkillSlot : MonoBehaviour
     }
 
     public KeyCode _hotKey; // 绑定快捷键
+    public bool _bDoubleClick = false;  // 是否需要双击才能激活
     [SerializeField]
     public SkillInstance _skill; // 技能
     Image _imgOutline; // 外边框

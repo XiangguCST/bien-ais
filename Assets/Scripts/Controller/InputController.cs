@@ -21,7 +21,7 @@ public class InputController : MonoSingleton<InputController>
         _player1.AttachSkill(KeyCode.I, SkillLibrary.GetSkill("替身术"));
         _player1.AttachSkill(KeyCode.O, SkillLibrary.GetSkill("闪光"));
         _player1.AttachSkill(KeyCode.W, SkillLibrary.GetSkill("潜行"));
-        _player1.AttachSkill(KeyCode.S, SkillLibrary.GetSkill("逆风行"));
+        _player1.AttachSkill(KeyCode.S, SkillLibrary.GetSkill("逆风行"), true);
         _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("空手入白刃"));
         _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("朔月脚"));
         _player1.ApplyAllSkills();
@@ -33,7 +33,7 @@ public class InputController : MonoSingleton<InputController>
         _player2.AttachSkill(KeyCode.Keypad5, SkillLibrary.GetSkill("替身术"));
         _player2.AttachSkill(KeyCode.Keypad6, SkillLibrary.GetSkill("闪光"));
         _player2.AttachSkill(KeyCode.UpArrow, SkillLibrary.GetSkill("潜行"));
-        _player2.AttachSkill(KeyCode.DownArrow, SkillLibrary.GetSkill("逆风行"));
+        _player2.AttachSkill(KeyCode.DownArrow, SkillLibrary.GetSkill("逆风行"), true);
         _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("空手入白刃"));
         _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("朔月脚"));
         _player2.ApplyAllSkills();
@@ -103,13 +103,23 @@ public class InputController : MonoSingleton<InputController>
             }
         }
 
+        // 对所有技能键进行遍历
         foreach (var pair in _skillSlots)
         {
-            var _hotKey = pair.Key;
-            var slot = pair.Value;
-            if (Input.GetKeyDown(slot._hotKey))
+            var hotKey = pair.Key;
+            var skillSlot = pair.Value;
+            if (skillSlot != null && skillSlot._skill != null)
             {
-                slot.Activate();
+                // 如果技能槽需要双击且双击了该技能键，则激活对应的技能
+                if (skillSlot._bDoubleClick && _doubleClickDetector.IsDoubleClick(hotKey))
+                {
+                    skillSlot.Activate();
+                }
+                // 如果技能槽不需要双击且按下了该技能键，则激活对应的技能
+                else if (!skillSlot._bDoubleClick && Input.GetKeyDown(hotKey))
+                {
+                    skillSlot.Activate();
+                }
             }
         }
     }
@@ -164,5 +174,6 @@ public class InputController : MonoSingleton<InputController>
     public GameObject _resultPanel;
     private bool isPaused = false;
     public bool _isGameOver = false;
-    Dictionary<KeyCode, SkillSlot> _skillSlots = new Dictionary<KeyCode, SkillSlot>();
+    private Dictionary<KeyCode, SkillSlot> _skillSlots = new Dictionary<KeyCode, SkillSlot>();
+    private DoubleClickDetector _doubleClickDetector = new DoubleClickDetector(0.3f);
 }
