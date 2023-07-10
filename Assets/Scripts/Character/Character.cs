@@ -60,6 +60,14 @@ public class Character : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 绑定切换技能
+    /// </summary>
+    public void AttachToggleSkill(KeyCode hotKey, Skill skill, KeyCode toggleKey)
+    {
+        _skillMgr.AttachToggleSkill(hotKey, skill, toggleKey);
+    }
+
     public void AttachSkill(KeyCode keypad1, Skill skill, bool bDoubleClick = false)
     {
         _skillMgr.AttachSkill(keypad1, skill, bDoubleClick);

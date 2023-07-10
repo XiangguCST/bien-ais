@@ -17,10 +17,10 @@ public class InputController : MonoSingleton<InputController>
         _player1.AttachSkill(KeyCode.J, SkillLibrary.GetSkill("迷雾斩"));
         _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("刺心"));
         _player1.AttachSkill(KeyCode.L, SkillLibrary.GetSkill("瞬步"));
-        _player1.AttachSkill(KeyCode.U, SkillLibrary.GetSkill("莲华脚"));
+        _player1.AttachSkill(KeyCode.U, SkillLibrary.GetSkill("潜行"));
+        _player1.AttachToggleSkill(KeyCode.U, SkillLibrary.GetSkill("莲华脚"), KeyCode.S);
         _player1.AttachSkill(KeyCode.I, SkillLibrary.GetSkill("替身术"));
         _player1.AttachSkill(KeyCode.O, SkillLibrary.GetSkill("闪光"));
-        _player1.AttachSkill(KeyCode.W, SkillLibrary.GetSkill("潜行"));
         _player1.AttachSkill(KeyCode.S, SkillLibrary.GetSkill("逆风行"), true);
         _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("空手入白刃"));
         _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("朔月脚"));
@@ -29,10 +29,10 @@ public class InputController : MonoSingleton<InputController>
         _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.GetSkill("迷雾斩"));
         _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("刺心"));
         _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("瞬步"));
-        _player2.AttachSkill(KeyCode.Keypad4, SkillLibrary.GetSkill("莲华脚"));
+        _player2.AttachSkill(KeyCode.Keypad4, SkillLibrary.GetSkill("潜行"));
+        _player2.AttachToggleSkill(KeyCode.Keypad4, SkillLibrary.GetSkill("莲华脚"), KeyCode.DownArrow);
         _player2.AttachSkill(KeyCode.Keypad5, SkillLibrary.GetSkill("替身术"));
         _player2.AttachSkill(KeyCode.Keypad6, SkillLibrary.GetSkill("闪光"));
-        _player2.AttachSkill(KeyCode.UpArrow, SkillLibrary.GetSkill("潜行"));
         _player2.AttachSkill(KeyCode.DownArrow, SkillLibrary.GetSkill("逆风行"), true);
         _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("空手入白刃"));
         _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("朔月脚"));
@@ -111,12 +111,12 @@ public class InputController : MonoSingleton<InputController>
             if (skillSlot != null && skillSlot._skill != null)
             {
                 // 如果技能槽需要双击且双击了该技能键，则激活对应的技能
-                if (skillSlot._bDoubleClick && _doubleClickDetector.IsDoubleClick(hotKey))
+                if (skillSlot._skill._bDoubleClick && _doubleClickDetector.IsDoubleClick(hotKey))
                 {
                     skillSlot.Activate();
                 }
                 // 如果技能槽不需要双击且按下了该技能键，则激活对应的技能
-                else if (!skillSlot._bDoubleClick && Input.GetKeyDown(hotKey))
+                else if (!skillSlot._skill._bDoubleClick && Input.GetKeyDown(hotKey))
                 {
                     skillSlot.Activate();
                 }

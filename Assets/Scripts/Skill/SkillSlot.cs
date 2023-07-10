@@ -70,7 +70,7 @@ public class SkillSlot : MonoBehaviour
         if (!_bInit) InitSkillSlot();
 
         // 按照技能优先级更新技能显示
-        UpdateHighestPrioritySkill();
+        UpdateActiveSkill();
 
         // 检测快捷键是否被按下
         if (Input.GetKey(_hotKey))
@@ -115,12 +115,12 @@ public class SkillSlot : MonoBehaviour
         }
     }
 
-    // 更新最高优先级的技能
-    private void UpdateHighestPrioritySkill()
+    // 更新活跃技能
+    private void UpdateActiveSkill()
     {
         if (_skill == null) return;
 
-        SkillInstance highestPrioritySkill = _skill._skillManager.GetHighestPrioritySkill(_hotKey);
+        SkillInstance highestPrioritySkill = _skill._skillManager.GetActiveSkill(_hotKey);
         if (_skill != highestPrioritySkill)
         {
             SetSkill(highestPrioritySkill);
@@ -213,7 +213,6 @@ public class SkillSlot : MonoBehaviour
     }
 
     public KeyCode _hotKey; // 绑定快捷键
-    public bool _bDoubleClick = false;  // 是否需要双击才能激活
     [SerializeField]
     public SkillInstance _skill; // 技能
     Image _imgOutline; // 外边框

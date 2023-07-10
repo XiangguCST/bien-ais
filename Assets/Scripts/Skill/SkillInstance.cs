@@ -301,6 +301,9 @@ public class SkillInstance
     public float _damageDelayTimer; // 伤害延迟判定计时器
     public bool _bIsCooldown; // 是否冷却中
     public bool _bDealDamage; // 是否进行伤害判定
+    public bool _bDoubleClick = false;  // 是否需要双击才能激活
+    public bool _bIsToggleSkill = false; // 是否为替换技能
+    public KeyCode _toggleKey; // 替换键
     public CharacterSkillMgr _skillManager; // 技能栏
     public Character _owner; // 技能释放者
     public Action OnCooldownCompleted; // 冷却完成的事件

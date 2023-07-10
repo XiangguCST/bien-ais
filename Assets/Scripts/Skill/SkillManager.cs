@@ -17,11 +17,6 @@ public class CharacterSkillMgr
         _owner = owner;
     }
 
-    public void UpdateSkillBar(float deltaTime)
-    {
-        
-    }
-
     // 开始gcd
     public void StartGlobalCooldown(float cooldownTime)
     {
@@ -40,14 +35,30 @@ public class CharacterSkillMgr
         _isGlobalCooldown = false;
     }
 
-    public void AttachSkill(KeyCode hotKey, Skill skill, bool bDoubleClick = false)
+    /// <summary>
+    /// 绑定切换技能
+    /// </summary>
+    public void AttachToggleSkill(KeyCode hotKey, Skill skill, KeyCode toggleKey)
     {
-        if (skill == null) return;
+        var skillInstance = AttachSkill(hotKey, skill);
+        if (skillInstance == null)
+            return;
+        skillInstance._bIsToggleSkill = true;
+        skillInstance._toggleKey = toggleKey;
+    }
+
+    /// <summary>
+    /// 绑定技能
+    /// </summary>
+    public SkillInstance AttachSkill(KeyCode hotKey, Skill skill, bool bDoubleClick = false)
+    {
+        if (skill == null) return null;
         var skillSlot = InputController.Instance.GetSkillSlotByHotKey(hotKey);
-        if (skillSlot == null || skillSlot._bDoubleClick != bDoubleClick) return;
+        if (skillSlot == null) return null;
 
         var skillInstance = new SkillInstance(skill);
         skillInstance._owner = _owner;
+        skillInstance._bDoubleClick = bDoubleClick;
         skillInstance._skillManager = this;
 
         // 保存到优先级列表中
@@ -57,7 +68,8 @@ public class CharacterSkillMgr
         }
         _skills[hotKey].Add(skillInstance);
         _skills[hotKey] = _skills[hotKey].OrderByDescending(s => s.SkillInfo._usabilityPriority).ToList();
-        skillSlot.SetSkill(GetHighestPrioritySkill(hotKey));
+        skillSlot.SetSkill(GetActiveSkill(hotKey));
+        return skillInstance;
     }
 
 
@@ -66,26 +78,49 @@ public class CharacterSkillMgr
         return _castingSkill;
     }
 
-    // 返回优先级最高的可用技能
-    public SkillInstance GetHighestPrioritySkill(KeyCode hotKey)
+    /// <summary>
+    /// 获取当前活跃技能:
+    /// 如果替换键被按下，返回优先级最高的可用替换技能，
+    /// 如果没有可用的替换技能，就返回优先级最低的替换技能（如果不存在替换技能就按照非替换技能的逻辑处理）
+    /// 如果替换键没有被按下，返回优先级最高的可用非替换技能，
+    /// 如果没有可用的非替换技能，就返回优先级最低的非替换技能
+    /// </summary>
+    /// <param name="hotKey"></param>
+    /// <returns></returns>
+    public SkillInstance GetActiveSkill(KeyCode hotKey)
     {
-        SkillInstance highestPrioritySkill = null;
+        // 如果hotKey不存在，立即返回null
+        if (!_skills.ContainsKey(hotKey))
+            return null;
 
-        if (_skills.ContainsKey(hotKey))
+        // 将所有技能分为替换技能和非替换技能两部分
+        List<SkillInstance> toggleSkills = _skills[hotKey].Where(skill => skill._bIsToggleSkill).ToList();
+        List<SkillInstance> nonToggleSkills = _skills[hotKey].Where(skill => !skill._bIsToggleSkill).ToList();
+
+        // 如果替换键被按下
+        if (toggleSkills.Count > 0 && Input.GetKey(toggleSkills[0]._toggleKey))
         {
-            foreach (var skill in _skills[hotKey])
-            {
-                // 如果找到了可用的技能，就立即返回它
-                if (skill.IsSkillUsable())
-                {
-                    return skill;
-                }
-                highestPrioritySkill = skill;
-            }
+            // 返回优先级最高的可用替换技能，
+            SkillInstance usableToggleSkill = toggleSkills.OrderByDescending(skill => skill.SkillInfo._usabilityPriority)
+                                                          .FirstOrDefault(skill => skill.IsSkillUsable());
+            if (usableToggleSkill != null)
+                return usableToggleSkill;
+
+            // 如果没有可用的替换技能，就返回优先级最低的替换技能
+            return toggleSkills.OrderBy(skill => skill.SkillInfo._usabilityPriority).First();
         }
-        // 如果所有的技能都不可用，就返回优先级最低的技能
-        return highestPrioritySkill;
+
+        // 如果替换键没有被按下
+        // 返回优先级最高的可用非替换技能
+        SkillInstance usableNonToggleSkill = nonToggleSkills.OrderByDescending(skill => skill.SkillInfo._usabilityPriority)
+                                                            .FirstOrDefault(skill => skill.IsSkillUsable());
+        if (usableNonToggleSkill != null)
+            return usableNonToggleSkill;
+
+        // 如果没有可用的非替换技能，就返回优先级最低的非替换技能
+        return nonToggleSkills.OrderBy(skill => skill.SkillInfo._usabilityPriority).First();
     }
+
 
     // 应用所有技能
     public void ApplyAllSkills()
