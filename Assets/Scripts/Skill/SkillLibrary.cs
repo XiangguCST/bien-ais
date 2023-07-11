@@ -82,6 +82,7 @@ public class SkillLibrary
 
         tishenshu.AddChainSkill(shuoyuejiao);
         nifengxing.AddChainSkill(shuoyuejiao);
+        youlingbu.AddChainSkill(shuoyuejiao);
         nifengxing.AddChainSkill(youlingbu);
     }
 
