@@ -43,9 +43,16 @@ public class SkillLibrary
             new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoMovement(),
             new DoNotHitCheck(), new NonChainSkillStrategy(),
             new AddBuffDuration(BuffType.ShadowClone)));
+        AddSkill(new Skill("后滚翻", "hougunfan", 0, 0, 0, 12f, 0.83f, 0f, 0,
+            SkillUsabilityPriority.Conditional, SkillInterruptPriority.High, false,
+            new RemoveStatuses(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness}),
+            new DoNotAddStatusEffect(),
+            new FixedDirectionMovement(MovementDirection.Backward, 3f),
+            new DoNotHitCheck(), new NonChainSkillStrategy(),
+            new AddBuffDuration(BuffType.ImmunityAll)));
         AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0, 
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, true,
-            new RemoveAllStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), 
+            new RemoveStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), 
             new FixedDirectionMovement(MovementDirection.Backward, 6), 
             new RangeHitCheck(3f), new NonChainSkillStrategy(),
             new AddBuffDuration(BuffType.ImmunityAll)));

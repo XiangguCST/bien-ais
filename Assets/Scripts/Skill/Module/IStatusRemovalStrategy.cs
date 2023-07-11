@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public interface IStatusRemovalStrategy
 {
@@ -9,11 +10,14 @@ public interface IStatusRemovalStrategy
     void InterruptSkill(Character owner, SkillInstance skill);
 }
 
-public class RemoveAllStatuses : IStatusRemovalStrategy
+public class RemoveStatuses : IStatusRemovalStrategy
 {
-    public RemoveAllStatuses()
+    public RemoveStatuses(List<CharacterStatusType> requireStatus = null)
     {
-        _requireStatus = new List<CharacterStatusType> { CharacterStatusType.Stun, CharacterStatusType.Weakness, CharacterStatusType.Knockdown };
+        if (requireStatus == null)
+            _requireStatus = new List<CharacterStatusType> { CharacterStatusType.Stun, CharacterStatusType.Weakness, CharacterStatusType.Knockdown };
+        else
+            _requireStatus = requireStatus;
     }
 
 

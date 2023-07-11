@@ -15,6 +15,7 @@ public class InputController : MonoSingleton<InputController>
         _player2.InitCharacter();
 
         _player1.AttachSkill(KeyCode.J, SkillLibrary.GetSkill("迷雾斩"));
+        _player1.AttachSkill(KeyCode.J, SkillLibrary.GetSkill("后滚翻"));
         _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("刺心"));
         _player1.AttachSkill(KeyCode.L, SkillLibrary.GetSkill("瞬步"));
         _player1.AttachToggleSkill(KeyCode.L, SkillLibrary.GetSkill("侧身闪"), KeyCode.S);
@@ -29,6 +30,7 @@ public class InputController : MonoSingleton<InputController>
         _player1.ApplyAllSkills();
 
         _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.GetSkill("迷雾斩"));
+        _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.GetSkill("后滚翻"));
         _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("刺心"));
         _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("瞬步"));
         _player2.AttachToggleSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("侧身闪"), KeyCode.DownArrow);
