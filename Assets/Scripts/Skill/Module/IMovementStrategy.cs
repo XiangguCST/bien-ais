@@ -124,6 +124,60 @@ public class RushToTargetMovement : IMovementStrategy
     private float _movementSpeed; // 移动速度
 }
 
+public class RushToBackTargetMovement : IMovementStrategy
+{
+    private float _rushDistance; // 距离目标的距离
+    private Vector3 _targetMovePosition; // 目标移动位置
+    private float _totalTravelTime; // 总的旅行时间
+    private float _elapsedTime; // 已经过去的时间
+    private float _averageSpeed; // 平均速度
+
+    public RushToBackTargetMovement()
+    {
+        _rushDistance = 1; // 突进到目标1米处
+    }
+
+    public void BeforeSkillCast(Character owner, SkillInstance skill)
+    {
+        var target = owner._targetFinder._nearestEnemy;
+        _targetMovePosition = target.transform.position - (owner.transform.position - target.transform.position).normalized * _rushDistance;
+        _totalTravelTime = skill.SkillInfo._castTime;
+        _elapsedTime = 0;
+    }
+
+    public void OnSkillCasting(Character owner, SkillInstance skill)
+    {
+        if (owner == null) return;
+
+        var target = owner._targetFinder._nearestEnemy;
+        if (target == null) return;
+
+        _elapsedTime += Time.deltaTime;
+
+        // 通过SmoothStep函数来让速度由慢到快再到慢
+        float normalizedTime = _elapsedTime / _totalTravelTime;
+        float speedFactor = Mathf.SmoothStep(0, 1, normalizedTime);
+
+        float targetSpeed = Vector3.Distance(owner.transform.position, _targetMovePosition) * speedFactor / (_totalTravelTime - _elapsedTime);
+
+        owner.transform.position = Vector3.MoveTowards(owner.transform.position, _targetMovePosition, targetSpeed * Time.deltaTime);
+    }
+
+    public void AfterSkillCast(Character owner, SkillInstance skill)
+    {
+        // 技能释放结束后立即转变方向
+        if (owner == null) return;
+        owner.FlipDirection();
+    }
+
+    public void InterruptSkill(Character owner, SkillInstance skill)
+    {
+    }
+}
+
+
+
+
 
 
 /// <summary>

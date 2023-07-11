@@ -9,7 +9,7 @@ public interface IBuffAdditionStrategy
 
 public class AddBuffDuration : IBuffAdditionStrategy
 {
-    public AddBuffDuration(BuffType buffType, float duration)
+    public AddBuffDuration(BuffType buffType, float duration = -1)
     {
         _buffType = buffType;
         _duration = duration;
@@ -17,7 +17,7 @@ public class AddBuffDuration : IBuffAdditionStrategy
 
     public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
-        owner._buffManager.AddBuffTime(_buffType, _duration);
+        owner._buffManager.AddBuffTime(_buffType, _duration == -1 ? skill.SkillInfo._castTime : _duration);
     }
 
     BuffType _buffType;

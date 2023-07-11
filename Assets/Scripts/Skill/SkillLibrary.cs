@@ -23,6 +23,11 @@ public class SkillLibrary
             new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), 
             new FixedDirectionMovement(MovementDirection.Forward, 6), 
             new DoNotHitCheck(), new NonChainSkillStrategy(), new AddBuffDuration(BuffType.ImmunityAll, 1)));
+        AddSkill(new Skill("侧身闪", "ceshenshan", 0, 2, 0, 8f, 0.33f, 0.3f, 0,
+           SkillUsabilityPriority.Normal, SkillInterruptPriority.High, false,
+           new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new RushToBackTargetMovement(),
+           new DoNotHitCheck(), new NonChainSkillStrategy(), new AddBuffDuration(BuffType.ImmunityAll))
+           .AddSkillUsability(new TargetRequired(6f)));
         AddSkill(new Skill("潜行", "qianxing", 0, 2, 0, 6f, 0.33f, 0.3f, 0, 
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
             new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new RushToTargetMovement(),
@@ -37,19 +42,19 @@ public class SkillLibrary
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Low, false, 
             new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new NoMovement(),
             new DoNotHitCheck(), new NonChainSkillStrategy(),
-            new AddBuffDuration(BuffType.ShadowClone, 0.5f)));
+            new AddBuffDuration(BuffType.ShadowClone)));
         AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0, 
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, true,
             new RemoveAllStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f), 
             new FixedDirectionMovement(MovementDirection.Backward, 6), 
             new RangeHitCheck(3f), new NonChainSkillStrategy(),
-            new AddBuffDuration(BuffType.ImmunityAll, 0.83f)));
+            new AddBuffDuration(BuffType.ImmunityAll)));
         var nifengxing = AddSkill(new Skill("逆风行", "nifengxing", 0, 0, 0, 8f, 0.43f, 0f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, false,
             new DoNotRemoveStatuses(), new DoNotAddStatusEffect(),
             new FixedDirectionMovement(MovementDirection.Backward, 6), 
             new DoNotHitCheck(), new NonChainSkillStrategy(),
-            new AddBuffDuration(BuffType.ImmunityAll, 0.43f)));
+            new AddBuffDuration(BuffType.ImmunityAll)));
         AddSkill(new Skill("空手入白刃", "kongshourubairen", 0, 0, 1, 9f, 0.75f, 0.37f, 0,
             SkillUsabilityPriority.ChainHigh1, SkillInterruptPriority.High, true, 
             new DoNotRemoveStatuses(), new AddStatusEffect(CharacterStatusType.Stun, 2f),
@@ -66,7 +71,7 @@ public class SkillLibrary
             SkillUsabilityPriority.Chain, SkillInterruptPriority.High, false, 
             new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), 
             new FixedDirectionMovement(MovementDirection.Backward, 6),
-            new DoNotHitCheck(), new ChainSkillStrategy(true), new AddBuffDuration(BuffType.ImmunityAll, 0.43f)));
+            new DoNotHitCheck(), new ChainSkillStrategy(true), new AddBuffDuration(BuffType.ImmunityAll)));
 
         tishenshu.AddChainSkill(shuoyuejiao);
         nifengxing.AddChainSkill(shuoyuejiao);

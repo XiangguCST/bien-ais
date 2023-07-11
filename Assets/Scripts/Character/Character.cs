@@ -161,6 +161,25 @@ public class Character : MonoBehaviour
         _animator.transform.localScale = localScale;
     }
 
+    /// <summary>
+    /// 翻转方向
+    /// </summary>
+    public void FlipDirection()
+    {
+        switch (_dir)
+        {
+            case CharacterDir.eLeft:
+                _dir = CharacterDir.eRight;
+                break;
+            case CharacterDir.eRight:
+            default:
+                _dir = CharacterDir.eLeft;
+                break;
+        }
+        UpdateDirShow(); // 翻转方向后，更新方向的显示
+    }
+
+
     virtual public void Start()
     {
         _rb.freezeRotation = true;
