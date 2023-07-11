@@ -48,7 +48,7 @@ public class SkillInstance
         }
 
         // 连锁技能在可用时间戳之前才能用
-        if (SkillInfo._isChainSkill && Time.time >= _chainSkillEnableUntil)
+        if (SkillInfo._chainStrategy.IsChainSkill() && Time.time >= _chainSkillEnableUntil)
             return false;
 
         if (!SkillInfo._statusRemovalStrategy.IsSkillUsable(this) ||
@@ -103,7 +103,7 @@ public class SkillInstance
         // 启动连锁技能
         foreach (var chainSkill in _chainSkills)
         {
-            chainSkill._chainSkillEnableUntil = Time.time + 3;
+            chainSkill._chainSkillEnableUntil = Time.time + chainSkill.SkillInfo._chainStrategy.GetEnableUntilTime();
         }
     }
 

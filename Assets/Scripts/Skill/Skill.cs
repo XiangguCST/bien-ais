@@ -11,7 +11,7 @@ public class Skill
         float rate,float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
         SkillUsabilityPriority priority, SkillInterruptPriority interruptPriority, bool bBreakDefense,
         IStatusRemovalStrategy statusRemovalStrategy, IStatusAdditionStrategy statusAdditionStrategy,
-        IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy,
+        IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy, IChainStrategy chainStrategy,
         IBuffAdditionStrategy buffAdditionStrategy)
     {
         _name = name;
@@ -32,6 +32,7 @@ public class Skill
         _movementStrategy = movementStrategy;
         _hitCheckStrategy = hitCheckStrategy;
         _buffAdditionStrategy = buffAdditionStrategy;
+        _chainStrategy = chainStrategy;
     }
 
     /// <summary>
@@ -44,14 +45,16 @@ public class Skill
         return this;
     }
 
-    public Skill AddChainSkill(Skill skill)
+    /// <summary>
+    /// 添加连锁技能
+    /// </summary>
+    /// <param name="skill"></param>
+    public void AddChainSkill(Skill skill)
     {
         if (skill != null)
         {
-            skill._isChainSkill = true;
             _chainSkills.Add(skill);
         }
-        return this;
     }
 
     public string _name; // 技能名称
@@ -67,15 +70,15 @@ public class Skill
     public SkillUsabilityPriority _usabilityPriority; // 技能可用性优先级
     public SkillInterruptPriority _interruptPriority; // 技能打断优先级（高优先级可打断低优先级）
     public bool _bBreakDefense; // 是否无视防御
+    public List<Skill> _chainSkills = new List<Skill>(); // 连锁技能列表
 
     public IMovementStrategy _movementStrategy; // 技能移动策略
     public IStatusRemovalStrategy _statusRemovalStrategy; // 解除异常状态策略
     public IStatusAdditionStrategy _statusAdditionStrategy; // 附加异常状态策略
     public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
     public IBuffAdditionStrategy _buffAdditionStrategy; // buff添加策略
+    public IChainStrategy _chainStrategy; // 技能连锁策略
     public List<ISkillUsability> _usabilitys = new List<ISkillUsability>(); // 技能使用条件列表
-    public List<Skill> _chainSkills = new List<Skill>(); // 连锁技能列表
-    public bool _isChainSkill = false; // 是否为连锁技能
 }
 
 public enum SkillUsabilityPriority

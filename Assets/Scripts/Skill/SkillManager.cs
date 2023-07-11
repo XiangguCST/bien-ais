@@ -38,9 +38,9 @@ public class CharacterSkillMgr
     /// <summary>
     /// 绑定切换技能
     /// </summary>
-    public void AttachToggleSkill(KeyCode hotKey, Skill skill, KeyCode toggleKey)
+    public void AttachToggleSkill(KeyCode hotKey, Skill skill, KeyCode toggleKey, bool bDoubleClick = false)
     {
-        var skillInstance = AttachSkill(hotKey, skill);
+        var skillInstance = AttachSkill(hotKey, skill, bDoubleClick);
         if (skillInstance == null)
             return;
         skillInstance._bIsToggleSkill = true;
@@ -152,8 +152,11 @@ public class CharacterSkillMgr
         {
             foreach (var skill in pair.Value)
             {
-                if(skill.SkillInfo._isChainSkill)
+                var strategy = skill.SkillInfo._chainStrategy;
+                if (strategy.IsChainSkill() && !strategy.CanUseOtherSkillsBefore())
+                {
                     skill.DisableChainSkill();
+                }
             }
         }
     }
