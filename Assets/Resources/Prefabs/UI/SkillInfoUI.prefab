@@ -1393,7 +1393,6 @@ GameObject:
   - component: {fileID: 425581684341433573}
   - component: {fileID: 425581684341433571}
   - component: {fileID: 425581684341433572}
-  - component: {fileID: 425581684341433570}
   - component: {fileID: 386282337886913440}
   - component: {fileID: 9021898920570022985}
   m_Layer: 5
@@ -1464,21 +1463,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &425581684341433570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 425581684341433574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1573420865, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 1, g: 1, b: 1, a: 0.23529412}
-  m_EffectDistance: {x: 2, y: -2}
-  m_UseGraphicAlpha: 1
 --- !u!114 &386282337886913440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1600,7 +1584,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2763792098472612202}
   - component: {fileID: 2763792098472612200}
-  - component: {fileID: 4533964204896582513}
   - component: {fileID: 2746594993270182574}
   m_Layer: 5
   m_Name: Skill
@@ -1637,19 +1620,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2763792098472612197}
   m_CullTransparentMesh: 0
---- !u!114 &4533964204896582513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2763792098472612197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b77205d6228b4b040b378fe4b13678c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _hotKey: 117
 --- !u!114 &2746594993270182574
 MonoBehaviour:
   m_ObjectHideFlags: 0

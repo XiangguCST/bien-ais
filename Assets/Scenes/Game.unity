@@ -1849,7 +1849,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _layerPriority: 3
-  applyToChildren: 1
 --- !u!1 &538707071
 GameObject:
   m_ObjectHideFlags: 0
@@ -4000,7 +3999,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _layerPriority: 3
-  applyToChildren: 1
 --- !u!1 &2056372055
 GameObject:
   m_ObjectHideFlags: 0
