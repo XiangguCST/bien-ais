@@ -12,7 +12,6 @@ public class SkillSlot : MonoBehaviour
     private void InitSkillSlot()
     {
         _imgIcon = transform.Find("Icon").GetComponent<Image>();
-        _imgOutline = transform.Find("Icon/OutLine").GetComponent<Image>();
         _imgMask = transform.Find("Icon/Mask").GetComponent<Image>();
         _txtCoolDown = transform.Find("Icon/CoolDown").GetComponent<Text>();
         _txtHotKey = transform.Find("Icon/HotKey").GetComponent<Text>();
@@ -75,16 +74,12 @@ public class SkillSlot : MonoBehaviour
         // 检测快捷键是否被按下
         if (Input.GetKey(_hotKey))
         {
-            Color newColor = Color.cyan; 
-            newColor.a = _imgOutline.color.a;
-            _imgOutline.color = newColor;// 按键按下时，边框变为天蓝色
+            _imgIcon.material.SetColor("_OutlineColor", Color.cyan); // 按键按下时，边框变为天蓝色
             _imgIcon.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f); // 缩小图标以模拟按下效果
         }
         else
         {
-            Color newColor = Color.white; 
-            newColor.a = _imgOutline.color.a;
-            _imgOutline.color = newColor; // 按键没有被按下时，边框变为白色
+            _imgIcon.material.SetColor("_OutlineColor", Color.white); // 按键没有被按下时，边框变为白色
             _imgIcon.transform.localScale = Vector3.one; // 恢复图标大小
         }
 
@@ -208,14 +203,13 @@ public class SkillSlot : MonoBehaviour
         }
         else
         {
-            Debug.Log(_skill.SkillInfo._name + "暂时无法使用");
+            //Debug.Log(_skill.SkillInfo._name + "暂时无法使用");
         }
     }
 
     public KeyCode _hotKey; // 绑定快捷键
     [SerializeField]
     public SkillInstance _skill; // 技能
-    Image _imgOutline; // 外边框
     Image _imgIcon; // 图标
     Image _imgMask; // 遮挡
     Text _txtCoolDown; // 冷却显示

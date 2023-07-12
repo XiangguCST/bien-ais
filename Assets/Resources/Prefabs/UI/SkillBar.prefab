@@ -1126,6 +1126,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 119373107343638396}
     m_Modifications:
+    - target: {fileID: 1277829649, guid: c42d2357bf84af04db06fa9fe8b3d028, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1812276511803217189, guid: c42d2357bf84af04db06fa9fe8b3d028,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1235,6 +1239,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Skill6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1812276512428757945, guid: c42d2357bf84af04db06fa9fe8b3d028,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1812276512452942661, guid: c42d2357bf84af04db06fa9fe8b3d028,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6611631622421707768, guid: c42d2357bf84af04db06fa9fe8b3d028,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c42d2357bf84af04db06fa9fe8b3d028, type: 3}
