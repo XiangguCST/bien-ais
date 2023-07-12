@@ -1394,6 +1394,8 @@ GameObject:
   - component: {fileID: 425581684341433571}
   - component: {fileID: 425581684341433572}
   - component: {fileID: 425581684341433570}
+  - component: {fileID: 386282337886913440}
+  - component: {fileID: 9021898920570022985}
   m_Layer: 5
   m_Name: SkillInfoUI
   m_TagString: Untagged
@@ -1422,10 +1424,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.3874, y: 11}
-  m_SizeDelta: {x: 104.77489, y: 147.70969}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 962.3874, y: 551}
+  m_SizeDelta: {x: 104.7749, y: 147.70969}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &425581684341433571
 CanvasRenderer:
@@ -1477,6 +1479,40 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 0.23529412}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!114 &386282337886913440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425581684341433574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d86e530667493e40bfe226ce292d46a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _layerPriority: 2
+--- !u!223 &9021898920570022985
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425581684341433574}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 2
+  m_TargetDisplay: 0
 --- !u!1 &425581684357406697
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,8 +14,6 @@ public class UILayerController : MonoBehaviour
     }
 
     public LayerPriority _layerPriority;
-    public bool applyToChildren = true;
-
     private Canvas _canvas;
 
     private void Awake()
@@ -46,25 +44,6 @@ public class UILayerController : MonoBehaviour
             if (raycaster == null)
             {
                 gameObject.AddComponent<GraphicRaycaster>();
-            }
-        }
-
-        // If applyToChildren is false, remove Canvas and GraphicRaycaster from children
-        if (!applyToChildren)
-        {
-            foreach (Transform child in transform)
-            {
-                Canvas childCanvas = child.GetComponent<Canvas>();
-                if (childCanvas != null)
-                {
-                    DestroyImmediate(childCanvas);
-                }
-
-                GraphicRaycaster childRaycaster = child.GetComponent<GraphicRaycaster>();
-                if (childRaycaster != null)
-                {
-                    DestroyImmediate(childRaycaster);
-                }
             }
         }
     }
