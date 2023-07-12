@@ -8,6 +8,8 @@ public interface IStatusRemovalStrategy
     void OnSkillCasting(Character owner, SkillInstance skill);
     void AfterSkillCast(Character owner, SkillInstance skill);
     void InterruptSkill(Character owner, SkillInstance skill);
+
+    List<CharacterStatusType> RequireStatus { get; }
 }
 
 public class RemoveStatuses : IStatusRemovalStrategy
@@ -20,6 +22,7 @@ public class RemoveStatuses : IStatusRemovalStrategy
             _requireStatus = requireStatus;
     }
 
+    public List<CharacterStatusType> RequireStatus => _requireStatus;
 
     public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
@@ -55,6 +58,9 @@ public class DoNotRemoveStatuses : IStatusRemovalStrategy
     {
         _requireStatus = new List<CharacterStatusType> { CharacterStatusType.None};
     }
+
+    public List<CharacterStatusType> RequireStatus => _requireStatus;
+
 
     public void InterruptSkill(Character owner, SkillInstance skill)
     {

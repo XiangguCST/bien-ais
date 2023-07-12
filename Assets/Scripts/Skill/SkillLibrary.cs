@@ -23,7 +23,7 @@ public class SkillLibrary
             new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), 
             new FixedDirectionMovement(MovementDirection.Forward, 6), 
             new DoNotHitCheck(), new NonChainSkillStrategy(), new AddBuffDuration(BuffType.ImmunityAll, 1)));
-        AddSkill(new Skill("侧身闪", "ceshenshan", 0, 2, 0, 8f, 0.33f, 0.3f, 0,
+        AddSkill(new Skill("侧身闪", "ceshenshan", 0, 0, 0, 8f, 0.33f, 0.3f, 0,
            SkillUsabilityPriority.Normal, SkillInterruptPriority.High, false,
            new DoNotRemoveStatuses(), new DoNotAddStatusEffect(), new RushToBackTargetMovement(),
            new DoNotHitCheck(), new NonChainSkillStrategy(), new AddBuffDuration(BuffType.ImmunityAll))

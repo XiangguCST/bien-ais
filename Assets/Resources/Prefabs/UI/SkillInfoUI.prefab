@@ -1394,6 +1394,7 @@ GameObject:
   - component: {fileID: 425581684341433571}
   - component: {fileID: 425581684341433572}
   - component: {fileID: 386282337886913440}
+  - component: {fileID: 3127165471333359236}
   - component: {fileID: 9021898920570022985}
   m_Layer: 5
   m_Name: SkillInfoUI
@@ -1423,10 +1424,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 962.3874, y: 551}
-  m_SizeDelta: {x: 104.7749, y: 147.70969}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 2.3873901, y: 11}
+  m_SizeDelta: {x: 104.7749, y: 147.70972}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &425581684341433571
 CanvasRenderer:
@@ -1476,6 +1477,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _layerPriority: 2
+--- !u!114 &3127165471333359236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425581684341433574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf64205d7097ef47902aab67e7d23fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &9021898920570022985
 Canvas:
   m_ObjectHideFlags: 0
@@ -1564,7 +1577,7 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 60
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 1
     m_MaxSize: 120
     m_Alignment: 0
@@ -1735,7 +1748,6 @@ GameObject:
   - component: {fileID: 6656076622666811531}
   - component: {fileID: 2363203885160549428}
   - component: {fileID: 7314702775065701428}
-  - component: {fileID: 242739244088986563}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -1798,24 +1810,3 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!223 &242739244088986563
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7259154204458106807}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 2
-  m_TargetDisplay: 0

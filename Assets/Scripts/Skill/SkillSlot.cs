@@ -17,7 +17,16 @@ public class SkillSlot : MonoBehaviour
         _txtHotKey = transform.Find("Icon/HotKey").GetComponent<Text>();
         _txtName = transform.Find("SkillName").GetComponent<Text>();
         _txtName.text = "";
-        _txtCoolDown.text = ""; 
+        _txtCoolDown.text = "";
+
+        // 创建一个提示UI控制器
+        _tipUIController = TooltipUIController<SkillInfoUI>.GetInstance("Prefabs/UI/SkillInfoUI");
+
+        // 添加鼠标检测器
+        _uIMouseHoverDetector = new UIMouseHoverDetector(_imgIcon.gameObject);
+        _uIMouseHoverDetector.OnMouseHoverEnter += HandleMouseHoverEnter;
+        _uIMouseHoverDetector.OnMouseHoverExit += HandleMouseHoverExit;
+        _uIMouseHoverDetector.OnMouseHovering += HandleMouseHovering;
         UpdateHotKeyDisplay();
 
         // 给图标创建一个新的材质实例
@@ -27,39 +36,31 @@ public class SkillSlot : MonoBehaviour
         _bInit = true;
     }
 
+    private void HandleMouseHovering()
+    {
+        // 更新UI位置至鼠标位置
+        _tipUIController.UpdateUIPositionToMouse();
+    }
+
+    private void HandleMouseHoverEnter()
+    {
+        if (_skill == null) return;
+
+        // 显示UI
+        _tipUIController.ShowTooltipUI();
+        SkillInfoUI skillInfoUI = _tipUIController.GetTooltipUIScript();
+        skillInfoUI.UpdateUI(this);
+    }
+
+    private void HandleMouseHoverExit()
+    {
+        // 隐藏UI
+        _tipUIController.HideTooltipUI();
+    }
+
     void UpdateHotKeyDisplay()
     {
-        // 设置快捷键显示
-        switch (_hotKey)
-        {
-            case KeyCode.Keypad0:
-            case KeyCode.Keypad1:
-            case KeyCode.Keypad2:
-            case KeyCode.Keypad3:
-            case KeyCode.Keypad4:
-            case KeyCode.Keypad5:
-            case KeyCode.Keypad6:
-            case KeyCode.Keypad7:
-            case KeyCode.Keypad8:
-            case KeyCode.Keypad9:
-                _txtHotKey.text = (_hotKey - KeyCode.Keypad0).ToString();
-                break;
-            case KeyCode.UpArrow:
-                _txtHotKey.text = "↑";
-                break;
-            case KeyCode.DownArrow:
-                _txtHotKey.text = "↓";
-                break;
-            case KeyCode.LeftArrow:
-                _txtHotKey.text = "←";
-                break;
-            case KeyCode.RightArrow:
-                _txtHotKey.text = "→";
-                break;
-            default:
-                _txtHotKey.text = _hotKey.ToString();
-                break;
-        }
+        _txtHotKey.text = CommonUtility.GetHotKeyString(_hotKey);
     }
 
     private void Update()
@@ -210,10 +211,13 @@ public class SkillSlot : MonoBehaviour
     public KeyCode _hotKey; // 绑定快捷键
     [SerializeField]
     public SkillInstance _skill; // 技能
-    Image _imgIcon; // 图标
+    [HideInInspector]
+    public Image _imgIcon; // 图标
     Image _imgMask; // 遮挡
     Text _txtCoolDown; // 冷却显示
     Text _txtHotKey; // 快捷键显示
     Text _txtName; // 技能名称
+    UIMouseHoverDetector _uIMouseHoverDetector;
     bool _bInit = false;
+    TooltipUIController<SkillInfoUI> _tipUIController;
 }

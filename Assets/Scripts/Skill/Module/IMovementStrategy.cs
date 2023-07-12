@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.ComponentModel;
+using UnityEngine;
 
 /// <summary>
 /// 技能移动策略
@@ -207,6 +208,9 @@ public class NoMovement : IMovementStrategy
 /// </summary>
 public enum MovementDirection
 {
+    [Description("向前方移动")]
     Forward,
+    [Description("向后方移动")]
     Backward
 }
+

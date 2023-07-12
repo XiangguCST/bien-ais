@@ -27,8 +27,8 @@ public class AddStatusEffect : IStatusAdditionStrategy
         }
     }
 
-    CharacterStatusType _addStatus; // 附加异常状态
-    float _statusTime; // 异常状态时间
+    public CharacterStatusType _addStatus; // 附加异常状态
+    public float _statusTime; // 异常状态时间
 }
 
 /// <summary>

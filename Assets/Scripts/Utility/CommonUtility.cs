@@ -4,17 +4,6 @@ using UnityEngine;
 
 public class CommonUtility
 {
-    public static bool IsCrit(float critChange = 0.2f)
-    {
-        // 生成一个0到1之间的随机数
-        float randomValue = UnityEngine.Random.value;
-
-        // 检查随机数是否小于暴击几率
-        bool isCrit = randomValue < critChange;
-
-        return isCrit;
-    }
-
     public static void SetCharacterColor(Character other, Color newColor)
     {
         var mpb = new MaterialPropertyBlock();
@@ -25,4 +14,33 @@ public class CommonUtility
     }
 
     public static string fillColorProperty = "_FillColor";
+
+    public static string GetHotKeyString(KeyCode hotKey)
+    {
+        // 设置快捷键显示
+        switch (hotKey)
+        {
+            case KeyCode.Keypad0:
+            case KeyCode.Keypad1:
+            case KeyCode.Keypad2:
+            case KeyCode.Keypad3:
+            case KeyCode.Keypad4:
+            case KeyCode.Keypad5:
+            case KeyCode.Keypad6:
+            case KeyCode.Keypad7:
+            case KeyCode.Keypad8:
+            case KeyCode.Keypad9:
+                return (hotKey - KeyCode.Keypad0).ToString();
+            case KeyCode.UpArrow:
+               return  "↑";
+            case KeyCode.DownArrow:
+               return  "↓";
+            case KeyCode.LeftArrow:
+               return  "←";
+            case KeyCode.RightArrow:
+               return  "→";
+            default:
+               return  hotKey.ToString();
+        }
+    }
 }

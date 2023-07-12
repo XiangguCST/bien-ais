@@ -5,6 +5,7 @@ using UnityEngine;
 public interface IBuffAdditionStrategy
 {
     void BeforeSkillCast(Character owner, SkillInstance skill);
+    BuffType? BuffType { get; }
 }
 
 public class AddBuffDuration : IBuffAdditionStrategy
@@ -20,8 +21,10 @@ public class AddBuffDuration : IBuffAdditionStrategy
         owner._buffManager.AddBuffTime(_buffType, _duration == -1 ? skill.SkillInfo._castTime : _duration);
     }
 
-    BuffType _buffType;
-    float _duration;
+    public BuffType? BuffType => _buffType;
+
+    private BuffType _buffType;
+    public float _duration;
 }
 
 public class AddBuffCount : IBuffAdditionStrategy
@@ -36,6 +39,9 @@ public class AddBuffCount : IBuffAdditionStrategy
     {
         owner._buffManager.AddBuffCount(_buffType, _count);
     }
+
+    public BuffType? BuffType => _buffType;
+
     BuffType _buffType;
     int _count;
 }
@@ -45,4 +51,6 @@ public class DoNotAddBuff : IBuffAdditionStrategy
     public void BeforeSkillCast(Character owner, SkillInstance skill)
     {
     }
+
+    public BuffType? BuffType => null;
 }

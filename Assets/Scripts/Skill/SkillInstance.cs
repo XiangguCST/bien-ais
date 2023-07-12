@@ -259,14 +259,12 @@ public class SkillInstance
     {
         _owner.ConsumeEnergy(-SkillInfo._energyRecover);
         var target = _owner._targetFinder._nearestEnemy;
-        int rawDamage = (int)(_owner._attr.atk * SkillInfo._rate);
-        int damage = (int)UnityEngine.Random.Range(0.7f * rawDamage, 1.3f * rawDamage);
-        // 暴击
-        bool bCrit = CommonUtility.IsCrit(0.2f);
-        if (bCrit)
-        {
-            damage *= 3;
-        }
+        int damage = SkillDamageCalculator.CalcDamage(this);
+        
+        // 暴击判定
+        bool bCrit;
+        damage = SkillDamageCalculator.CritTest(damage, out bCrit);
+
         SkillInfo._statusAdditionStrategy.OnDealDamage(_owner, target, this);
         if (damage > 0)
         {
@@ -310,4 +308,55 @@ public class SkillInstance
     public List<SkillInstance> _chainSkills = new List<SkillInstance>(); // 连锁技能列表
     private float _chainSkillEnableUntil = 0f; // 记录连锁技能的可用时间戳
     private Coroutine _castCoroutine;
+}
+
+public class SkillDamageCalculator
+{
+    /// <summary>
+    /// 判定是否暴击
+    /// </summary>
+    /// <returns></returns>
+    public static int CritTest(int damage, out bool bCrit)
+    {
+        // 生成一个0到1之间的随机数
+        float randomValue = UnityEngine.Random.value;
+
+        // 检查随机数是否小于暴击几率
+        bCrit = randomValue < _critChange;
+        if(bCrit)
+        {
+            damage = (int)(damage * _critRate);
+        }
+        return damage;
+    }
+
+    /// <summary>
+    /// 计算伤害
+    /// </summary>
+    /// <param name="skillInstance"></param>
+    /// <returns></returns>
+    internal static int CalcDamage(SkillInstance skillInstance)
+    {
+        int lowDamage;
+        int highDamage;
+        GetDamageRange(skillInstance, out lowDamage, out highDamage);
+        return UnityEngine.Random.Range(lowDamage, highDamage);
+    }
+
+    public static void GetDamageRange(SkillInstance skillInstance, out int lowDamage, out int highDamage)
+    {
+        int rawDamage = GetRawDamage(skillInstance);
+        lowDamage = (int)(_lowRate * rawDamage);
+        highDamage = (int)(_highRate * rawDamage);
+    }
+
+    private static int GetRawDamage(SkillInstance skillInstance)
+    {
+        return (int)(skillInstance._owner._attr.atk * skillInstance.SkillInfo._rate);
+    }
+
+    public static readonly float _lowRate = 0.7f; // 最低伤害倍率
+    public static readonly float _highRate = 1.3f; // 最高伤害倍率
+    public static readonly float _critChange = 0.2f; // 暴击率
+    public static readonly float _critRate = 3f; // 爆伤倍率
 }

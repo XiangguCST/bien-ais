@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 /// <summary>
@@ -19,9 +20,9 @@ public class CharacterStatusManager
     public void AddStatus(CharacterStatusType status, float duration)
     {
         if (status == CharacterStatusType.None) return;
-        else if (status == CharacterStatusType.Stun) _owner.ShowStatus("眩晕");
-        else if (status == CharacterStatusType.Weakness) _owner.ShowStatus("虚弱");
-        else if (status == CharacterStatusType.Knockdown) _owner.ShowStatus("击倒");
+
+        _owner.ShowStatus(status.GetDescription()); // 显示控制字体
+
         statusTimers.AddOrUpdate(status, duration, (_, existingDuration) => Math.Max(existingDuration, duration));
         UpdateCurrentStatus();
         OnStatusEffectApplied?.Invoke();
@@ -96,11 +97,16 @@ public class CharacterStatusManager
 
 public enum CharacterStatusType
 {
-    None,     // 无异常状态
-    Silence,  // 沉默状态（无法施放技能）
-    Stun,     // 眩晕
-    Weakness, // 虚弱
-    Knockdown // 击倒
+    [Description("无异常状态")]
+    None,
+    [Description("沉默状态")]
+    Silence,
+    [Description("眩晕")]
+    Stun,
+    [Description("虚弱")]
+    Weakness,
+    [Description("击倒")]
+    Knockdown
 }
 
 
