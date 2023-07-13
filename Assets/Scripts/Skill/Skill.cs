@@ -10,9 +10,7 @@ public class Skill : IComponentContainer
     public Skill(string name, string animName, int energyCost, int energyRecover,
         float rate,float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
         SkillUsabilityPriority priority, SkillInterruptPriority interruptPriority, bool bBreakDefense,
-        IStatusRemovalStrategy statusRemovalStrategy, IStatusAdditionStrategy statusAdditionStrategy,
-        IHitCheckStrategy hitCheckStrategy, IChainStrategy chainStrategy,
-        IBuffAdditionStrategy buffAdditionStrategy)
+        IChainStrategy chainStrategy)
     {
         _name = name;
         _animName = animName;
@@ -27,10 +25,6 @@ public class Skill : IComponentContainer
         _interruptPriority = interruptPriority;
         _bBreakDefense = bBreakDefense;
 
-        _statusRemovalStrategy = statusRemovalStrategy;
-        _statusAdditionStrategy = statusAdditionStrategy;
-        _hitCheckStrategy = hitCheckStrategy;
-        _buffAdditionStrategy = buffAdditionStrategy;
         _chainStrategy = chainStrategy;
     }
 
@@ -68,10 +62,6 @@ public class Skill : IComponentContainer
     public bool _bBreakDefense; // 是否无视防御
     public List<Skill> _chainSkills = new List<Skill>(); // 连锁技能列表
 
-    public IStatusRemovalStrategy _statusRemovalStrategy; // 解除异常状态策略
-    public IStatusAdditionStrategy _statusAdditionStrategy; // 附加异常状态策略
-    public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
-    public IBuffAdditionStrategy _buffAdditionStrategy; // buff添加策略
     public IChainStrategy _chainStrategy; // 技能连锁策略
 }
 

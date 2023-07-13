@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IBuffAdditionStrategy
+public interface IBuffAdditionEffect : ISkillEffect
 {
     void BeforeSkillCast(Character owner, SkillInstance skill);
     BuffType? BuffType { get; }
 }
 
-public class AddBuffDuration : IBuffAdditionStrategy
+public class AddBuffDurationEffect : IBuffAdditionEffect
 {
-    public AddBuffDuration(BuffType buffType, float duration = -1)
+    public AddBuffDurationEffect(BuffType buffType, float duration = -1)
     {
         _buffType = buffType;
         _duration = duration;
@@ -27,9 +27,9 @@ public class AddBuffDuration : IBuffAdditionStrategy
     public float _duration;
 }
 
-public class AddBuffCount : IBuffAdditionStrategy
+public class AddBuffCountEffect : IBuffAdditionEffect
 {
-    public AddBuffCount(BuffType buffType, int count)
+    public AddBuffCountEffect(BuffType buffType, int count)
     {
         _buffType = buffType;
         _count = count;
@@ -46,11 +46,4 @@ public class AddBuffCount : IBuffAdditionStrategy
     int _count;
 }
 
-public class DoNotAddBuff : IBuffAdditionStrategy
-{
-    public void BeforeSkillCast(Character owner, SkillInstance skill)
-    {
-    }
 
-    public BuffType? BuffType => null;
-}

@@ -1,50 +1,36 @@
-﻿public interface IHitCheckStrategy
+﻿public interface IHitCheckStrategy : ISkillEffect
 {
-    bool CheckHit(Character owner, Character target, SkillInstance skill, out bool bNeedCheckHit);
+    bool CheckHit(Character owner, Character target, SkillInstance skill);
 }
 
-/// <summary>
-/// 无需命中判定（通常为位移技能）
-/// </summary>
-public class DoNotHitCheck : IHitCheckStrategy
+public class RangeHitCheckStrategy : IHitCheckStrategy
 {
-    public bool CheckHit(Character owner, Character target, SkillInstance skill, out bool bNeedCheckHit)
+    public RangeHitCheckStrategy(float range)
     {
-        bNeedCheckHit = false;
-        return true;
-    }
-}
-
-public class RangeHitCheck : IHitCheckStrategy
-{
-    public RangeHitCheck(float range)
-    {
-        _range = range;
+        Range = range;
     }
 
-    public bool CheckHit(Character owner, Character target, SkillInstance skill, out bool bNeedCheckHit)
+    public bool CheckHit(Character owner, Character target, SkillInstance skill)
     {
         var finder = owner._targetFinder;
-        bNeedCheckHit = true;
-        return _range < 0 || finder._nearestDistance <= _range;
+        return Range < 0 || finder._nearestDistance <= Range;
     }
-    private float _range; // 范围(小于0表示无限范围)
+    public float Range { get; set; } // 范围(小于0表示无限范围)
 }
 
-public class FaceTargetHitCheck : IHitCheckStrategy
+public class FaceTargetHitCheckStrategy : IHitCheckStrategy
 {
-    public FaceTargetHitCheck(float range)
+    public FaceTargetHitCheckStrategy(float distance)
     {
-        _range = range;
+        Distance = distance;
     }
 
-    public bool CheckHit(Character owner, Character target, SkillInstance skill, out bool bNeedCheckHit)
+    public bool CheckHit(Character owner, Character target, SkillInstance skill)
     {
-        bNeedCheckHit = true;
         var finder = owner._targetFinder;
         if (!finder._isFindTarget)
             return false;
-        return _range < 0 || finder._nearestDistance <= _range;
+        return Distance < 0 || finder._nearestDistance <= Distance;
     }
-    private float _range; // 范围(小于0表示无限范围)
+    public float Distance{ get; set; }// 范围(小于0表示无限范围)
 }

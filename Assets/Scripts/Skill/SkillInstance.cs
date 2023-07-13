@@ -54,8 +54,22 @@ public class SkillInstance
         if (SkillInfo._chainStrategy.IsChainSkill() && Time.time >= _chainSkillEnableUntil)
             return false;
 
-        if (!SkillInfo._statusRemovalStrategy.IsSkillUsable(this) ||
-            _owner._energy < SkillInfo._energyCost)
+        if (SkillInfo.HasComponent<StatusRemovalEffect>())
+        {
+            var statusRemove = SkillInfo.GetComponent<StatusRemovalEffect>();
+            if (!statusRemove.IsSkillUsable(this))
+                return false;
+        }
+        else
+        {
+            // 判断是否角色处于异常状态
+            if (_owner._stateManager.GetCurrentStatus() != CharacterStatusType.None)
+            {
+                return false;
+            }
+        }
+
+        if (_owner._energy < SkillInfo._energyCost)
             return false;
 
         return true;
@@ -118,8 +132,14 @@ public class SkillInstance
         {
             SkillInfo.GetComponent<IMovementEffect>().BeforeMove(_owner, this);
         }
-        SkillInfo._statusRemovalStrategy.BeforeSkillCast(_owner, this);
-        SkillInfo._buffAdditionStrategy.BeforeSkillCast(_owner, this);
+        if (SkillInfo.HasComponent<StatusRemovalEffect>())
+        {
+            SkillInfo.GetComponent<StatusRemovalEffect>().OnRemoveStatusEffect(_owner, this);
+        }
+        if (SkillInfo.HasComponent<IBuffAdditionEffect>())
+        {
+            SkillInfo.GetComponent<IBuffAdditionEffect>().BeforeSkillCast(_owner, this);
+        }
         BeforeSkillCast();
         while (_castTimer > 0f)
         {
@@ -140,7 +160,6 @@ public class SkillInstance
             {
                 SkillInfo.GetComponent<IMovementEffect>().OnMoving(_owner, this);
             }
-            SkillInfo._statusRemovalStrategy.OnSkillCasting(_owner, this);
 
             yield return null;
         }
@@ -150,7 +169,6 @@ public class SkillInstance
         {
             SkillInfo.GetComponent<IMovementEffect>().AfterMove(_owner, this);
         }
-        SkillInfo._statusRemovalStrategy.AfterSkillCast(_owner, this);
         AfterSkillCast();
     }
 
@@ -255,13 +273,14 @@ public class SkillInstance
     /// <returns></returns>
     bool CheckHit()
     {
-        var target = _owner._targetFinder._nearestEnemy;
-        bool bNeedCheckHit = true;
-        if (!SkillInfo._hitCheckStrategy.CheckHit(_owner, target, this, out bNeedCheckHit))
-            return false;
-        if (!bNeedCheckHit)
+        // 不需要攻击判定直接返回
+        if (!SkillInfo.HasComponent<IHitCheckStrategy>())
             return true;
 
+        var target = _owner._targetFinder._nearestEnemy;
+        var hitCheck = SkillInfo.GetComponent<IHitCheckStrategy>();
+        if (!hitCheck.CheckHit(_owner, target, this))
+            return false;
         return CheckAndHandleBuffs(target);
     }
 
@@ -277,7 +296,11 @@ public class SkillInstance
         bool bCrit;
         damage = SkillDamageCalculator.CritTest(damage, out bCrit);
 
-        SkillInfo._statusAdditionStrategy.OnDealDamage(_owner, target, this);
+        if(SkillInfo.HasComponent<StatusAdditionEffect>())
+        {
+            var statusAdd = SkillInfo.GetComponent<StatusAdditionEffect>();
+            statusAdd.OnDealDamage(_owner, target, this);
+        }
         if (damage > 0)
         {
             target.TakeDamage(damage, bCrit);
@@ -290,7 +313,6 @@ public class SkillInstance
         if (_castCoroutine != null)
             CoroutineRunner.StopCoroutine(_castCoroutine);
         AfterSkillCast();
-        SkillInfo._statusRemovalStrategy.InterruptSkill(_owner, this);
         PlayerCollisionManager.Instance.EnableCollision(_owner);
     }
 

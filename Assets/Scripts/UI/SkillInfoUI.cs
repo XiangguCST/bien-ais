@@ -57,16 +57,17 @@ public class SkillInfoUI : MonoBehaviour
         {
             _mainDescription.text = $"{lowDamage}-{highDamage}伤害";
         }
-        else if(skill.SkillInfo._buffAdditionStrategy.BuffType == BuffType.ShadowClone)
+        else if(skill.SkillInfo.HasComponent<IBuffAdditionEffect>() && skill.SkillInfo.GetComponent<IBuffAdditionEffect>().BuffType == BuffType.ShadowClone)
         {
             _mainDescription.text = $"在{skill.SkillInfo._castTime}秒内反击";
         }
-        else if (skill.SkillInfo._statusRemovalStrategy is RemoveStatuses && skill.SkillInfo._statusRemovalStrategy.RequireStatus.Count > 0)
+        else if (skill.SkillInfo.HasComponent<StatusRemovalEffect>())
         {
+            var statusRemove = skill.SkillInfo.GetComponent<StatusRemovalEffect>();
             _mainDescription.text = $"脱离";
-            for (int i = 0; i < skill.SkillInfo._statusRemovalStrategy.RequireStatus.Count; ++i)
+            for (int i = 0; i < statusRemove.RemovalStatus.Count; ++i)
             {
-                CharacterStatusType status = skill.SkillInfo._statusRemovalStrategy.RequireStatus[i];
+                CharacterStatusType status = statusRemove.RemovalStatus[i];
                 if (i != 0) _mainDescription.text += "、";
                 _mainDescription.text += status.GetDescription();
             }
@@ -92,10 +93,10 @@ public class SkillInfoUI : MonoBehaviour
             _mainDescription.text = $"无效果";
         }
 
-        if(skill.SkillInfo._statusAdditionStrategy is AddStatusEffect)
+        if(skill.SkillInfo.HasComponent<StatusAdditionEffect>())
         {
-            AddStatusEffect addStatus = skill.SkillInfo._statusAdditionStrategy as AddStatusEffect;
-            _subDescription.text = $"命中后{addStatus._addStatus.GetDescription()}{addStatus._statusTime}秒";
+            var addStatus = skill.SkillInfo.GetComponent<StatusAdditionEffect>();
+            _subDescription.text = $"命中后 {addStatus.AddStatus.GetDescription()}{addStatus.StatusTime}秒";
         }
         else
         {
@@ -103,9 +104,10 @@ public class SkillInfoUI : MonoBehaviour
         }
 
         _otherDescription.text = $"";
-        if (skill.SkillInfo._buffAdditionStrategy.BuffType == BuffType.ImmunityAll)
+
+        if(skill.SkillInfo.HasComponent<AddBuffDurationEffect>() && skill.SkillInfo.GetComponent<AddBuffDurationEffect>().BuffType == BuffType.ImmunityAll)
         {
-            AddBuffDuration addBuffDuration = skill.SkillInfo._buffAdditionStrategy as AddBuffDuration;
+            AddBuffDurationEffect addBuffDuration = skill.SkillInfo.GetComponent<AddBuffDurationEffect>();
             _otherDescription.text += $"施展状态下抵抗伤害和异常状态\n";
             if (addBuffDuration._duration != -1)
             {
@@ -127,12 +129,20 @@ public class SkillInfoUI : MonoBehaviour
             _txtDistance.text = $"原地";
         }
 
-        if (true)
+        if (skill.SkillInfo.HasComponent<RangeHitCheckStrategy>())
+        {
+            var rangeHitCheck = skill.SkillInfo.GetComponent<RangeHitCheckStrategy>();
+            _txtRange.text = $"半径{rangeHitCheck.Range}m";
+        }
+        else if (skill.SkillInfo.HasComponent<FaceTargetHitCheckStrategy>())
+        {
+            var faceCheck = skill.SkillInfo.GetComponent<FaceTargetHitCheckStrategy>();
+            _txtRange.text = $"前方{faceCheck.Distance}m";
+        }
+        else
         {
             _txtRange.text = $"单一目标";
-            //_txtRange.text = $"{3}m";
         }
-
         _txtCoolDown.text = $"{coolDownTime}秒";
     }
 
