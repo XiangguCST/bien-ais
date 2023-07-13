@@ -66,11 +66,43 @@ public class ComponentManager
     /// 移除组件
     /// </summary>
     /// <typeparam name="T">组件类型</typeparam>
-    public void RemoveComponent<T>() where T : IComponent
+    /// <param name="component">组件实例</param>
+    public void RemoveComponent<T>(T component) where T : IComponent
     {
-        Type type = typeof(T);
-        _components.Remove(type);
+        Type type = component.GetType();
+
+        // 从具体类型的列表中移除
+        if (_components.ContainsKey(type))
+        {
+            _components[type].Remove(component);
+            if (_components[type].Count == 0)
+                _components.Remove(type);
+        }
+
+        // 从基类和接口类型的列表中移除
+        foreach (Type interfaceType in type.GetInterfaces().Where(i => typeof(IComponent).IsAssignableFrom(i)))
+        {
+            if (_components.ContainsKey(interfaceType))
+            {
+                _components[interfaceType].Remove(component);
+                if (_components[interfaceType].Count == 0)
+                    _components.Remove(interfaceType);
+            }
+        }
+        Type baseType = type.BaseType;
+        while (baseType != null && typeof(IComponent).IsAssignableFrom(baseType))
+        {
+            if (_components.ContainsKey(baseType))
+            {
+                _components[baseType].Remove(component);
+                if (_components[baseType].Count == 0)
+                    _components.Remove(baseType);
+            }
+            baseType = baseType.BaseType;
+        }
     }
+
+
 
     /// <summary>
     /// 获取组件
@@ -139,10 +171,12 @@ public static class ComponentContainerExtensions
     /// </summary>
     /// <typeparam name="T">组件类型</typeparam>
     /// <param name="container">组件容器</param>
-    public static void RemoveComponent<T>(this IComponentContainer container) where T : IComponent
+    /// <param name="component">组件实例</param>
+    public static void RemoveComponent<T>(this IComponentContainer container, T component) where T : IComponent
     {
-        container.GetManager().RemoveComponent<T>();
+        container.GetManager().RemoveComponent(component);
     }
+
 
     /// <summary>
     /// 获取容器中的组件
