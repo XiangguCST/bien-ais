@@ -18,16 +18,16 @@ public class TargetRequired : ISkillUsability
 {
     public TargetRequired(float requiredTargetDistance)
     {
-        _requiredTargetDistance = requiredTargetDistance;
+        RequiredTargetDistance = requiredTargetDistance;
     }
 
     public bool IsSkillUsable(SkillInstance skill)
     {
         var finder = skill._owner._targetFinder;
-        return finder._isFindTarget && finder._nearestDistance <= _requiredTargetDistance;
+        return finder._isFindTarget && finder._nearestDistance <= RequiredTargetDistance;
     }
 
-    float _requiredTargetDistance; // 表示技能释放所需的目标距离
+    public float RequiredTargetDistance{ get; set; } // 表示技能释放所需的目标距离
 }
 
 /// <summary>

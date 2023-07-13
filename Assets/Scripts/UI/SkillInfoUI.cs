@@ -119,8 +119,12 @@ public class SkillInfoUI : MonoBehaviour
 
         if(skill.SkillInfo.HasComponent<TargetRequired>())
         {
-            _txtDistance.text = $"{999}m";
-            //_txtDistance.text = $"原地";
+            var targetRequired = skill.SkillInfo.GetComponent<TargetRequired>();
+            _txtDistance.text = $"{targetRequired.RequiredTargetDistance}m";
+        }
+        else
+        {
+            _txtDistance.text = $"原地";
         }
 
         if (true)

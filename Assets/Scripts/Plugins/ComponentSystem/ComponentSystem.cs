@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-// 基础组件接口
+// 基础组件接口（你的组件需要继承这个）
 public interface IComponent
 {
-    // 这里可以添加接口方法
+    // 这里不加方法
 }
 
 // 容器接口，用于管理和获取组件管理器
