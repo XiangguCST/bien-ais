@@ -18,6 +18,8 @@ public class SkillInfoUI : MonoBehaviour
         _txtHotKey = transform.Find("Skill/Icon/HotKey").GetComponent<Text>();
         _imgSkillIcon = transform.Find("Skill/Icon").GetComponent<Image>();
 
+        _txtDistance = transform.Find("InfoSlots/Distance/Info/Text").GetComponent<Text>();
+        _txtRange = transform.Find("InfoSlots/Range/Info/Text").GetComponent<Text>();
         _txtCoolDown = transform.Find("InfoSlots/CoolDown/Info/Text").GetComponent<Text>();
 
 
@@ -71,17 +73,17 @@ public class SkillInfoUI : MonoBehaviour
             
             _mainDescription.text += $"状态";
         }
-        else if (skill.SkillInfo._movementStrategy is FixedDirectionMovement)
+        else if (skill.SkillInfo.HasComponent<FixedDirectionMovement>())
         {
-            FixedDirectionMovement fixedDirectionMovement = skill.SkillInfo._movementStrategy as FixedDirectionMovement;
+            FixedDirectionMovement fixedDirectionMovement = skill.SkillInfo.GetComponent<FixedDirectionMovement>();
             
             _mainDescription.text = fixedDirectionMovement._movementDirection.GetDescription() + fixedDirectionMovement._movementDistance.ToString("f0") + "米";
         }
-        else if (skill.SkillInfo._movementStrategy is RushToTargetMovement)
+        else if (skill.SkillInfo.HasComponent<RushToTargetMovement>())
         {
             _mainDescription.text = $"向敌人突进";
         }
-        else if (skill.SkillInfo._movementStrategy is RushToBackTargetMovement)
+        else if (skill.SkillInfo.HasComponent<RushToBackTargetMovement>())
         {
             _mainDescription.text = $"移动到敌人后方";
         }
@@ -111,13 +113,22 @@ public class SkillInfoUI : MonoBehaviour
             }
         }
         
-        
-
-
-
-
         _txtHotKey.text = CommonUtility.GetHotKeyString(skillSlot._hotKey);
         _imgSkillIcon.sprite = skillSlot._imgIcon.sprite;
+
+
+        if(true)
+        {
+            _txtDistance.text = $"{999}m";
+            //_txtDistance.text = $"原地";
+        }
+
+        if (true)
+        {
+            _txtRange.text = $"单一目标";
+            //_txtRange.text = $"{3}m";
+        }
+
         _txtCoolDown.text = $"{coolDownTime}秒";
     }
 
@@ -130,5 +141,7 @@ public class SkillInfoUI : MonoBehaviour
     Text _txtHotKey;
     Image _imgSkillIcon;
 
+    Text _txtDistance;
+    Text _txtRange;
     Text _txtCoolDown;
 }

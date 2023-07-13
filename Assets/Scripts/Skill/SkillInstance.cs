@@ -111,7 +111,10 @@ public class SkillInstance
     private IEnumerator CastRoutine()
     {
         // 技能释放前
-        SkillInfo._movementStrategy.BeforeSkillCast(_owner, this);
+        if(SkillInfo.HasComponent<IMovementEffect>())
+        {
+            SkillInfo.GetComponent<IMovementEffect>().BeforeMove(_owner, this);
+        }
         SkillInfo._statusRemovalStrategy.BeforeSkillCast(_owner, this);
         SkillInfo._buffAdditionStrategy.BeforeSkillCast(_owner, this);
         BeforeSkillCast();
@@ -130,14 +133,20 @@ public class SkillInstance
             }
 
             // 技能释放过程中
-            SkillInfo._movementStrategy.OnSkillCasting(_owner, this);
+            if (SkillInfo.HasComponent<IMovementEffect>())
+            {
+                SkillInfo.GetComponent<IMovementEffect>().OnMoving(_owner, this);
+            }
             SkillInfo._statusRemovalStrategy.OnSkillCasting(_owner, this);
 
             yield return null;
         }
 
         // 技能释放结束
-        SkillInfo._movementStrategy.AfterSkillCast(_owner, this);
+        if (SkillInfo.HasComponent<IMovementEffect>())
+        {
+            SkillInfo.GetComponent<IMovementEffect>().AfterMove(_owner, this);
+        }
         SkillInfo._statusRemovalStrategy.AfterSkillCast(_owner, this);
         AfterSkillCast();
     }
@@ -278,7 +287,6 @@ public class SkillInstance
         if (_castCoroutine != null)
             CoroutineRunner.StopCoroutine(_castCoroutine);
         AfterSkillCast();
-        SkillInfo._movementStrategy.InterruptSkill(_owner, this);
         SkillInfo._statusRemovalStrategy.InterruptSkill(_owner, this);
         PlayerCollisionManager.Instance.EnableCollision(_owner);
     }

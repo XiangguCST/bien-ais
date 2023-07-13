@@ -5,13 +5,13 @@ using UnityEngine;
 
 // 技能类
 [Serializable]
-public class Skill 
+public class Skill : IComponentContainer
 {
     public Skill(string name, string animName, int energyCost, int energyRecover,
         float rate,float cooldownTime, float castTime, float damageDelay, float globalCooldownTime,
         SkillUsabilityPriority priority, SkillInterruptPriority interruptPriority, bool bBreakDefense,
         IStatusRemovalStrategy statusRemovalStrategy, IStatusAdditionStrategy statusAdditionStrategy,
-        IMovementStrategy movementStrategy, IHitCheckStrategy hitCheckStrategy, IChainStrategy chainStrategy,
+        IHitCheckStrategy hitCheckStrategy, IChainStrategy chainStrategy,
         IBuffAdditionStrategy buffAdditionStrategy)
     {
         _name = name;
@@ -29,7 +29,6 @@ public class Skill
 
         _statusRemovalStrategy = statusRemovalStrategy;
         _statusAdditionStrategy = statusAdditionStrategy;
-        _movementStrategy = movementStrategy;
         _hitCheckStrategy = hitCheckStrategy;
         _buffAdditionStrategy = buffAdditionStrategy;
         _chainStrategy = chainStrategy;
@@ -57,6 +56,13 @@ public class Skill
         }
     }
 
+    private IComponentContainer _container = new ComponentContainerImpl();
+
+    public ComponentManager GetManager()
+    {
+        return _container.GetManager();
+    }
+
     public string _name; // 技能名称
     public string _animName; // 技能动画名称
     public int _energyCost; // 技能消耗的能量值
@@ -72,7 +78,6 @@ public class Skill
     public bool _bBreakDefense; // 是否无视防御
     public List<Skill> _chainSkills = new List<Skill>(); // 连锁技能列表
 
-    public IMovementStrategy _movementStrategy; // 技能移动策略
     public IStatusRemovalStrategy _statusRemovalStrategy; // 解除异常状态策略
     public IStatusAdditionStrategy _statusAdditionStrategy; // 附加异常状态策略
     public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
