@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 技能使用条件接口
 /// </summary>
-public interface ISkillUsability
+public interface ISkillUsability : ISkillEffect
 {
     bool IsSkillUsable(SkillInstance skillInstance);
 }

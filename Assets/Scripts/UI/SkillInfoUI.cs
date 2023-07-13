@@ -117,7 +117,7 @@ public class SkillInfoUI : MonoBehaviour
         _imgSkillIcon.sprite = skillSlot._imgIcon.sprite;
 
 
-        if(true)
+        if(skill.SkillInfo.HasComponent<TargetRequired>())
         {
             _txtDistance.text = $"{999}m";
             //_txtDistance.text = $"原地";

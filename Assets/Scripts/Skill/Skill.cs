@@ -35,16 +35,6 @@ public class Skill : IComponentContainer
     }
 
     /// <summary>
-    /// 添加技能使用条件
-    /// </summary>
-    public Skill AddSkillUsability(ISkillUsability usabilitys)
-    {
-        if(usabilitys != null)
-            _usabilitys.Add(usabilitys);
-        return this;
-    }
-
-    /// <summary>
     /// 添加连锁技能
     /// </summary>
     /// <param name="skill"></param>
@@ -83,7 +73,6 @@ public class Skill : IComponentContainer
     public IHitCheckStrategy _hitCheckStrategy; // 命中判定策略
     public IBuffAdditionStrategy _buffAdditionStrategy; // buff添加策略
     public IChainStrategy _chainStrategy; // 技能连锁策略
-    public List<ISkillUsability> _usabilitys = new List<ISkillUsability>(); // 技能使用条件列表
 }
 
 public enum SkillUsabilityPriority

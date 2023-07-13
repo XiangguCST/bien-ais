@@ -21,7 +21,7 @@ public interface IComponentContainer
 // 组件管理器，用于管理所有类型的组件
 public class ComponentManager
 {
-    private Dictionary<Type, IComponent> _components = new Dictionary<Type, IComponent>();
+    private Dictionary<Type, List<IComponent>> _components = new Dictionary<Type, List<IComponent>>();
 
     /// <summary>
     /// 添加组件
@@ -31,18 +31,33 @@ public class ComponentManager
     public void AddComponent<T>(T component) where T : IComponent
     {
         Type type = component.GetType();
-        // 将组件添加到其特定类型列表
-        _components[type] = component;
 
-        // 将组件添加到其基本类型和接口类型列表
+        if (!_components.ContainsKey(type))
+        {
+            _components[type] = new List<IComponent>();
+        }
+
+        _components[type].Add(component);
+
         foreach (Type interfaceType in type.GetInterfaces().Where(i => typeof(IComponent).IsAssignableFrom(i)))
         {
-            _components[interfaceType] = component;
+            if (!_components.ContainsKey(interfaceType))
+            {
+                _components[interfaceType] = new List<IComponent>();
+            }
+
+            _components[interfaceType].Add(component);
         }
+
         Type baseType = type.BaseType;
         while (baseType != null && typeof(IComponent).IsAssignableFrom(baseType))
         {
-            _components[baseType] = component;
+            if (!_components.ContainsKey(baseType))
+            {
+                _components[baseType] = new List<IComponent>();
+            }
+
+            _components[baseType].Add(component);
             baseType = baseType.BaseType;
         }
     }
@@ -65,7 +80,18 @@ public class ComponentManager
     public T GetComponent<T>() where T : IComponent
     {
         Type type = typeof(T);
-        return _components.ContainsKey(type) ? (T)_components[type] : default(T);
+        return _components.ContainsKey(type) ? (T)_components[type].FirstOrDefault() : default(T);
+    }
+
+    /// <summary>
+    /// 获取所有相同类型的组件
+    /// </summary>
+    /// <typeparam name="T">组件类型</typeparam>
+    /// <returns>组件实例列表</returns>
+    public List<T> GetComponents<T>() where T : IComponent
+    {
+        Type type = typeof(T);
+        return _components.ContainsKey(type) ? _components[type].Cast<T>().ToList() : new List<T>();
     }
 
     /// <summary>
@@ -127,6 +153,17 @@ public static class ComponentContainerExtensions
     public static T GetComponent<T>(this IComponentContainer container) where T : class, IComponent
     {
         return container.GetManager().GetComponent<T>();
+    }
+
+    /// <summary>
+    /// 获取容器中的所有相同类型的组件
+    /// </summary>
+    /// <typeparam name="T">组件类型</typeparam>
+    /// <param name="container">组件容器</param>
+    /// <returns>组件实例列表</returns>
+    public static List<T> GetComponents<T>(this IComponentContainer container) where T : class, IComponent
+    {
+        return container.GetManager().GetComponents<T>();
     }
 
     /// <summary>

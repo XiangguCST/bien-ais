@@ -40,11 +40,14 @@ public class SkillInstance
         }
 
         //　技能可用性判断策略
-        var usabilitys = SkillInfo._usabilitys;
-        foreach (var usability in usabilitys)
+        if(SkillInfo.HasComponent<ISkillUsability>())
         {
-            if (!usability.IsSkillUsable(this))
-                return false;
+            var usabilitys = SkillInfo.GetComponents<ISkillUsability>();
+            foreach (var usability in usabilitys)
+            {
+                if (!usability.IsSkillUsable(this))
+                    return false;
+            }
         }
 
         // 连锁技能在可用时间戳之前才能用
