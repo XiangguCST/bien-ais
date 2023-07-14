@@ -15,14 +15,6 @@ public class Player : Character
         _attr.speed = 100;
     }
 
-    override public void Move(CharacterDir dir)
-    {
-        if (_skillMgr == null || !_skillMgr._isCasting)
-        {
-            base.Move(dir);
-        }
-    }
-
     public void SetPlayerUI(PlayerUI ui)
     {
         _playerUI = ui;

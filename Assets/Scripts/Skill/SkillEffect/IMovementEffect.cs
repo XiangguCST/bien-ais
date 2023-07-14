@@ -1,6 +1,11 @@
 ﻿using System.ComponentModel;
 using UnityEngine;
 
+public class AllowMovementDuringSkill : ISkillEffect
+{
+
+}
+
 /// <summary>
 /// 技能移动组件
 /// </summary>

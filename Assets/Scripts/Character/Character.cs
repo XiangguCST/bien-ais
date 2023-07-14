@@ -88,6 +88,15 @@ public class Character : MonoBehaviour
     {
         if (_bDie)
             return;
+
+        if (_skillMgr != null && _skillMgr._isCasting)
+        {
+             if(!_skillMgr._castingSkill.SkillInfo.HasComponent<AllowMovementDuringSkill>())
+            {
+                return;
+            }
+        }
+
         float inputX = 0;
         if (dir == CharacterDir.eLeft)
             inputX = -1;

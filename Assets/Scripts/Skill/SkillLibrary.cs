@@ -59,10 +59,11 @@ public class SkillLibrary
         muyeshanxian.AddComponent(new BlinkBehindTargetMovement());
         muyeshanxian.AddComponent(new StatusAdditionEffect(CharacterStatusType.Weakness, 3f));
 
-        var tishenshu = AddSkill(new Skill("替身术", "tishenshu", 0, 0, 0, 8f, 0.5f, 0.5f, 0, 
+        var tishenshu = AddSkill(new Skill("替身术", "tishenshu", 0, 0, 0, 8f, 1, 0.5f, 0, 
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Low, false, 
             new NonChainSkillStrategy()));
         tishenshu.AddComponent(new AddBuffDurationEffect(BuffType.ShadowClone));
+        tishenshu.AddComponent(new AllowMovementDuringSkill());
         var hougunfan = AddSkill(new Skill("后滚翻", "hougunfan", 0, 0, 0, 12f, 0.83f, 0f, 0,
             SkillUsabilityPriority.Conditional, SkillInterruptPriority.High, false,
             new NonChainSkillStrategy()));
