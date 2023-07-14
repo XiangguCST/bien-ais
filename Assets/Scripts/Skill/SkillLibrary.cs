@@ -51,7 +51,7 @@ public class SkillLibrary
         muyejizhan.AddComponent(new TargetRequired(16f));
         muyejizhan.AddComponent(new RangeHitCheckStrategy(-1f));
         muyejizhan.AddComponent(new BlinkBehindTargetMovement());
-        var muyeshanxian = AddSkill(new Skill("木业闪现", "muyeshanxian", 0, 0, 1, 18f, 0.88f, 0.66f, 0,
+        var muyeshanxian = AddSkill(new Skill("木业闪现", "muyeshanxian", 0, 0, 1, 18f, 0.88f, 0.44f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new ChainSkillStrategy()));
         muyeshanxian.AddComponent(new TargetRequired(16f));
@@ -102,6 +102,7 @@ public class SkillLibrary
         youlingbu.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
 
         tishenshu.AddChainSkill(shuoyuejiao);
+        tishenshu.AddChainSkill(muyeshanxian);
         nifengxing.AddChainSkill(shuoyuejiao);
         nifengxing.AddChainSkill(muyejizhan);
         nifengxing.AddChainSkill(youlingbu);
