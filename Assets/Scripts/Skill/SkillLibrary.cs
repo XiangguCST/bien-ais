@@ -59,7 +59,7 @@ public class SkillLibrary
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));
             tab.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 6));
-        tab.AddComponent(new RangeHitCheckStrategy(3f));
+        tab.AddComponent(new RangeHitCheckStrategy(3f, true));
         tab.AddComponent(new StatusRemovalEffect());
         tab.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
         tab.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
@@ -79,7 +79,7 @@ public class SkillLibrary
             SkillUsabilityPriority.Chain, SkillInterruptPriority.High, false,
             new ChainSkillStrategy()));
         shuoyuejiao.AddComponent(new FixedDirectionMovement(MovementDirection.Forward, 12));
-        shuoyuejiao.AddComponent(new RangeHitCheckStrategy(6f));
+        shuoyuejiao.AddComponent(new RangeHitCheckStrategy(6f, true));
         shuoyuejiao.AddComponent(new StatusAdditionEffect(CharacterStatusType.Knockdown, 2f));
         var youlingbu = AddSkill(new Skill("幽灵步", "youlingbu", 0, 0, 0, 6f, 0.43f, 0f, 0,
             SkillUsabilityPriority.Chain, SkillInterruptPriority.High, false, 

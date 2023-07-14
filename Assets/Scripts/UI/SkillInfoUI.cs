@@ -78,7 +78,7 @@ public class SkillInfoUI : MonoBehaviour
         {
             FixedDirectionMovement fixedDirectionMovement = skill.SkillInfo.GetComponent<FixedDirectionMovement>();
             
-            _mainDescription.text = fixedDirectionMovement._movementDirection.GetDescription() + fixedDirectionMovement._movementDistance.ToString("f0") + "米";
+            _mainDescription.text = fixedDirectionMovement.MovementDirection.GetDescription() + fixedDirectionMovement.MovementDistance.ToString("f0") + "米";
         }
         else if (skill.SkillInfo.HasComponent<RushToTargetMovement>())
         {
@@ -129,15 +129,21 @@ public class SkillInfoUI : MonoBehaviour
             _txtDistance.text = $"原地";
         }
 
-        if (skill.SkillInfo.HasComponent<RangeHitCheckStrategy>())
+        if (skill.SkillInfo.HasComponent<IHitCheckStrategy>() 
+            && skill.SkillInfo.GetComponent<IHitCheckStrategy>().IsAOESkill()
+            && skill.SkillInfo.HasComponent<FixedDirectionMovement>()
+            && skill.SkillInfo.GetComponent<FixedDirectionMovement>().MovementDirection == MovementDirection.Forward)
+        {
+            var movement = skill.SkillInfo.GetComponent<FixedDirectionMovement>();
+            _txtRange.text = $"前方{movement.MovementDistance}m";
+        }
+        else if (skill.SkillInfo.HasComponent<IHitCheckStrategy>()
+            && skill.SkillInfo.GetComponent<IHitCheckStrategy>().IsAOESkill()
+            && skill.SkillInfo.HasComponent<StatusRemovalEffect>()
+          )
         {
             var rangeHitCheck = skill.SkillInfo.GetComponent<RangeHitCheckStrategy>();
             _txtRange.text = $"半径{rangeHitCheck.Range}m";
-        }
-        else if (skill.SkillInfo.HasComponent<FaceTargetHitCheckStrategy>())
-        {
-            var faceCheck = skill.SkillInfo.GetComponent<FaceTargetHitCheckStrategy>();
-            _txtRange.text = $"前方{faceCheck.Distance}m";
         }
         else
         {

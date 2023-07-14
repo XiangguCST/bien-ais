@@ -18,15 +18,15 @@ public class FixedDirectionMovement : IMovementEffect
 {
     public FixedDirectionMovement(MovementDirection movementDirection, float movementDistance)
     {
-        _movementDirection = movementDirection;
-        _movementDistance = movementDistance;
+        MovementDirection = movementDirection;
+        MovementDistance = movementDistance;
     }
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
-        Vector3 movementVector = GetMovementVector(owner._dir, _movementDirection);
-        _targetMovePosition = owner.transform.position + movementVector * _movementDistance;
-        _movementSpeed = _movementDistance / skill.SkillInfo._castTime; // 计算移动速度
+        Vector3 movementVector = GetMovementVector(owner._dir, MovementDirection);
+        _targetMovePosition = owner.transform.position + movementVector * MovementDistance;
+        _movementSpeed = MovementDistance / skill.SkillInfo._castTime; // 计算移动速度
     }
 
     public void AfterMove(Character owner, SkillInstance skill)
@@ -65,8 +65,8 @@ public class FixedDirectionMovement : IMovementEffect
         return movementVector;
     }
 
-    public MovementDirection _movementDirection; // 位移方向
-    public float _movementDistance; // 位移距离
+    public MovementDirection MovementDirection { get; set; } // 位移方向
+    public float MovementDistance { get; set; } // 位移距离
 
     Vector3 _targetMovePosition; // 目标移动位置
     float _movementSpeed; // 移动速度
