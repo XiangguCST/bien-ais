@@ -22,29 +22,43 @@ public class SkillLibrary
         var shunbu = AddSkill(new Skill("瞬步", "shunbu", 0, 1, 0, 16f, 0.2f, 0f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, false,
             new NonChainSkillStrategy()));
-            shunbu.AddComponent(new FixedDirectionMovement(MovementDirection.Forward, 6));
+            shunbu.AddComponent(new FixedDirectionMovement(MovementDirection.Forward, 8));
         shunbu.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 1));
         var ceshenshan = AddSkill(new Skill("侧身闪", "ceshenshan", 0, 0, 0, 8f, 0.33f, 0.3f, 0,
            SkillUsabilityPriority.Normal, SkillInterruptPriority.High, false,
           new NonChainSkillStrategy())
           );
-        ceshenshan.AddComponent(new TargetRequired(6f));
+        ceshenshan.AddComponent(new TargetRequired(8f));
         ceshenshan.AddComponent(new RushToBackTargetMovement());
         ceshenshan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
         var qianxing = AddSkill(new Skill("潜行", "qianxing", 0, 2, 0, 6f, 0.33f, 0.3f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
             new NonChainSkillStrategy())
             );
-           qianxing.AddComponent(new TargetRequired(6f));
+           qianxing.AddComponent(new TargetRequired(16f));
            qianxing.AddComponent(new RushToTargetMovement());
         var lianhuajiao = AddSkill(new Skill("莲华脚", "lianhuajiao", 2, 0, 12, 24f, 0.22f, 0.2f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new NonChainSkillStrategy()));
-        lianhuajiao.AddComponent(new TargetRequired(6f));
+        lianhuajiao.AddComponent(new TargetRequired(16f));
         lianhuajiao.AddComponent(new RangeHitCheckStrategy(-1f));
         lianhuajiao.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
         lianhuajiao.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 1));
-            lianhuajiao.AddComponent(new RushToTargetMovement());
+        lianhuajiao.AddComponent(new RushToTargetMovement());
+        var muyejizhan = AddSkill(new Skill("木业疾斩", "muyejizhan", 0, 2, 1, 9f, 0.5f, 0.25f, 0,
+            SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
+              new ChainSkillStrategy()));
+        muyejizhan.AddComponent(new TargetRequired(16f));
+        muyejizhan.AddComponent(new RangeHitCheckStrategy(-1f));
+        muyejizhan.AddComponent(new BlinkBehindTargetMovement());
+        var muyeshanxian = AddSkill(new Skill("木业闪现", "muyeshanxian", 0, 0, 1, 18f, 1f, 0.5f, 0,
+            SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
+              new ChainSkillStrategy()));
+        muyeshanxian.AddComponent(new TargetRequired(16f));
+        muyeshanxian.AddComponent(new RangeHitCheckStrategy(-1f));
+        muyeshanxian.AddComponent(new BlinkBehindTargetMovement());
+        muyeshanxian.AddComponent(new StatusAdditionEffect(CharacterStatusType.Weakness, 3f));
+
         var tishenshu = AddSkill(new Skill("替身术", "tishenshu", 0, 0, 0, 8f, 0.5f, 0.5f, 0, 
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Low, false, 
             new NonChainSkillStrategy()));
@@ -52,13 +66,13 @@ public class SkillLibrary
         var hougunfan = AddSkill(new Skill("后滚翻", "hougunfan", 0, 0, 0, 12f, 0.83f, 0f, 0,
             SkillUsabilityPriority.Conditional, SkillInterruptPriority.High, false,
             new NonChainSkillStrategy()));
-           hougunfan.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 3f));
+           hougunfan.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 4f));
         hougunfan.AddComponent(new StatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness }));
         hougunfan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
         var tab = AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));
-            tab.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 6));
+            tab.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 8));
         tab.AddComponent(new RangeHitCheckStrategy(3f, true));
         tab.AddComponent(new StatusRemovalEffect());
         tab.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
@@ -66,12 +80,12 @@ public class SkillLibrary
         var nifengxing = AddSkill(new Skill("逆风行", "nifengxing", 0, 0, 0, 8f, 0.43f, 0f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, false,
             new NonChainSkillStrategy()));
-        nifengxing.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 6));
+        nifengxing.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 8));
         nifengxing.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
         var kongshourubairen = AddSkill(new Skill("空手入白刃", "kongshourubairen", 0, 0, 1, 9f, 0.75f, 0.37f, 0,
             SkillUsabilityPriority.ChainHigh1, SkillInterruptPriority.High, true,
              new NonChainSkillStrategy()));
-        kongshourubairen.AddComponent(new TargetRequired(3f));
+        kongshourubairen.AddComponent(new TargetRequired(4f));
         kongshourubairen.AddComponent(new TargetBuffRequired(BuffType.ShadowClone));
         kongshourubairen.AddComponent(new RangeHitCheckStrategy(-1f));
         kongshourubairen.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
@@ -79,18 +93,20 @@ public class SkillLibrary
             SkillUsabilityPriority.Chain, SkillInterruptPriority.High, false,
             new ChainSkillStrategy()));
         shuoyuejiao.AddComponent(new FixedDirectionMovement(MovementDirection.Forward, 12));
-        shuoyuejiao.AddComponent(new RangeHitCheckStrategy(6f, true));
+        shuoyuejiao.AddComponent(new RangeHitCheckStrategy(8f, true));
         shuoyuejiao.AddComponent(new StatusAdditionEffect(CharacterStatusType.Knockdown, 2f));
         var youlingbu = AddSkill(new Skill("幽灵步", "youlingbu", 0, 0, 0, 6f, 0.43f, 0f, 0,
             SkillUsabilityPriority.Chain, SkillInterruptPriority.High, false, 
             new ChainSkillStrategy(true)));
-        youlingbu.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 6));
+        youlingbu.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 8));
         youlingbu.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
 
         tishenshu.AddChainSkill(shuoyuejiao);
         nifengxing.AddChainSkill(shuoyuejiao);
-        youlingbu.AddChainSkill(shuoyuejiao);
+        nifengxing.AddChainSkill(muyejizhan);
         nifengxing.AddChainSkill(youlingbu);
+        youlingbu.AddChainSkill(shuoyuejiao);
+        muyejizhan.AddChainSkill(muyeshanxian);
     }
 
     private static Skill AddSkill(Skill skill)

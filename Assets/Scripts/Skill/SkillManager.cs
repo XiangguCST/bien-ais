@@ -94,32 +94,28 @@ public class CharacterSkillMgr
             return null;
 
         // 将所有技能分为替换技能和非替换技能两部分
-        List<SkillInstance> toggleSkills = _skills[hotKey].Where(skill => skill._bIsToggleSkill).ToList();
-        List<SkillInstance> nonToggleSkills = _skills[hotKey].Where(skill => !skill._bIsToggleSkill).ToList();
+        var toggleSkills = _skills[hotKey].Where(skill => skill._bIsToggleSkill).ToList();
+        var nonToggleSkills = _skills[hotKey].Where(skill => !skill._bIsToggleSkill).ToList();
 
-        // 如果替换键被按下
-        if (toggleSkills.Count > 0 && Input.GetKey(toggleSkills[0]._toggleKey))
-        {
-            // 返回优先级最高的可用替换技能，
-            SkillInstance usableToggleSkill = toggleSkills.OrderByDescending(skill => skill.SkillInfo._usabilityPriority)
-                                                          .FirstOrDefault(skill => skill.IsSkillUsable());
-            if (usableToggleSkill != null)
-                return usableToggleSkill;
+        // 如果替换键被按下且有替换技能
+        if (toggleSkills.Any() && Input.GetKey(toggleSkills[0]._toggleKey))
+            return GetUsableSkill(toggleSkills) ?? GetLowestPrioritySkill(toggleSkills);
 
-            // 如果没有可用的替换技能，就返回优先级最低的替换技能
-            return toggleSkills.OrderBy(skill => skill.SkillInfo._usabilityPriority).First();
-        }
-
-        // 如果替换键没有被按下
-        // 返回优先级最高的可用非替换技能
-        SkillInstance usableNonToggleSkill = nonToggleSkills.OrderByDescending(skill => skill.SkillInfo._usabilityPriority)
-                                                            .FirstOrDefault(skill => skill.IsSkillUsable());
-        if (usableNonToggleSkill != null)
-            return usableNonToggleSkill;
-
-        // 如果没有可用的非替换技能，就返回优先级最低的非替换技能
-        return nonToggleSkills.OrderBy(skill => skill.SkillInfo._usabilityPriority).First();
+        // 替换键没有被按下
+        return GetUsableSkill(nonToggleSkills) ?? GetLowestPrioritySkill(nonToggleSkills);
     }
+
+    private SkillInstance GetUsableSkill(List<SkillInstance> skills)
+    {
+        return skills.OrderByDescending(skill => skill.SkillInfo._usabilityPriority)
+                     .FirstOrDefault(skill => skill.IsSkillUsable());
+    }
+
+    private SkillInstance GetLowestPrioritySkill(List<SkillInstance> skills)
+    {
+        return skills.Any() ? skills.OrderBy(skill => skill.SkillInfo._usabilityPriority).First() : null;
+    }
+
 
 
     // 应用所有技能

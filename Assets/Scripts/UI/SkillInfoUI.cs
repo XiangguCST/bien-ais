@@ -25,6 +25,25 @@ public class SkillInfoUI : MonoBehaviour
 
     }
 
+    private void ClearDescription()
+    {
+        _mainDescription.text = "";
+        _subDescription.text = "";
+        _otherDescription.text = "";
+    }
+
+    private void AddToDescription(string content)
+    {
+        if(_mainDescription.text.Length == 0)
+        {
+            _mainDescription.text = content;
+        }
+        else
+        {
+            _subDescription.text += content;
+        }
+    }
+
     public void UpdateUI(SkillSlot skillSlot)
     {
         SkillInstance skill = skillSlot._skill;
@@ -38,8 +57,8 @@ public class SkillInfoUI : MonoBehaviour
         int lowDamage;
         int highDamage;
         SkillDamageCalculator.GetDamageRange(skill, out lowDamage, out highDamage);
-
         _txtSkillName.text = name;
+
         if(energyRecover > 0)
         {
             _txtEnergyCost.text = $"内力恢复{energyRecover}";
@@ -53,57 +72,48 @@ public class SkillInfoUI : MonoBehaviour
             _txtEnergyCost.text = $"";
         }
 
+        ClearDescription();
         if (rate != 0)
         {
-            _mainDescription.text = $"{lowDamage}-{highDamage}伤害";
+            AddToDescription($"{lowDamage}-{highDamage}伤害");
         }
-        else if(skill.SkillInfo.HasComponent<IBuffAdditionEffect>() && skill.SkillInfo.GetComponent<IBuffAdditionEffect>().BuffType == BuffType.ShadowClone)
+        if(skill.SkillInfo.HasComponent<IBuffAdditionEffect>() && skill.SkillInfo.GetComponent<IBuffAdditionEffect>().BuffType == BuffType.ShadowClone)
         {
-            _mainDescription.text = $"在{skill.SkillInfo._castTime}秒内反击";
+            AddToDescription($"在{skill.SkillInfo._castTime}秒内反击");
         }
         else if (skill.SkillInfo.HasComponent<StatusRemovalEffect>())
         {
             var statusRemove = skill.SkillInfo.GetComponent<StatusRemovalEffect>();
-            _mainDescription.text = $"脱离";
+            var description = $"脱离";
             for (int i = 0; i < statusRemove.RemovalStatus.Count; ++i)
             {
                 CharacterStatusType status = statusRemove.RemovalStatus[i];
-                if (i != 0) _mainDescription.text += "、";
-                _mainDescription.text += status.GetDescription();
+                if (i != 0) description += "、";
+                description += status.GetDescription();
             }
-            
-            _mainDescription.text += $"状态";
+            description += $"状态";
+            AddToDescription(description);
         }
         else if (skill.SkillInfo.HasComponent<FixedDirectionMovement>())
         {
             FixedDirectionMovement fixedDirectionMovement = skill.SkillInfo.GetComponent<FixedDirectionMovement>();
-            
-            _mainDescription.text = fixedDirectionMovement.MovementDirection.GetDescription() + fixedDirectionMovement.MovementDistance.ToString("f0") + "米";
+
+            AddToDescription(fixedDirectionMovement.MovementDirection.GetDescription() + fixedDirectionMovement.MovementDistance.ToString("f0") + "米");
         }
         else if (skill.SkillInfo.HasComponent<RushToTargetMovement>())
         {
-            _mainDescription.text = $"向敌人突进";
+            AddToDescription($"向敌人突进");
         }
-        else if (skill.SkillInfo.HasComponent<RushToBackTargetMovement>())
+        else if (skill.SkillInfo.HasComponent<RushToBackTargetMovement>() || skill.SkillInfo.HasComponent<BlinkBehindTargetMovement>())
         {
-            _mainDescription.text = $"移动到敌人后方";
-        }
-        else
-        {
-            _mainDescription.text = $"无效果";
+            AddToDescription($"移动到敌人后方");
         }
 
         if(skill.SkillInfo.HasComponent<StatusAdditionEffect>())
         {
             var addStatus = skill.SkillInfo.GetComponent<StatusAdditionEffect>();
-            _subDescription.text = $"命中后 {addStatus.AddStatus.GetDescription()}{addStatus.StatusTime}秒";
+            AddToDescription($"命中后 {addStatus.AddStatus.GetDescription()}{addStatus.StatusTime}秒");
         }
-        else
-        {
-            _subDescription.text = $"";
-        }
-
-        _otherDescription.text = $"";
 
         if(skill.SkillInfo.HasComponent<AddBuffDurationEffect>() && skill.SkillInfo.GetComponent<AddBuffDurationEffect>().BuffType == BuffType.ImmunityAll)
         {

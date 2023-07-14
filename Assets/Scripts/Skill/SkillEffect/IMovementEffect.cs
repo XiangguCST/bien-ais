@@ -122,7 +122,7 @@ public class RushToBackTargetMovement : IMovementEffect
     private Vector3 _targetMovePosition; // 目标移动位置
     private float _totalTravelTime; // 总的旅行时间
     private float _elapsedTime; // 已经过去的时间
-    private float _averageSpeed; // 平均速度
+    private bool _hasPassedTarget; // 是否已经经过目标
 
     public RushToBackTargetMovement()
     {
@@ -135,6 +135,7 @@ public class RushToBackTargetMovement : IMovementEffect
         _targetMovePosition = target.transform.position - (owner.transform.position - target.transform.position).normalized * _rushDistance;
         _totalTravelTime = skill.SkillInfo._castTime;
         _elapsedTime = 0;
+        _hasPassedTarget = false;
     }
 
     public void OnMoving(Character owner, SkillInstance skill)
@@ -153,15 +154,81 @@ public class RushToBackTargetMovement : IMovementEffect
         float targetSpeed = Vector3.Distance(owner.transform.position, _targetMovePosition) * speedFactor / (_totalTravelTime - _elapsedTime);
 
         owner.transform.position = Vector3.MoveTowards(owner.transform.position, _targetMovePosition, targetSpeed * Time.deltaTime);
+
+        // 如果已经经过了目标，立即转向
+        if (!_hasPassedTarget && Vector3.Distance(owner.transform.position, _targetMovePosition) <= _rushDistance)
+        {
+            owner.FlipDirection();
+            _hasPassedTarget = true;
+        }
     }
 
     public void AfterMove(Character owner, SkillInstance skill)
     {
-        // 技能释放结束后立即转变方向
-        if (owner == null) return;
-        owner.FlipDirection();
+        // 技能释放结束后，如果还没转向，立即转向
+        if (owner != null && !_hasPassedTarget)
+        {
+            owner.FlipDirection();
+        }
     }
 }
+
+
+/// <summary>
+/// 闪现到目标后方
+/// </summary>
+public class BlinkBehindTargetMovement : IMovementEffect
+{
+    private float _blinkDistance; // 距离目标的距离
+    private Vector3 _targetBlinkPosition; // 目标闪现位置
+    private float _delayElapsed; // 已经过去的延迟时间
+    private bool _hasBlinked; // 是否已经完成闪现
+
+    public float MovementDelay { get; set; } // 延迟多少秒再闪现
+
+    public BlinkBehindTargetMovement(float movementDelay = 0)
+    {
+        _blinkDistance = 1; // 闪现到目标1米处
+        this.MovementDelay = movementDelay;
+    }
+
+    public void BeforeMove(Character owner, SkillInstance skill)
+    {
+        var target = owner._targetFinder._nearestEnemy;
+        _targetBlinkPosition = target.transform.position + (target.transform.position - owner.transform.position).normalized * _blinkDistance;
+        _delayElapsed = 0;
+        _hasBlinked = false;
+    }
+
+    public void OnMoving(Character owner, SkillInstance skill)
+    {
+        _delayElapsed += Time.deltaTime;
+
+        // 如果已经完成闪现或者延迟时间未到，不进行移动
+        if (_hasBlinked || _delayElapsed < MovementDelay)
+        {
+            return;
+        }
+
+        // 闪现到目标位置并立即转变方向
+        owner.transform.position = _targetBlinkPosition;
+        if (owner != null)
+        {
+            owner.FlipDirection();
+        }
+
+        _hasBlinked = true;
+    }
+
+    public void AfterMove(Character owner, SkillInstance skill)
+    {
+        // 确保移动到目标位置
+        owner.transform.position = _targetBlinkPosition;
+    }
+}
+
+
+
 
 /// <summary>
 /// 位移方向

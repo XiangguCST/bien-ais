@@ -179,7 +179,7 @@ public class SkillSlot : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"Sprite for {_skill.SkillInfo._name} not found!");
+            Debug.LogWarning($"Sprite for {_skill.SkillInfo._name} not found!");
             var defSprite = ResourcesLoader.LoadResource<Sprite>($"Sprites/SkillIcons/defSkillIcon");
             _imgIcon.sprite = defSprite; // 设置图片
         }

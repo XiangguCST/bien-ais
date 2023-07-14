@@ -73,7 +73,7 @@ public class TargetFinder
         UpdateTarget();
     }
 
-    public float _maxFindDistance; // 最大发现目标距离
+    public readonly float _maxFindDistance = 16f; // 最大发现目标距离
 
     public bool _isFindTarget; // 是否发现目标
     public float _nearestDistance; // 距离目标距离
