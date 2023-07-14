@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TooltipUIController<T> where T : MonoBehaviour
 {
@@ -6,8 +7,37 @@ public class TooltipUIController<T> where T : MonoBehaviour
     private T tooltipUIScript;
     private GameObject tooltipUIInstance;
     private Canvas canvas;
+    private string uiPrefabPath;
 
     private TooltipUIController(string uiPrefabPath)
+    {
+        // 加载UI预设体
+        this.uiPrefabPath = uiPrefabPath;
+        InitUI();
+
+        // 订阅场景加载事件
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        InitUI();
+    }
+
+    private Canvas FindRootCanvas()
+    {
+        Canvas[] canvases = GameObject.FindObjectsOfType<Canvas>();
+        foreach (Canvas canvas in canvases)
+        {
+            if (canvas.transform.parent == null && canvas.name == "Canvas")
+            {
+                return canvas;
+            }
+        }
+        return null;
+    }
+
+    private void InitUI()
     {
         // 加载UI预设体
         GameObject tooltipUIPrefab = Resources.Load<GameObject>(uiPrefabPath);
@@ -26,19 +56,6 @@ public class TooltipUIController<T> where T : MonoBehaviour
 
         // 默认隐藏UI
         HideTooltipUI();
-    }
-
-    private Canvas FindRootCanvas()
-    {
-        Canvas[] canvases = GameObject.FindObjectsOfType<Canvas>();
-        foreach (Canvas canvas in canvases)
-        {
-            if (canvas.transform.parent == null && canvas.name == "Canvas")
-            {
-                return canvas;
-            }
-        }
-        return null;
     }
 
     public static TooltipUIController<T> GetInstance(string uiPrefabPath)
