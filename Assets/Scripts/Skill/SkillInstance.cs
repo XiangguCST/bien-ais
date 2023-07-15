@@ -176,7 +176,7 @@ public class SkillInstance
     {
         _skillManager._isCasting = true;
         _skillManager._castingSkill = this;
-        PlayerCollisionManager.Instance.DisableCollision(_owner);
+        CommonUtility.EnableCollision(_owner, false);
     }
 
     private void AfterSkillCast()
@@ -185,7 +185,7 @@ public class SkillInstance
             return;
         _skillManager._isCasting = false;
         _skillManager._castingSkill = null;
-        PlayerCollisionManager.Instance.EnableCollision(_owner);
+        CommonUtility.EnableCollision(_owner, true);
     }
 
     // 技能冷却
@@ -313,7 +313,7 @@ public class SkillInstance
         if (_castCoroutine != null)
             CoroutineRunner.StopCoroutine(_castCoroutine);
         AfterSkillCast();
-        PlayerCollisionManager.Instance.EnableCollision(_owner);
+        CommonUtility.EnableCollision(_owner, true);
     }
 
     /// <summary>

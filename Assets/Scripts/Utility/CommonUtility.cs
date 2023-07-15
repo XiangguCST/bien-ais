@@ -43,4 +43,34 @@ public class CommonUtility
                return  hotKey.ToString();
         }
     }
+
+    /// <summary>
+    /// 控制角色与其他角色的碰撞。
+    /// 注意：你需要在Unity中创建名为"Character"和"IgnoreCollisionLayer"的两个Layer，
+    /// </summary>
+    /// <param name="character">角色</param>
+    /// <param name="bEnable">是否启用碰撞</param>
+    public static void EnableCollision(Character character, bool bEnable = true)
+    {
+        if (character == null) return;
+
+        if(!_hasInitCollision)
+        {
+            // 获取Layer的ID
+            int defaultLayer = LayerMask.NameToLayer("Character");
+            int ignoreCollisionLayer = LayerMask.NameToLayer("IgnoreCollisionLayer");
+
+            // 设置Layer之间的碰撞关系
+            Physics2D.IgnoreLayerCollision(defaultLayer, ignoreCollisionLayer, true);
+            _hasInitCollision = true;
+        }
+
+        if (bEnable)
+            // 如果启用碰撞，将角色的Layer设置为Default
+            character.gameObject.layer = LayerMask.NameToLayer("Character");
+        else
+            // 如果禁用碰撞，将角色的Layer设置为IgnoreCollisionLayer
+            character.gameObject.layer = LayerMask.NameToLayer("IgnoreCollisionLayer");
+    }
+    private static bool _hasInitCollision = false;
 }

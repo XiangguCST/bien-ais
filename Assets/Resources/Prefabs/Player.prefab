@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7736194844198808539}
   - component: {fileID: 7736194844198808533}
   - component: {fileID: 7736194844198808538}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: New SkeletonAnimation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 7736194846012521162}
   - component: {fileID: 7736194846012521161}
   - component: {fileID: 7736194846012521160}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,12 +187,15 @@ MonoBehaviour:
   _energy: 0
   _dir: 0
   _bIsMoving: 0
+  _defaultColor: {r: 0, g: 0, b: 0, a: 1}
   _attr:
     maxHP: 50000
     maxEnergy: 0
     atk: 500
     speed: 100
-  _skillBar: {fileID: 0}
+  _stateManager:
+    currentStatus: 0
+    _owner: {fileID: 0}
 --- !u!50 &7736194846012521161
 Rigidbody2D:
   serializedVersion: 4
