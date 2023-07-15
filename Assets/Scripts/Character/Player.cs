@@ -15,11 +15,6 @@ public class Player : Character
         _attr.speed = 100;
     }
 
-    public void SetPlayerUI(PlayerUI ui)
-    {
-        _playerUI = ui;
-    }
-
     public void InterruptSkill()
     {
         if (_skillMgr._isCasting)
@@ -33,14 +28,14 @@ public class Player : Character
     public override void TakeDamage(int damage, bool bCritical = false)
     {
         base.TakeDamage(damage, bCritical);
-        _playerUI.UpdateUI();
+        OnStatusBarsChanged?.Invoke(this);
     }
 
     public override void ConsumeEnergy(int cost)
     {
         base.ConsumeEnergy(cost);
-        _playerUI.UpdateUI();
+        OnStatusBarsChanged?.Invoke(this);
     }
 
-    PlayerUI _playerUI;
+    public event Action<Character> OnStatusBarsChanged;
 }

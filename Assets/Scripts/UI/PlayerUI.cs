@@ -14,16 +14,24 @@ public class PlayerUI : MonoBehaviour
         _neiLiSlider = neiLi.GetComponent<Slider>();
         _txtHP = hp.GetComponentInChildren<Text>();
         _txtNeiLi = neiLi.GetComponentInChildren<Text>();
-
-        _owner.SetPlayerUI(this);
     }
 
-    public void UpdateUI()
+    void Start()
     {
-        _txtHP.text = _owner._hp.ToString();
-        _txtNeiLi.text = _owner._energy.ToString();
-        _hpSlider.value = (float)_owner._hp / _owner._attr.maxHP;
-        _neiLiSlider.value = (float)_owner._energy/ _owner._attr.maxEnergy;
+        _owner.OnStatusBarsChanged += UpdateUI;
+    }
+
+    void OnDestroy()
+    {
+        _owner.OnStatusBarsChanged -= UpdateUI;
+    }
+
+    public void UpdateUI(Character owner)
+    {
+        _txtHP.text = owner._hp.ToString();
+        _txtNeiLi.text = owner._energy.ToString();
+        _hpSlider.value = (float)owner._hp / owner._attr.maxHP;
+        _neiLiSlider.value = (float)owner._energy/ owner._attr.maxEnergy;
     }
 
     public Slider _hpSlider;
