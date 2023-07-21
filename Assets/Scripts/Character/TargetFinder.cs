@@ -23,13 +23,13 @@ public class TargetFinder
         _characterPool = CharacterPool.Instance;
 
         // 订阅事件
-        _characterPool.OnCharacterLoaded += Init;
+        _characterPool.OnCharacterPoolInited += Init;
     }
 
     public void Dispose()
     {
         // 取消订阅事件
-        _characterPool.OnCharacterLoaded -= Init;
+        _characterPool.OnCharacterPoolInited -= Init;
     }
 
 

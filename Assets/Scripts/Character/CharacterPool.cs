@@ -10,7 +10,7 @@ using YFrameWork;
 public class CharacterPool : MonoSingleton<CharacterPool>
 {
     // 定义一个事件，在场景加载完成时触发
-    public event Action OnCharacterLoaded;
+    public event Action OnCharacterPoolInited;
 
     private List<Character> _characters = new List<Character>();
 
@@ -71,8 +71,8 @@ public class CharacterPool : MonoSingleton<CharacterPool>
             CharacterPool.Instance.AddCharacter(character);
         }
 
-        // 触发事件，通知角色已经加载完成
-        CharacterPool.Instance.OnCharacterLoaded?.Invoke();
+        // 触发事件，通知角色池已经加载完成
+        CharacterPool.Instance.OnCharacterPoolInited?.Invoke();
     }
 
 }
