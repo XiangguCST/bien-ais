@@ -127,8 +127,6 @@ public class Character : MonoBehaviour
             _dir = CharacterDir.eLeft;
         else if (_animator.transform.localScale.x > 0)
             _dir = CharacterDir.eRight;
-
-        _targetFinder.Init();
     }
 
     // 应用属性

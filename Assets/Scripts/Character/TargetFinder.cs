@@ -23,13 +23,13 @@ public class TargetFinder
         _characterPool = CharacterPool.Instance;
 
         // 订阅事件
-        _characterPool.OnSceneLoaded += Init;
+        _characterPool.OnCharacterLoaded += Init;
     }
 
     public void Dispose()
     {
         // 取消订阅事件
-        _characterPool.OnSceneLoaded -= Init;
+        _characterPool.OnCharacterLoaded -= Init;
     }
 
 
@@ -122,102 +122,3 @@ public class TargetFinder
     }
 }
 
-/// <summary>
-/// 角色对象池
-/// </summary>
-public class CharacterPool
-{
-    private static CharacterPool _instance;
-
-    // 定义一个事件，在场景加载完成时触发
-    public event Action OnSceneLoaded;
-
-    // 单例模式
-    public static CharacterPool Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new CharacterPool();
-            }
-            return _instance;
-        }
-    }
-
-    private List<Character> _characters = new List<Character>();
-
-    private CharacterPool()
-    {
-        // 创建一个新的GameObject，附加一个SceneListener对象来侦听场景加载事件
-        new GameObject("CharacterPoolScript", typeof(CharacterPoolScript));
-
-        // 在新的CharacterPool实例创建时，注销旧实例的事件
-        OnSceneLoaded = null;
-    }
-
-    // 添加角色到对象池
-    public void AddCharacter(Character character)
-    {
-        if (!_characters.Contains(character))
-        {
-            _characters.Add(character);
-        }
-    }
-
-    // 从对象池中移除角色
-    public void RemoveCharacter(Character character)
-    {
-        if (_characters.Contains(character))
-        {
-            _characters.Remove(character);
-        }
-    }
-
-    // 获取指定角色的所有敌人
-    public List<Character> GetEnemies(Character character)
-    {
-        List<Character> enemies = new List<Character>();
-        foreach (var chara in _characters)
-        {
-            if (chara != character)
-            {
-                enemies.Add(chara);
-            }
-        }
-        return enemies;
-    }
-
-    // 清空对象池
-    private void ClearPool()
-    {
-        _characters.Clear();
-    }
-
-    // 当场景加载时，获取所有的Character对象
-    private class CharacterPoolScript : MonoBehaviour
-    {
-        private void OnEnable()
-        {
-            SceneManager.sceneLoaded += OnSceneLoaded;
-        }
-
-        private void OnDisable()
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
-
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            CharacterPool.Instance.ClearPool();
-            var charactersInScene = FindObjectsOfType<Character>();
-            foreach (Character character in charactersInScene)
-            {
-                CharacterPool.Instance.AddCharacter(character);
-            }
-
-            // 触发事件，通知场景已经加载完成
-            CharacterPool.Instance.OnSceneLoaded?.Invoke();
-        }
-    }
-}
