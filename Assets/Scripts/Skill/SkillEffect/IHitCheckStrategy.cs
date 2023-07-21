@@ -16,7 +16,7 @@ public class RangeHitCheckStrategy : IHitCheckStrategy
     public bool CheckHit(Character owner, Character target, SkillInstance skill)
     {
         var finder = owner._targetFinder;
-        return Range < 0 || finder._nearestDistance <= Range;
+        return Range < 0 || finder.GetDistance() <= Range;
     }
 
     public bool IsAOESkill()
@@ -39,9 +39,9 @@ public class FaceTargetHitCheckStrategy : IHitCheckStrategy
     public bool CheckHit(Character owner, Character target, SkillInstance skill)
     {
         var finder = owner._targetFinder;
-        if (!finder._isFindTarget)
+        if (!finder.HasTarget())
             return false;
-        return Distance < 0 || finder._nearestDistance <= Distance;
+        return Distance < 0 || finder.GetDistance() <= Distance;
     }
 
     public bool IsAOESkill()

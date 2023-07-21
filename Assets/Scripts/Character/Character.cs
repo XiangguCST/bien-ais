@@ -23,8 +23,8 @@ public class Character : MonoBehaviour
             _collider = GetComponent<CapsuleCollider2D>();
             _animator = GetComponentInChildren<Animator>();
             _skillMgr = new CharacterSkillMgr(this);
+            _targetFinder = new TargetFinder(this);
             _stateManager.OnStatusEffectApplied += OnStatusEffectApplied; 
-            _targetFinder._owner = this;
             _stateManager._owner = this;
             lastPosition = transform.position;
             CommonUtility.SetCharacterColor(this, _defaultColor);
@@ -258,7 +258,7 @@ public class Character : MonoBehaviour
     protected CharacterSkillMgr _skillMgr;
     protected Animator _animator;
     protected DamageCanvas _damageCanvas;
-    public TargetFinder _targetFinder = new TargetFinder();
+    public TargetFinder _targetFinder;
     public CharacterStatusManager _stateManager = new CharacterStatusManager();
     public CharacterBuffManager _buffManager = new CharacterBuffManager();
 

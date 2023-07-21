@@ -263,7 +263,7 @@ public class SkillInstance
         {
             _owner._stateManager.AddStatus(CharacterStatusType.Weakness, 2.0f);
             _owner.ConsumeEnergy(4);
-            _owner._targetFinder._nearestEnemy.ConsumeEnergy(-4);
+            _owner._targetFinder.GetTarget().ConsumeEnergy(-4);
         }
     }
 
@@ -277,7 +277,7 @@ public class SkillInstance
         if (!SkillInfo.HasComponent<IHitCheckStrategy>())
             return true;
 
-        var target = _owner._targetFinder._nearestEnemy;
+        var target = _owner._targetFinder.GetTarget();
         var hitCheck = SkillInfo.GetComponent<IHitCheckStrategy>();
         if (!hitCheck.CheckHit(_owner, target, this))
             return false;
@@ -289,7 +289,7 @@ public class SkillInstance
     void DealDamage()
     {
         _owner.ConsumeEnergy(-SkillInfo._energyRecover);
-        var target = _owner._targetFinder._nearestEnemy;
+        var target = _owner._targetFinder.GetTarget();
         int damage = SkillDamageCalculator.CalcDamage(this);
         
         // 暴击判定

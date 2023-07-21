@@ -24,7 +24,7 @@ public class TargetRequired : ISkillUsability
     public bool IsSkillUsable(SkillInstance skill)
     {
         var finder = skill._owner._targetFinder;
-        return finder._isFindTarget && finder._nearestDistance <= RequiredTargetDistance;
+        return finder.HasTarget() && finder.GetDistance() <= RequiredTargetDistance;
     }
 
     public float RequiredTargetDistance{ get; set; } // 表示技能释放所需的目标距离
@@ -43,7 +43,7 @@ public class TargetBuffRequired : ISkillUsability
     public bool IsSkillUsable(SkillInstance skill)
     {
         var finder = skill._owner._targetFinder;
-        var target = finder._nearestEnemy;
+        var target = finder.GetTarget();
         return target && target._buffManager.HasBuff(_buffType);
     }
 

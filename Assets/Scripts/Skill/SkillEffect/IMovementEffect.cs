@@ -86,7 +86,7 @@ public class RushToTargetMovement : IMovementEffect
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
-        var target = owner._targetFinder._nearestEnemy;
+        var target = owner._targetFinder.GetTarget();
         _targetMovePosition = target.transform.position - (target.transform.position - owner.transform.position).normalized * _rushDistance;
         _movementSpeed = Vector3.Distance(owner.transform.position, _targetMovePosition) / skill.SkillInfo._castTime;
     }
@@ -96,7 +96,7 @@ public class RushToTargetMovement : IMovementEffect
         if (owner == null) return;
 
         // 如果敌人距离移动目标位置小于等于突进距离，说明敌人已经移动，需要更新突进目标位置
-        var target = owner._targetFinder._nearestEnemy;
+        var target = owner._targetFinder.GetTarget();
         if (target == null) return;
         if (Vector3.Distance(target.transform.position, _targetMovePosition) <= _rushDistance)
         {
@@ -136,7 +136,7 @@ public class RushToBackTargetMovement : IMovementEffect
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
-        var target = owner._targetFinder._nearestEnemy;
+        var target = owner._targetFinder.GetTarget();
         _targetMovePosition = target.transform.position - (owner.transform.position - target.transform.position).normalized * _rushDistance;
         _totalTravelTime = skill.SkillInfo._castTime;
         _elapsedTime = 0;
@@ -147,7 +147,7 @@ public class RushToBackTargetMovement : IMovementEffect
     {
         if (owner == null) return;
 
-        var target = owner._targetFinder._nearestEnemy;
+        var target = owner._targetFinder.GetTarget();
         if (target == null) return;
 
         _elapsedTime += Time.deltaTime;
@@ -199,7 +199,7 @@ public class BlinkBehindTargetMovement : IMovementEffect
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
-        var target = owner._targetFinder._nearestEnemy;
+        var target = owner._targetFinder.GetTarget();
         _targetBlinkPosition = target.transform.position + (target.transform.position - owner.transform.position).normalized * _blinkDistance;
         _delayElapsed = 0;
         _hasBlinked = false;
@@ -244,7 +244,7 @@ public class SwapWithTargetMovement : IMovementEffect
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
-        _target = owner._targetFinder._nearestEnemy;
+        _target = owner._targetFinder.GetTarget();
         _elapsedTime = 0f;
         _hasSwapped = false;
     }
