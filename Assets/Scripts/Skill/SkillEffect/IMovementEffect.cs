@@ -23,13 +23,13 @@ public class FixedDirectionMovement : IMovementEffect
 {
     public FixedDirectionMovement(MovementDirection movementDirection, float movementDistance)
     {
-        MovementDirection = movementDirection;
+        MovementDir = movementDirection;
         MovementDistance = movementDistance;
     }
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
-        Vector3 movementVector = GetMovementVector(owner._dir, MovementDirection);
+        Vector3 movementVector = GetMovementVector(owner.GetDirection(), MovementDir);
         _targetMovePosition = owner.transform.position + movementVector * MovementDistance;
         _movementSpeed = MovementDistance / skill.SkillInfo._castTime; // 计算移动速度
     }
@@ -70,7 +70,7 @@ public class FixedDirectionMovement : IMovementEffect
         return movementVector;
     }
 
-    public MovementDirection MovementDirection { get; set; } // 位移方向
+    public MovementDirection MovementDir { get; set; } // 位移方向
     public float MovementDistance { get; set; } // 位移距离
 
     Vector3 _targetMovePosition; // 目标移动位置
@@ -233,6 +233,57 @@ public class BlinkBehindTargetMovement : IMovementEffect
 }
 
 
+/// <summary>
+/// 和目标交换位置
+/// </summary>
+public class SwapWithTargetMovement : IMovementEffect
+{
+    private Character _target; // 目标
+    private float _elapsedTime; // 已经过去的时间
+    private bool _hasSwapped; // 是否已经完成交换
+
+    public void BeforeMove(Character owner, SkillInstance skill)
+    {
+        _target = owner._targetFinder._nearestEnemy;
+        _elapsedTime = 0f;
+        _hasSwapped = false;
+    }
+
+    public void OnMoving(Character owner, SkillInstance skill)
+    {
+        _elapsedTime += Time.deltaTime;
+
+        // 如果已经完成交换或者延迟时间未到，不进行移动
+        if (!_hasSwapped && _elapsedTime >= skill.SkillInfo._damageDelay)
+        {
+            // 交换位置并设置方向
+            SwapPositionAndSetDirection(owner, _target);
+
+            _hasSwapped = true;
+        }
+    }
+
+    public void AfterMove(Character owner, SkillInstance skill)
+    {
+        // 如果技能释放结束后还没有交换位置，立即交换位置并设置方向
+        if (!_hasSwapped)
+        {
+            SwapPositionAndSetDirection(owner, _target);
+        }
+    }
+
+    private void SwapPositionAndSetDirection(Character owner, Character target)
+    {
+        // 交换位置
+        Vector3 tempPosition = owner.transform.position;
+        owner.transform.position = target.transform.position;
+        target.transform.position = tempPosition;
+
+        // 设置方向
+        owner.FlipDirection();
+        target.SetDirection(owner.GetDirection());
+    }
+}
 
 
 /// <summary>

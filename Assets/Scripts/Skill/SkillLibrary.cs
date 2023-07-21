@@ -37,6 +37,12 @@ public class SkillLibrary
             );
            qianxing.AddComponent(new TargetRequired(16f));
            qianxing.AddComponent(new RushToTargetMovement());
+        var muyeyixing = AddSkill(new Skill("木叶移形", "muyeyixing", 0, 2, 0, 6f, 0.33f, 0.3f, 0,
+            SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
+            new NonChainSkillStrategy())
+            );
+        muyeyixing.AddComponent(new TargetRequired(16f));
+        muyeyixing.AddComponent(new SwapWithTargetMovement());
         var lianhuajiao = AddSkill(new Skill("莲华脚", "lianhuajiao", 2, 0, 12, 24f, 0.22f, 0.2f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new NonChainSkillStrategy()));
@@ -71,7 +77,7 @@ public class SkillLibrary
         hougunfan.AddComponent(new StatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness }));
         hougunfan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 0.5f));
         var tab = AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0,
-            SkillUsabilityPriority.Normal, SkillInterruptPriority.High, true,
+            SkillUsabilityPriority.Conditional, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));
             tab.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 8));
         tab.AddComponent(new RangeHitCheckStrategy(3f, true));

@@ -175,19 +175,34 @@ public class Character : MonoBehaviour
     /// </summary>
     public void FlipDirection()
     {
-        switch (_dir)
+        switch (GetDirection())
         {
             case CharacterDir.eLeft:
-                _dir = CharacterDir.eRight;
+                SetDirection(CharacterDir.eRight);
                 break;
             case CharacterDir.eRight:
             default:
-                _dir = CharacterDir.eLeft;
+                SetDirection(CharacterDir.eLeft);
                 break;
         }
+    }
+
+    /// <summary>
+    /// 设置朝向
+    /// </summary>
+    public void SetDirection(CharacterDir dir)
+    {
+        _dir = dir;
         UpdateDirShow(); // 翻转方向后，更新方向的显示
     }
 
+    /// <summary>
+    /// 获取朝向
+    /// </summary>
+    public CharacterDir GetDirection()
+    {
+        return _dir;
+    }
 
     virtual public void Start()
     {
@@ -230,7 +245,7 @@ public class Character : MonoBehaviour
 
     public int _hp; // 血量
     public int _energy; // 内力
-    public CharacterDir _dir; // 朝向
+    protected CharacterDir _dir; // 朝向
     public bool _bIsMoving;// 是否移动中
     protected bool _bDie = false; // 是否死亡
     private Vector3 lastPosition;

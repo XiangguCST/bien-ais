@@ -98,7 +98,7 @@ public class SkillInfoUI : MonoBehaviour
         {
             FixedDirectionMovement fixedDirectionMovement = skill.SkillInfo.GetComponent<FixedDirectionMovement>();
 
-            AddToDescription(fixedDirectionMovement.MovementDirection.GetDescription() + fixedDirectionMovement.MovementDistance.ToString("f0") + "米");
+            AddToDescription(fixedDirectionMovement.MovementDir.GetDescription() + fixedDirectionMovement.MovementDistance.ToString("f0") + "米");
         }
         else if (skill.SkillInfo.HasComponent<RushToTargetMovement>())
         {
@@ -142,7 +142,7 @@ public class SkillInfoUI : MonoBehaviour
         if (skill.SkillInfo.HasComponent<IHitCheckStrategy>() 
             && skill.SkillInfo.GetComponent<IHitCheckStrategy>().IsAOESkill()
             && skill.SkillInfo.HasComponent<FixedDirectionMovement>()
-            && skill.SkillInfo.GetComponent<FixedDirectionMovement>().MovementDirection == MovementDirection.Forward)
+            && skill.SkillInfo.GetComponent<FixedDirectionMovement>().MovementDir == MovementDirection.Forward)
         {
             var movement = skill.SkillInfo.GetComponent<FixedDirectionMovement>();
             _txtRange.text = $"前方{movement.MovementDistance}m";

@@ -18,8 +18,8 @@ public class TargetFinder
     bool IsFaceToTarget()
     {
         var dirX = _nearestEnemy.transform.position.x - _owner.transform.position.x;
-        return (_owner._dir == CharacterDir.eLeft && dirX < 0
-            || _owner._dir == CharacterDir.eRight && dirX > 0);
+        return (_owner.GetDirection() == CharacterDir.eLeft && dirX < 0
+            || _owner.GetDirection() == CharacterDir.eRight && dirX > 0);
     }
 
     void InitUI()
