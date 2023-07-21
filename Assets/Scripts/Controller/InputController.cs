@@ -15,14 +15,14 @@ public class InputController : MonoSingleton<InputController>
         _player2.InitCharacter();
 
         _player1.AttachSkill(KeyCode.J, SkillLibrary.GetSkill("迷雾斩"));
-        _player1.AttachSkill(KeyCode.J, SkillLibrary.GetSkill("后滚翻"));
-        _player1.AttachToggleSkill(KeyCode.J, SkillLibrary.GetSkill("木业疾斩"), KeyCode.S);
-        _player1.AttachToggleSkill(KeyCode.J, SkillLibrary.GetSkill("木业闪现"), KeyCode.S);
+        _player1.AttachSkill(KeyCode.L, SkillLibrary.GetSkill("后滚翻"));
+        _player1.AttachSkill(KeyCode.L, SkillLibrary.GetSkill("木业疾斩"));
+        _player1.AttachSkill(KeyCode.L, SkillLibrary.GetSkill("木业闪现"));
         _player1.AttachSkill(KeyCode.K, SkillLibrary.GetSkill("刺心"));
         _player1.AttachToggleSkill(KeyCode.K, SkillLibrary.GetSkill("侧身闪"), KeyCode.S);
-        _player1.AttachSkill(KeyCode.L, SkillLibrary.GetSkill("瞬步"));
-        _player1.AttachSkill(KeyCode.U, SkillLibrary.GetSkill("潜行"));
-        _player1.AttachToggleSkill(KeyCode.U, SkillLibrary.GetSkill("莲华脚"), KeyCode.S);
+        _player1.AttachToggleSkill(KeyCode.L, SkillLibrary.GetSkill("瞬步"), KeyCode.S);
+        _player1.AttachSkill(KeyCode.U, SkillLibrary.GetSkill("莲华脚"));
+        _player1.AttachToggleSkill(KeyCode.U, SkillLibrary.GetSkill("潜行"), KeyCode.S);
         _player1.AttachSkill(KeyCode.I, SkillLibrary.GetSkill("替身术"));
         _player1.AttachSkill(KeyCode.O, SkillLibrary.GetSkill("闪光"));
         _player1.AttachSkill(KeyCode.S, SkillLibrary.GetSkill("逆风行"), true);
@@ -32,14 +32,14 @@ public class InputController : MonoSingleton<InputController>
         _player1.ApplyAllSkills();
 
         _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.GetSkill("迷雾斩"));
-        _player2.AttachSkill(KeyCode.Keypad1, SkillLibrary.GetSkill("后滚翻"));
-        _player2.AttachToggleSkill(KeyCode.Keypad1, SkillLibrary.GetSkill("木业疾斩"), KeyCode.DownArrow);
-        _player2.AttachToggleSkill(KeyCode.Keypad1, SkillLibrary.GetSkill("木业闪现"), KeyCode.DownArrow);
+        _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("后滚翻"));
+        _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("木业疾斩"));
+        _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("木业闪现"));
         _player2.AttachSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("刺心"));
         _player2.AttachToggleSkill(KeyCode.Keypad2, SkillLibrary.GetSkill("侧身闪"), KeyCode.DownArrow);
-        _player2.AttachSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("瞬步"));
-        _player2.AttachSkill(KeyCode.Keypad4, SkillLibrary.GetSkill("潜行"));
-        _player2.AttachToggleSkill(KeyCode.Keypad4, SkillLibrary.GetSkill("莲华脚"), KeyCode.DownArrow);
+        _player2.AttachToggleSkill(KeyCode.Keypad3, SkillLibrary.GetSkill("瞬步"), KeyCode.DownArrow);
+        _player2.AttachSkill(KeyCode.Keypad4, SkillLibrary.GetSkill("莲华脚"));
+        _player2.AttachToggleSkill(KeyCode.Keypad4, SkillLibrary.GetSkill("潜行"), KeyCode.DownArrow);
         _player2.AttachSkill(KeyCode.Keypad5, SkillLibrary.GetSkill("替身术"));
         _player2.AttachSkill(KeyCode.Keypad6, SkillLibrary.GetSkill("闪光"));
         _player2.AttachSkill(KeyCode.DownArrow, SkillLibrary.GetSkill("逆风行"), true);

@@ -45,7 +45,7 @@ public class SkillLibrary
         lianhuajiao.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
         lianhuajiao.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 1));
         lianhuajiao.AddComponent(new RushToTargetMovement());
-        var muyejizhan = AddSkill(new Skill("木业疾斩", "muyejizhan", 0, 2, 1, 9f, 0.6f, 0.2f, 0,
+        var muyejizhan = AddSkill(new Skill("木业疾斩", "muyejizhan", 0, 2, 1, 9f, 0.3f, 0.2f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new ChainSkillStrategy()));
         muyejizhan.AddComponent(new TargetRequired(16f));
@@ -69,7 +69,7 @@ public class SkillLibrary
             new NonChainSkillStrategy()));
            hougunfan.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 4f));
         hougunfan.AddComponent(new StatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness }));
-        hougunfan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
+        hougunfan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 0.5f));
         var tab = AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));
