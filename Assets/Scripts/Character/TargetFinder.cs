@@ -34,7 +34,10 @@ public class TargetFinder
     public void OnDestroy()
     {
         // 取消订阅事件
-        CharacterPool.Instance.OnCharacterPoolInited -= InitTarget;
+        if (CharacterPool.Instance != null)
+        {
+            CharacterPool.Instance.OnCharacterPoolInited -= InitTarget;
+        }
     }
 
     // 判断是否面朝目标
