@@ -15,28 +15,26 @@ public class TargetFinder
     private Character _owner; // 当前角色
     private Character _nearestEnemy; // 最近敌人
     private TargetUI _targetUI;
-    private CharacterPool _characterPool; // 角色对象池
 
     public TargetFinder(Character owner)
     {
         _owner = owner;
-        _characterPool = CharacterPool.Instance;
 
-        // 订阅事件
-        _characterPool.OnCharacterPoolInited += Init;
+        Init();
     }
-
-    public void Dispose()
-    {
-        // 取消订阅事件
-        _characterPool.OnCharacterPoolInited -= Init;
-    }
-
 
     public void Init()
     {
         InitUI();
-        InitTarget();
+
+        // 订阅事件
+        CharacterPool.Instance.OnCharacterPoolInited += InitTarget;
+    }
+
+    public void OnDestroy()
+    {
+        // 取消订阅事件
+        CharacterPool.Instance.OnCharacterPoolInited -= InitTarget;
     }
 
     // 判断是否面朝目标
@@ -80,7 +78,7 @@ public class TargetFinder
     private void InitTarget()
     {
         // 从角色池中获取所有敌人
-        List<Character> enemys = _characterPool.GetEnemies(_owner);
+        List<Character> enemys = CharacterPool.Instance.GetEnemies(_owner);
         if (enemys.Count == 0)
             return;
 

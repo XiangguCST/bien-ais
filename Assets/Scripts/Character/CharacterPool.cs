@@ -20,7 +20,7 @@ public class CharacterPool : MonoSingleton<CharacterPool>
     }
 
     // 添加角色到对象池
-    public void AddCharacter(Character character)
+    private void AddCharacter(Character character)
     {
         if (!_characters.Contains(character))
         {
@@ -29,7 +29,7 @@ public class CharacterPool : MonoSingleton<CharacterPool>
     }
 
     // 从对象池中移除角色
-    public void RemoveCharacter(Character character)
+    private void RemoveCharacter(Character character)
     {
         if (_characters.Contains(character))
         {
@@ -57,22 +57,19 @@ public class CharacterPool : MonoSingleton<CharacterPool>
         _characters.Clear();
     }
 
-    private void Start()
+    public override void OnSingletonInit()
     {
-        Init();
+        SceneManager.sceneLoaded += Init;
     }
 
-    private void Init()
+    private void Init(Scene scene, LoadSceneMode mode)
     {
-        CharacterPool.Instance.ClearPool();
-        var charactersInScene = GameObject.FindObjectsOfType<Character>();
+        ClearPool();
+        var charactersInScene = FindObjectsOfType<Character>();
         foreach (Character character in charactersInScene)
         {
-            CharacterPool.Instance.AddCharacter(character);
+            AddCharacter(character);
         }
-
-        // 触发事件，通知角色池已经加载完成
-        CharacterPool.Instance.OnCharacterPoolInited?.Invoke();
+        OnCharacterPoolInited?.Invoke();
     }
-
 }

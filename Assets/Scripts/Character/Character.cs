@@ -214,6 +214,11 @@ public class Character : MonoBehaviour
         Destroy(gameObject);
     }
 
+    private void OnDestroy()
+    {
+        _targetFinder.OnDestroy();
+    }
+
     virtual public void TakeDamage(int damage, bool bCritical = false)
     {
         _damageCanvas.ShowDamage(damage, bCritical);

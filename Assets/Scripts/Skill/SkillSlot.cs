@@ -187,7 +187,15 @@ public class SkillSlot : MonoBehaviour
         // 检查冷却时间是否大于5秒
         if (_skill.SkillInfo._cooldownTime > 5.0f)
         {
-            _skill.OnCooldownCompleted += () => StartCoroutine(GlowEffect()); // 订阅事件
+            _skill.OnCooldownCompleted += StartGlowEffect; // 订阅事件
+        }
+    }
+
+    void StartGlowEffect()
+    {
+        if (_imgIcon != null)
+        {
+            StartCoroutine(GlowEffect());
         }
     }
 
