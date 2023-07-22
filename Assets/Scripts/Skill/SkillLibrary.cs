@@ -51,13 +51,13 @@ public class SkillLibrary
         lianhuajiao.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
         lianhuajiao.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 1));
         lianhuajiao.AddComponent(new RushToTargetMovement());
-        var muyejizhan = AddSkill(new Skill("木业疾斩", "muyejizhan", 0, 2, 1, 9f, 0.3f, 0.2f, 0,
+        var muyejizhan = AddSkill(new Skill("木叶疾斩", "muyejizhan", 0, 2, 1, 9f, 0.3f, 0.2f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new ChainSkillStrategy()));
         muyejizhan.AddComponent(new TargetRequired(16f));
         muyejizhan.AddComponent(new RangeHitCheckStrategy(-1f));
         muyejizhan.AddComponent(new BlinkBehindTargetMovement());
-        var muyeshanxian = AddSkill(new Skill("木业闪现", "muyeshanxian", 0, 0, 1, 18f, 0.88f, 0.44f, 0,
+        var muyeshanxian = AddSkill(new Skill("木叶闪现", "muyeshanxian", 0, 0, 1, 18f, 0.88f, 0.44f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new ChainSkillStrategy()));
         muyeshanxian.AddComponent(new TargetRequired(16f));
