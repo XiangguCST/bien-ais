@@ -99,7 +99,7 @@ public enum CharacterStatusType
 {
     [Description("无异常状态")]
     None,
-    [Description("沉默状态")]
+    [Description("沉默")]
     Silence,
     [Description("眩晕")]
     Stun,

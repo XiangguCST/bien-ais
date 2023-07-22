@@ -40,6 +40,8 @@ public class SkillInfoUI : MonoBehaviour
         }
         else
         {
+            if (_subDescription.text.Length != 0)
+                _subDescription.text += "\n";
             _subDescription.text += content;
         }
     }
@@ -132,7 +134,11 @@ public class SkillInfoUI : MonoBehaviour
         if(skill.SkillInfo.HasComponent<TargetRequired>())
         {
             var targetRequired = skill.SkillInfo.GetComponent<TargetRequired>();
-            _txtDistance.text = $"{targetRequired.RequiredTargetDistance}m";
+            string strDistance = "";
+            if (targetRequired.MinDistance!= 0)
+                strDistance += $"{targetRequired.MinDistance}-";
+            strDistance += $"{targetRequired.MaxDistance}m";
+            _txtDistance.text = strDistance;
         }
         else
         {

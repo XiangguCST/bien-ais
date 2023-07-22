@@ -16,18 +16,20 @@ public interface ISkillUsability : ISkillEffect
 /// </summary>
 public class TargetRequired : ISkillUsability
 {
-    public TargetRequired(float requiredTargetDistance)
+    public TargetRequired(float minDistance, float maxDistance)
     {
-        RequiredTargetDistance = requiredTargetDistance;
+        MinDistance = minDistance;
+        MaxDistance = maxDistance;
     }
 
     public bool IsSkillUsable(SkillInstance skill)
     {
         var finder = skill._owner._targetFinder;
-        return finder.HasTarget() && finder.GetDistance() <= RequiredTargetDistance;
+        return finder.HasTarget() && finder.GetDistance() <= MaxDistance && finder.GetDistance() >= MinDistance;
     }
 
-    public float RequiredTargetDistance{ get; set; } // 表示技能释放所需的目标距离
+    public float MinDistance { get; set; } // 表示技能释放所需的最近距离
+    public float MaxDistance { get; set; } // 表示技能释放所需的最远距离
 }
 
 /// <summary>

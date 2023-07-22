@@ -16,7 +16,7 @@ public class SkillLibrary
         var cixin = AddSkill(new Skill("刺心", "cixin", 3, 0, 12, 1f, 0.83f, 0.5f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
              new NonChainSkillStrategy()));
-        cixin.AddComponent(new TargetRequired(3f));
+        cixin.AddComponent(new TargetRequired(0f,3f));
         cixin.AddComponent(new FaceTargetHitCheckStrategy(3f));
         cixin.AddComponent(new StatusAdditionEffect(CharacterStatusType.Weakness, 2f));
         var shunbu = AddSkill(new Skill("瞬步", "shunbu", 0, 1, 0, 16f, 0.2f, 0f, 0,
@@ -28,25 +28,27 @@ public class SkillLibrary
            SkillUsabilityPriority.Normal, SkillInterruptPriority.High, false,
           new NonChainSkillStrategy())
           );
-        ceshenshan.AddComponent(new TargetRequired(8f));
+        ceshenshan.AddComponent(new TargetRequired(0f, 8f));
         ceshenshan.AddComponent(new RushToBackTargetMovement());
         ceshenshan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
         var qianxing = AddSkill(new Skill("潜行", "qianxing", 0, 2, 0, 6f, 0.33f, 0.3f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
             new NonChainSkillStrategy())
             );
-           qianxing.AddComponent(new TargetRequired(16f));
+           qianxing.AddComponent(new TargetRequired(0f, 16f));
            qianxing.AddComponent(new RushToTargetMovement());
-        var muyeyixing = AddSkill(new Skill("木叶移形", "muyeyixing", 0, 2, 0, 6f, 0.33f, 0.3f, 0,
+        var muyeyixing = AddSkill(new Skill("木叶移形", "muyeyixing", 0, 0, 1, 18f, 0.33f, 0.3f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
             new NonChainSkillStrategy())
             );
-        muyeyixing.AddComponent(new TargetRequired(16f));
+        muyeyixing.AddComponent(new TargetRequired(4f,16f));
+        muyeyixing.AddComponent(new StatusAdditionEffect(CharacterStatusType.Silence, 2f));
         muyeyixing.AddComponent(new SwapWithTargetMovement());
+        muyeyixing.AddComponent(new RangeHitCheckStrategy(-1f));
         var lianhuajiao = AddSkill(new Skill("莲华脚", "lianhuajiao", 2, 0, 12, 24f, 0.22f, 0.2f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new NonChainSkillStrategy()));
-        lianhuajiao.AddComponent(new TargetRequired(16f));
+        lianhuajiao.AddComponent(new TargetRequired(0f, 16f));
         lianhuajiao.AddComponent(new RangeHitCheckStrategy(-1f));
         lianhuajiao.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
         lianhuajiao.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 1));
@@ -54,13 +56,13 @@ public class SkillLibrary
         var muyejizhan = AddSkill(new Skill("木叶疾斩", "muyejizhan", 0, 2, 1, 9f, 0.3f, 0.2f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new ChainSkillStrategy()));
-        muyejizhan.AddComponent(new TargetRequired(16f));
+        muyejizhan.AddComponent(new TargetRequired(0f, 16f));
         muyejizhan.AddComponent(new RangeHitCheckStrategy(-1f));
         muyejizhan.AddComponent(new BlinkBehindTargetMovement());
         var muyeshanxian = AddSkill(new Skill("木叶闪现", "muyeshanxian", 0, 0, 1, 18f, 0.88f, 0.44f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
               new ChainSkillStrategy()));
-        muyeshanxian.AddComponent(new TargetRequired(16f));
+        muyeshanxian.AddComponent(new TargetRequired(0f, 16f));
         muyeshanxian.AddComponent(new RangeHitCheckStrategy(-1f));
         muyeshanxian.AddComponent(new BlinkBehindTargetMovement());
         muyeshanxian.AddComponent(new StatusAdditionEffect(CharacterStatusType.Weakness, 3f));
@@ -92,7 +94,7 @@ public class SkillLibrary
         var kongshourubairen = AddSkill(new Skill("空手入白刃", "kongshourubairen", 0, 0, 1, 9f, 0.75f, 0.37f, 0,
             SkillUsabilityPriority.ChainHigh1, SkillInterruptPriority.High, true,
              new NonChainSkillStrategy()));
-        kongshourubairen.AddComponent(new TargetRequired(4f));
+        kongshourubairen.AddComponent(new TargetRequired(0f, 4f));
         kongshourubairen.AddComponent(new TargetBuffRequired(BuffType.ShadowClone));
         kongshourubairen.AddComponent(new RangeHitCheckStrategy(-1f));
         kongshourubairen.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
