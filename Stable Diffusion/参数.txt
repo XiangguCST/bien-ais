@@ -1,0 +1,12 @@
+glowing,person with outline,assassin, (hold assassin black knife:0.1), (eluded :1.3), masterpiece, best quality,
+Negative prompt: extra weapon, NSFW,(worst quality:2),(low quality:2),(normal quality:2),lowres,
+normal quality,((monochrome)),((grayscale)),skin spots,acnes,
+skin blemishes,age spot,(ugly:1.331),(duplicate:1.331),
+(morbid:1.21),(mutilated:1.21),(tranny:1.331),mutated hands,
+(poorly drawn hands:1.5),blurry,(bad anatomy:1.21),(bad
+proportions:1.331),extra limbs,(disfigured:1.331),(missing
+arms:1.331),(extra legs:1.331),(fused fingers:1.61051),(too
+many fingers:1.61051),(unclear eyes:1.331),lowers,bad hands,
+missing fingers,extra digit,bad hands,missing fingers,(((extra
+arms and legs))),
+Steps: 20, Sampler: DPM++ SDE, CFG scale: 7, Seed: 2372190596, Size: 512x512, Model hash: 9d451bd37a, Model: 2D Game Icon Skill Equipment_V2.0, Clip skip: 2, AddNet Enabled: True, AddNet Module 1: LoRA, AddNet Model 1: StickMan(bd06e3b76ef2), AddNet Weight A 1: 0.7, AddNet Weight B 1: 0.7, AddNet Module 2: LoRA, AddNet Model 2: GameIcon_Skill_V2(ca8be7b8a70c), AddNet Weight A 2: 0.85, AddNet Weight B 2: 0.85, Version: v1.3.2
