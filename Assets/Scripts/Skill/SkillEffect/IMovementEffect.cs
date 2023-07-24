@@ -239,14 +239,20 @@ public class BlinkBehindTargetMovement : IMovementEffect
 public class SwapWithTargetMovement : IMovementEffect
 {
     private Character _target; // 目标
+    private Vector3 _ownerOriginalPosition; // 主角原始位置
+    private Vector3 _targetOriginalPosition; // 目标原始位置
     private float _elapsedTime; // 已经过去的时间
     private bool _hasSwapped; // 是否已经完成交换
+    private bool _hasPassedTarget; // 是否已经经过目标
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
         _target = owner._targetFinder.GetTarget();
+        _ownerOriginalPosition = owner.transform.position;
+        _targetOriginalPosition = _target.transform.position;
         _elapsedTime = 0f;
         _hasSwapped = false;
+        _hasPassedTarget = false;
     }
 
     public void OnMoving(Character owner, SkillInstance skill)
@@ -254,10 +260,34 @@ public class SwapWithTargetMovement : IMovementEffect
         _elapsedTime += Time.deltaTime;
 
         // 如果已经完成交换或者延迟时间未到，不进行移动
-        if (!_hasSwapped && _elapsedTime >= skill.SkillInfo._damageDelay)
+        if (_hasSwapped || _elapsedTime < skill.SkillInfo._damageDelay)
         {
-            // 交换位置并设置方向
-            SwapPositionAndSetDirection(owner, _target);
+            return;
+        }
+
+        // 计算交换位置所剩余的时间
+        float swapRemainingTime = skill.SkillInfo._castTime - skill.SkillInfo._damageDelay;
+        // (_elapsedTime - skill.SkillInfo._damageDelay) / swapRemainingTime 是交换开始后经过的时间的百分比
+        float t = (_elapsedTime - skill.SkillInfo._damageDelay) / swapRemainingTime;
+
+        Vector3 ownerNextPosition = Vector3.Lerp(_ownerOriginalPosition, _targetOriginalPosition, t);
+        Vector3 targetNextPosition = Vector3.Lerp(_targetOriginalPosition, _ownerOriginalPosition, t);
+
+        if (t <= 1)
+        {
+            if (!_hasPassedTarget && Vector3.Dot(ownerNextPosition - _target.transform.position, _ownerOriginalPosition - _targetOriginalPosition) < 0)
+            {
+                owner.FlipDirection();
+                _hasPassedTarget = true;
+            }
+
+            owner.transform.position = ownerNextPosition;
+            _target.transform.position = targetNextPosition;
+        }
+        else if (!_hasSwapped) // 确保交换只进行一次
+        {
+            owner.transform.position = _targetOriginalPosition;
+            _target.transform.position = _ownerOriginalPosition;
 
             _hasSwapped = true;
         }
@@ -265,25 +295,16 @@ public class SwapWithTargetMovement : IMovementEffect
 
     public void AfterMove(Character owner, SkillInstance skill)
     {
-        // 如果技能释放结束后还没有交换位置，立即交换位置并设置方向
+        // 如果技能释放结束后还没有交换位置，立即交换位置
         if (!_hasSwapped)
         {
-            SwapPositionAndSetDirection(owner, _target);
+            owner.transform.position = _targetOriginalPosition;
+            _target.transform.position = _ownerOriginalPosition;
+            _hasSwapped = true;
         }
     }
-
-    private void SwapPositionAndSetDirection(Character owner, Character target)
-    {
-        // 交换位置
-        Vector3 tempPosition = owner.transform.position;
-        owner.transform.position = target.transform.position;
-        target.transform.position = tempPosition;
-
-        // 设置方向
-        owner.FlipDirection();
-        target.SetDirection(owner.GetDirection());
-    }
 }
+
 
 
 /// <summary>

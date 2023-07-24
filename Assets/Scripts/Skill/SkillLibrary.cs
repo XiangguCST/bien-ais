@@ -37,7 +37,7 @@ public class SkillLibrary
             );
            qianxing.AddComponent(new TargetRequired(0f, 16f));
            qianxing.AddComponent(new RushToTargetMovement());
-        var muyeyixing = AddSkill(new Skill("木叶移形", "muyeyixing", 0, 0, 1, 18f, 0.33f, 0.3f, 0,
+        var muyeyixing = AddSkill(new Skill("木叶移形", "muyeyixing", 0, 0, 1, 18f, 0.5f, 0.1f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
             new NonChainSkillStrategy())
             );
