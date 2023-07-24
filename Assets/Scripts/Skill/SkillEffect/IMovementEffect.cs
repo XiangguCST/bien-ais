@@ -278,6 +278,7 @@ public class SwapWithTargetMovement : IMovementEffect
             if (!_hasPassedTarget && Vector3.Dot(ownerNextPosition - _target.transform.position, _ownerOriginalPosition - _targetOriginalPosition) < 0)
             {
                 owner.FlipDirection();
+                _target.SetDirection(owner.GetDirection()); // 设置目标朝向与角色一致
                 _hasPassedTarget = true;
             }
 
@@ -304,6 +305,7 @@ public class SwapWithTargetMovement : IMovementEffect
         }
     }
 }
+
 
 
 
