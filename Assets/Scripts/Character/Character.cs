@@ -24,7 +24,7 @@ public class Character : MonoBehaviour
             _animator = GetComponentInChildren<Animator>();
             _skillMgr = new CharacterSkillMgr(this);
             _targetFinder = new TargetFinder(this);
-            _stateManager.OnStatusEffectApplied += OnStatusEffectApplied; 
+            _stateManager.OnCharacterStatusEffect += OnCharacterStatusEffect; 
             _stateManager._owner = this;
             lastPosition = transform.position;
             CommonUtility.SetCharacterColor(this, _defaultColor);
@@ -40,8 +40,14 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void OnStatusEffectApplied()
+    /// <summary>
+    /// 响应角色受到异常状态
+    /// </summary>
+    private void OnCharacterStatusEffect()
     {
+        ShowStatus(_stateManager.GetCurrentStatus().GetDescription()); // 显示控制字体
+        _skillMgr.InterruptSkill(); // 打断技能释放
+
         _animator.SetTrigger("status");
         _skillMgr.DisableAllChainSkills(); // 角色受到异常状态禁用所有连锁技能
     }

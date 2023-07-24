@@ -17,6 +17,17 @@ public class CharacterSkillMgr
         _owner = owner;
     }
 
+    /// <summary>
+    /// 停止释放技能
+    /// </summary>
+    public void InterruptSkill()
+    {
+        if (_isCasting && _castingSkill != null)
+        {
+            _castingSkill.InterruptSkill();
+        }
+    }
+
     // 开始gcd
     public void StartGlobalCooldown(float cooldownTime)
     {

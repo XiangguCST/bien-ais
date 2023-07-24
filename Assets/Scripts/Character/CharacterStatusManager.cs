@@ -21,11 +21,9 @@ public class CharacterStatusManager
     {
         if (status == CharacterStatusType.None) return;
 
-        _owner.ShowStatus(status.GetDescription()); // 显示控制字体
-
         statusTimers.AddOrUpdate(status, duration, (_, existingDuration) => Math.Max(existingDuration, duration));
         UpdateCurrentStatus();
-        OnStatusEffectApplied?.Invoke();
+        OnCharacterStatusEffect?.Invoke();
     }
 
     // 移除所有异常状态
@@ -92,7 +90,7 @@ public class CharacterStatusManager
     private ConcurrentDictionary<CharacterStatusType, float> statusTimers;  // 异常状态计时器
     public CharacterStatusType currentStatus;  // 当前异常状态
     public Character _owner; // 当前角色
-    public Action OnStatusEffectApplied; // 角色受到异常状态的事件
+    public Action OnCharacterStatusEffect; // 角色受到异常状态的事件
 }
 
 public enum CharacterStatusType
