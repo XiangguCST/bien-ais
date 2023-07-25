@@ -79,12 +79,6 @@ public class CharacterStatusManager
                 currentStatus = status;
             }
         }
-
-        if(currentStatus != CharacterStatusType.None)
-        {
-            // 异常状态角色应该停下
-            _owner.Stand();
-        }
         _owner.SetAnimatorInteger("state", (int)currentStatus);
     }
     private ConcurrentDictionary<CharacterStatusType, float> statusTimers;  // 异常状态计时器
@@ -97,14 +91,14 @@ public enum CharacterStatusType
 {
     [Description("无异常状态")]
     None,
-    [Description("沉默")]
-    Silence,
     [Description("眩晕")]
-    Stun,
+    Stun = 2,
     [Description("虚弱")]
-    Weakness,
+    Weakness = 3,
     [Description("击倒")]
-    Knockdown
+    Knockdown = 4,
+    [Description("沉默")]
+    Silence = 5,
 }
 
 
