@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// 角色状态管理类
 /// </summary>
-[Serializable]
 public class CharacterStatusManager
 {
     private struct StatusInfo
@@ -26,7 +26,6 @@ public class CharacterStatusManager
         };
 
         statusInfos[status] = newStatusInfo;
-        lastStatusStartTime = gameTime;
         UpdateCurrentStatus();
         OnCharacterStatusEffect?.Invoke(status);
     }
@@ -35,7 +34,6 @@ public class CharacterStatusManager
     public void RemoveAllStatuses()
     {
         statusInfos.Clear();
-        lastStatusStartTime = gameTime;
         UpdateCurrentStatus();
     }
 
@@ -57,7 +55,6 @@ public class CharacterStatusManager
             if (updatedStatusInfo.Duration <= 0)
             {
                 statusesToRemove.Add(statusInfo.Key);
-                lastStatusStartTime = statusInfo.Value.StartTime;
             }
             else
             {
@@ -76,7 +73,7 @@ public class CharacterStatusManager
     // 获取上一次添加异常状态经过的时间
     public float GetStatusElapsedTime()
     {
-        return gameTime - lastStatusStartTime;
+        return GetCurrentStatus() == CharacterStatusType.None ? 0 : gameTime - lastStatusStartTime;
     }
 
     // 更新当前异常状态
@@ -90,9 +87,13 @@ public class CharacterStatusManager
                 newStatus = status;
             }
         }
-        if(newStatus != currentStatus)
+        if (newStatus != currentStatus)
         {
             currentStatus = newStatus;
+            if (statusInfos.ContainsKey(currentStatus))
+            {
+                lastStatusStartTime = statusInfos[currentStatus].StartTime;
+            }
             OnStatusChanged?.Invoke();
         }
     }

@@ -38,9 +38,8 @@ public class SkillInstance
                 return false;
             }
         }
-
         //　技能可用性判断策略
-        if(SkillInfo.HasComponent<ISkillUsability>())
+        if (SkillInfo.HasComponent<ISkillUsability>())
         {
             var usabilitys = SkillInfo.GetComponents<ISkillUsability>();
             foreach (var usability in usabilitys)
