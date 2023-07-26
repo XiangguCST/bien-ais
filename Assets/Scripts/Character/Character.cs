@@ -24,7 +24,8 @@ public class Character : MonoBehaviour
             _animator = GetComponentInChildren<Animator>();
             _skillMgr = new CharacterSkillMgr(this);
             _targetFinder = new TargetFinder(this);
-            _stateManager.OnCharacterStatusEffect += OnCharacterStatusEffect; 
+            _stateManager.OnCharacterStatusEffect += OnCharacterStatusEffect;
+            _stateManager.OnCharacterUpdateStatus += OnCharacterUpdateStatus;
             _stateManager._owner = this;
             lastPosition = transform.position;
             CommonUtility.SetCharacterColor(this, _defaultColor);
@@ -38,6 +39,11 @@ public class Character : MonoBehaviour
             ApplyAttribute();
             _bInit = true;
         }
+    }
+
+    private void OnCharacterUpdateStatus()
+    {
+        SetAnimatorInteger("state", (int)_stateManager.currentStatus);
     }
 
     /// <summary>

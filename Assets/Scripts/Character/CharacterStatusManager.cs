@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
-using UnityEngine;
 
 /// <summary>
 /// 角色状态管理类
@@ -79,26 +77,14 @@ public class CharacterStatusManager
                 currentStatus = status;
             }
         }
-        _owner.SetAnimatorInteger("state", (int)currentStatus);
+        OnCharacterUpdateStatus?.Invoke();
     }
     private ConcurrentDictionary<CharacterStatusType, float> statusTimers;  // 异常状态计时器
     public CharacterStatusType currentStatus;  // 当前异常状态
     public Character _owner; // 当前角色
     public Action OnCharacterStatusEffect; // 角色受到异常状态的事件
+    public Action OnCharacterUpdateStatus; // 角色更新异常状态的事件
 }
 
-public enum CharacterStatusType
-{
-    [Description("无异常状态")]
-    None,
-    [Description("眩晕")]
-    Stun = 2,
-    [Description("虚弱")]
-    Weakness = 3,
-    [Description("击倒")]
-    Knockdown = 4,
-    [Description("沉默")]
-    Silence = 5,
-}
 
 
