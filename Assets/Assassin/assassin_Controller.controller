@@ -75,7 +75,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: status
+  - m_Name: StatusChanged
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -2028,7 +2028,7 @@ AnimatorStateTransition:
     m_ConditionEvent: state
     m_EventTreshold: 4
   - m_ConditionMode: 1
-    m_ConditionEvent: status
+    m_ConditionEvent: StatusChanged
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102048362221215932}
@@ -2131,7 +2131,7 @@ AnimatorStateTransition:
     m_ConditionEvent: state
     m_EventTreshold: 3
   - m_ConditionMode: 1
-    m_ConditionEvent: status
+    m_ConditionEvent: StatusChanged
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102148083483496484}
@@ -2939,7 +2939,7 @@ AnimatorStateTransition:
     m_ConditionEvent: state
     m_EventTreshold: 2
   - m_ConditionMode: 1
-    m_ConditionEvent: status
+    m_ConditionEvent: StatusChanged
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102262423457109080}

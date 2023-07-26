@@ -52,3 +52,11 @@ public class TargetBuffRequired : ISkillUsability
     float _requiredTargetDistance; // 表示技能释放所需的目标距离
     private BuffType _buffType; // buff类型
 }
+
+public class HouGunFanUsability : ISkillUsability
+{
+    public bool IsSkillUsable(SkillInstance skillInstance)
+    {
+        return skillInstance._owner._stateManager.GetStatusElapsedTime() <= 1f;
+    }
+}

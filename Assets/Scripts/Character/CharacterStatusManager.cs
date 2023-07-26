@@ -8,10 +8,10 @@ using System.Collections.Generic;
 [Serializable]
 public class CharacterStatusManager
 {
-    public CharacterStatusManager()
+    private struct StatusInfo
     {
-        statusTimers = new ConcurrentDictionary<CharacterStatusType, float>();
-        currentStatus = CharacterStatusType.None;
+        public float Duration;  // 异常状态持续时间
+        public float StartTime;  // 异常状态开始时间
     }
 
     // 添加异常状态
@@ -19,45 +19,82 @@ public class CharacterStatusManager
     {
         if (status == CharacterStatusType.None) return;
 
-        statusTimers.AddOrUpdate(status, duration, (_, existingDuration) => Math.Max(existingDuration, duration));
+        StatusInfo newStatusInfo = new StatusInfo
+        {
+            Duration = duration,
+            StartTime = gameTime,
+        };
+
+        statusInfos[status] = newStatusInfo;
+        lastStatusStartTime = gameTime;
         UpdateCurrentStatus();
-        OnCharacterStatusEffect?.Invoke();
+        OnCharacterStatusEffect?.Invoke(status);
     }
 
     // 移除所有异常状态
     public void RemoveAllStatuses()
     {
-        statusTimers.Clear();
+        statusInfos.Clear();
+        lastStatusStartTime = gameTime;
         UpdateCurrentStatus();
     }
 
     // 更新异常状态
-    public void UpdateStatus(float deltaTime)
+    public void Update(float deltaTime)
     {
-        List<CharacterStatusType> statusesToRemove = null;
-        foreach (var item in statusTimers)
+        gameTime += deltaTime;
+
+        List<CharacterStatusType> statusesToRemove = new List<CharacterStatusType>();
+
+        foreach (var statusInfo in statusInfos)
         {
-            var status = item.Key;
-            statusTimers[status] -= deltaTime;
-            if (statusTimers[status] <= 0f)
+            StatusInfo updatedStatusInfo = new StatusInfo
             {
-                if (statusesToRemove == null)
-                {
-                    statusesToRemove = new List<CharacterStatusType>();
-                }
-                statusesToRemove.Add(status);
+                Duration = statusInfo.Value.Duration - deltaTime,
+                StartTime = statusInfo.Value.StartTime
+            };
+
+            if (updatedStatusInfo.Duration <= 0)
+            {
+                statusesToRemove.Add(statusInfo.Key);
+                lastStatusStartTime = statusInfo.Value.StartTime;
+            }
+            else
+            {
+                statusInfos[statusInfo.Key] = updatedStatusInfo;
             }
         }
 
-        if (statusesToRemove != null)
+        foreach (var status in statusesToRemove)
         {
-            foreach (var status in statusesToRemove)
-            {
-                statusTimers.TryRemove(status, out _);
-            }
+            statusInfos.TryRemove(status, out _);
         }
 
         UpdateCurrentStatus();
+    }
+
+    // 获取上一次添加异常状态经过的时间
+    public float GetStatusElapsedTime()
+    {
+        return gameTime - lastStatusStartTime;
+    }
+
+    // 更新当前异常状态
+    private void UpdateCurrentStatus()
+    {
+        var newStatus = CharacterStatusType.None;
+        foreach (var status in statusInfos.Keys)
+        {
+            if (newStatus == CharacterStatusType.None || status < newStatus)
+            {
+                newStatus = status;
+            }
+        }
+        if(newStatus != currentStatus)
+        {
+            currentStatus = newStatus;
+            OnStatusChanged?.Invoke();
+        }
     }
 
     // 获取当前异常状态
@@ -66,25 +103,12 @@ public class CharacterStatusManager
         return currentStatus;
     }
 
-    // 更新当前异常状态
-    private void UpdateCurrentStatus()
-    {
-        currentStatus = CharacterStatusType.None;
-        foreach (var status in statusTimers.Keys)
-        {
-            if (currentStatus == CharacterStatusType.None || status < currentStatus)
-            {
-                currentStatus = status;
-            }
-        }
-        OnCharacterUpdateStatus?.Invoke();
-    }
-    private ConcurrentDictionary<CharacterStatusType, float> statusTimers;  // 异常状态计时器
-    public CharacterStatusType currentStatus;  // 当前异常状态
+    private ConcurrentDictionary<CharacterStatusType, StatusInfo> statusInfos = new ConcurrentDictionary<CharacterStatusType, StatusInfo>();  // 存储每种状态的信息
+    private float lastStatusStartTime; // 最后一次添加异常状态的开始时间
+    private float gameTime; // 游戏运行时间
+    private CharacterStatusType currentStatus;  // 当前异常状态
+
     public Character _owner; // 当前角色
-    public Action OnCharacterStatusEffect; // 角色受到异常状态的事件
-    public Action OnCharacterUpdateStatus; // 角色更新异常状态的事件
+    public Action<CharacterStatusType> OnCharacterStatusEffect; // 角色受到异常状态的事件
+    public Action OnStatusChanged; // 角色异常状态发生变化的事件
 }
-
-
-

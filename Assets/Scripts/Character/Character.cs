@@ -25,7 +25,7 @@ public class Character : MonoBehaviour
             _skillMgr = new CharacterSkillMgr(this);
             _targetFinder = new TargetFinder(this);
             _stateManager.OnCharacterStatusEffect += OnCharacterStatusEffect;
-            _stateManager.OnCharacterUpdateStatus += OnCharacterUpdateStatus;
+            _stateManager.OnStatusChanged += OnStatusChanged;
             _stateManager._owner = this;
             lastPosition = transform.position;
             CommonUtility.SetCharacterColor(this, _defaultColor);
@@ -41,20 +41,20 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void OnCharacterUpdateStatus()
+    private void OnStatusChanged()
     {
-        SetAnimatorInteger("state", (int)_stateManager.currentStatus);
+        _animator.SetTrigger("StatusChanged");
+        SetAnimatorInteger("state", (int)_stateManager.GetCurrentStatus());
     }
 
     /// <summary>
     /// 响应角色受到异常状态
     /// </summary>
-    private void OnCharacterStatusEffect()
+    private void OnCharacterStatusEffect(CharacterStatusType newStatus)
     {
         Stand();// 异常状态角色应该停下
-        ShowStatus(_stateManager.GetCurrentStatus().GetDescription()); // 显示控制字体
+        ShowStatus(newStatus.GetDescription()); // 显示控制字体
         _skillMgr.InterruptSkill(); // 打断技能释放
-        _animator.SetTrigger("status");
         _skillMgr.DisableAllChainSkills(); // 角色受到异常状态禁用所有连锁技能
     }
 
@@ -63,7 +63,7 @@ public class Character : MonoBehaviour
         if (InputController.Instance._isGameOver) return;
 
         _targetFinder.UpdateTarget();
-        _stateManager.UpdateStatus(Time.deltaTime);
+        _stateManager.Update(Time.deltaTime);
         _buffManager.UpdateBuffs(Time.deltaTime);
 
         if (transform.position != lastPosition)

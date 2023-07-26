@@ -78,6 +78,7 @@ public class SkillLibrary
            hougunfan.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 4f));
         hougunfan.AddComponent(new StatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness }));
         hougunfan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 0.5f));
+        hougunfan.AddComponent(new HouGunFanUsability());
         var tab = AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0,
             SkillUsabilityPriority.Conditional, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));
