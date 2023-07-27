@@ -23,13 +23,13 @@ public static class DebugGUI
 
     public static void AddDebugItem(string keyName, string valInfo, Color color = default)
     {
-        var item = new DebugItemBase(keyName, () => valInfo, color);
+        var item = new DebugItemBase(keyName, keyName, () => valInfo, color);
         GetDebugGUIBehaviour().DebugItems[keyName] = item;
     }
 
     public static void AddDebugItem(string keyName, Func<string> valGetter, Color color = default)
     {
-        var item = new DebugItemBase(keyName, valGetter, color);
+        var item = new DebugItemBase(keyName, keyName,valGetter, color);
         GetDebugGUIBehaviour().DebugItems[keyName] = item;
     }
 

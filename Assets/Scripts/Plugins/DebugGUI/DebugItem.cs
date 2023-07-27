@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-
 // DebugItem接口
 public interface IDebugItem
 {
     string Key { get; }
+    string DisplayName { get; }
     Func<string> Getter { get; }
     Color Color { get; }
     int FontSize { get; }
@@ -21,14 +21,16 @@ public interface IDebugItem
 public class DebugItemBase : IDebugItem
 {
     public string Key { get; }
+    public string DisplayName { get; }
     public Func<string> Getter { get; }
     public Color Color { get; set; }
     public int FontSize { get; set; }
     public List<IDebugItem> Children { get; }
 
-    public DebugItemBase(string key, Func<string> getter, Color color = default, int fontSize = 18)
+    public DebugItemBase(string key, string displayName, Func<string> getter, Color color = default, int fontSize = 18)
     {
         Key = key;
+        DisplayName = displayName;
         Getter = getter;
         Color = color == default ? Color.black : color;
         FontSize = fontSize;
@@ -43,17 +45,6 @@ public class DebugItemBase : IDebugItem
         var boxStyle = new GUIStyle("box") { normal = { background = boxBackground } };
 
         return boxStyle;
-    }
-
-    // 根据给定的颜色计算背景颜色
-    protected Color GetBackgroundColor(Color color)
-    {
-        float h, s, l;
-        Color.RGBToHSV(color, out h, out s, out l);
-
-        // 减小亮度以得到更深的颜色
-        l = Mathf.Clamp01(l - 0.2f);
-        return Color.HSVToRGB(h, s, l);
     }
 
     // 根据给定的颜色生成一个较深的颜色
@@ -71,6 +62,16 @@ public class DebugItemBase : IDebugItem
         return Color.HSVToRGB(h, s, v);
     }
 
+    // 根据给定的颜色计算背景颜色
+    protected Color GetBackgroundColor(Color color)
+    {
+        float h, s, l;
+        Color.RGBToHSV(color, out h, out s, out l);
+
+        // 减小亮度以得到更深的颜色
+        l = Mathf.Clamp01(l - 0.2f);
+        return Color.HSVToRGB(h, s, l);
+    }
 
     // 创建一个指定颜色的 Texture2D
     protected Texture2D CreateBox(int width, int height, Color col)
@@ -98,7 +99,7 @@ public class DebugItemBase : IDebugItem
         Color actualBoxColor = boxColor ?? GetContrastColor(Color);
         GUILayout.BeginVertical(CreateBoxStyle(actualBoxColor));
         GUILayout.BeginHorizontal();
-        GUILayout.Label($"{Key}:", keyStyle);
+        GUILayout.Label($"{DisplayName}:", keyStyle);
         GUILayout.Space(20);
         string value = Getter();
         if (!string.IsNullOrEmpty(value))
@@ -121,7 +122,7 @@ public class DebugItemBase : IDebugItem
 public class DebugItemObject : DebugItemBase
 {
     public DebugItemObject(string key, object obj, Color color = default, int fontSize = 18)
-        : base(key, () => "", color, fontSize)
+        : base(key, key, () => "", color, fontSize)
     {
         // 获取obj的字段和属性信息
         var type = obj.GetType();
@@ -131,46 +132,26 @@ public class DebugItemObject : DebugItemBase
         foreach (var field in fields)
         {
             if (field.FieldType.BaseType == typeof(MulticastDelegate)) continue;  // 忽略委托类型
-            if (typeof(IDictionary).IsAssignableFrom(field.FieldType)) // 判断是否为字典类型
-            {
-                var dic = field.GetValue(obj) as IDictionary;
-                if (dic != null)
-                    Children.Add(new DebugItemDictionary($"{Key}.{field.Name}", dic, color));
-            }
-            else if (typeof(IList).IsAssignableFrom(field.FieldType)) // 判断是否为列表类型
-            {
-                var list = field.GetValue(obj) as IList;
-                if (list != null)
-                    Children.Add(new DebugItemList($"{Key}.{field.Name}", list, color));
-            }
+            var value = field.GetValue(obj);
+            if (value is IDictionary dic)
+                Children.Add(new DebugItemDictionary($"{field.Name}", dic, color, fontSize));
+            else if (value is IList list)
+                Children.Add(new DebugItemList($"{field.Name}", list, color, fontSize));
             else
-            {
-                var value = field.GetValue(obj);
-                Children.Add(new DebugItemBase($"{Key}.{field.Name}", () => value?.ToString() ?? "null", color, fontSize));
-            }
+                Children.Add(new DebugItemBase($"{Key}.{field.Name}", field.Name, () => value?.ToString() ?? "null", color, fontSize));
         }
 
         foreach (var property in properties)
         {
             if (!property.CanRead) continue;
             if (property.PropertyType.BaseType == typeof(MulticastDelegate)) continue;  // 忽略委托类型
-            if (typeof(IDictionary).IsAssignableFrom(property.PropertyType)) // 判断是否为字典类型
-            {
-                var dic = property.GetValue(obj) as IDictionary;
-                if (dic != null)
-                    Children.Add(new DebugItemDictionary($"{Key}.{property.Name}", dic, color));
-            }
-            else if (typeof(IList).IsAssignableFrom(property.PropertyType)) // 判断是否为列表类型
-            {
-                var list = property.GetValue(obj) as IList;
-                if (list != null)
-                    Children.Add(new DebugItemList($"{Key}.{property.Name}", list, color));
-            }
+            var value = property.GetValue(obj);
+            if (value is IDictionary dic)
+                Children.Add(new DebugItemDictionary($"{property.Name}", dic, color, fontSize));
+            else if (value is IList list)
+                Children.Add(new DebugItemList($"{property.Name}", list, color, fontSize));
             else
-            {
-                var value = property.GetValue(obj);
-                Children.Add(new DebugItemBase($"{Key}.{property.Name}", () => value?.ToString() ?? "null", color, fontSize));
-            }
+                Children.Add(new DebugItemBase($"{Key}.{property.Name}", property.Name, () => value?.ToString() ?? "null", color, fontSize));
         }
     }
 
@@ -198,12 +179,12 @@ public class DebugItemObject : DebugItemBase
 public class DebugItemList : DebugItemBase
 {
     public DebugItemList(string key, IList list, Color color = default, int fontSize = 18)
-        : base(key, () => $"Count: {list.Count}", color, fontSize)
+        : base(key, key, () => $"Count: {list.Count}", color, fontSize)
     {
         for (var i = 0; i < list.Count; i++)
         {
             var value = list[i];
-            Children.Add(new DebugItemBase($"{Key}[{i}]", () => value?.ToString() ?? "null", color, fontSize));
+            Children.Add(new DebugItemBase($"{Key}[{i}]", $"[{i}]", () => value?.ToString() ?? "null", color, fontSize));
         }
     }
 
@@ -231,11 +212,11 @@ public class DebugItemList : DebugItemBase
 public class DebugItemDictionary : DebugItemBase
 {
     public DebugItemDictionary(string key, IDictionary dic, Color color = default, int fontSize = 18)
-        : base(key, () => $"Count: {dic.Count}", color, fontSize)
+        : base(key, key, () => $"Count: {dic.Count}", color, fontSize)
     {
         foreach (DictionaryEntry pair in dic)
         {
-            Children.Add(new DebugItemBase($"{Key}[{pair.Key}]", () => pair.Value?.ToString() ?? "null", color, fontSize));
+            Children.Add(new DebugItemBase($"{Key}[{pair.Key}]", $"[{pair.Key}]", () => pair.Value?.ToString() ?? "null", color, fontSize));
         }
     }
 
