@@ -83,9 +83,9 @@ public class SkillInfoUI : MonoBehaviour
         {
             AddToDescription($"在{skill.SkillInfo._castTime}秒内反击");
         }
-        else if (skill.SkillInfo.HasComponent<StatusRemovalEffect>())
+        else if (skill.SkillInfo.HasComponent<OwnerStatusRemovalEffect>())
         {
-            var statusRemove = skill.SkillInfo.GetComponent<StatusRemovalEffect>();
+            var statusRemove = skill.SkillInfo.GetComponent<OwnerStatusRemovalEffect>();
             var description = $"脱离";
             for (int i = 0; i < statusRemove.RemovalStatus.Count; ++i)
             {
@@ -155,7 +155,7 @@ public class SkillInfoUI : MonoBehaviour
         }
         else if (skill.SkillInfo.HasComponent<IHitCheckStrategy>()
             && skill.SkillInfo.GetComponent<IHitCheckStrategy>().IsAOESkill()
-            && skill.SkillInfo.HasComponent<StatusRemovalEffect>()
+            && skill.SkillInfo.HasComponent<OwnerStatusRemovalEffect>()
           )
         {
             var rangeHitCheck = skill.SkillInfo.GetComponent<RangeHitCheckStrategy>();

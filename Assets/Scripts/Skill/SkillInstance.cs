@@ -53,9 +53,9 @@ public class SkillInstance
         if (SkillInfo._chainStrategy.IsChainSkill() && Time.time >= _chainSkillEnableUntil)
             return false;
 
-        if (SkillInfo.HasComponent<StatusRemovalEffect>())
+        if (SkillInfo.HasComponent<OwnerStatusRemovalEffect>())
         {
-            var statusRemove = SkillInfo.GetComponent<StatusRemovalEffect>();
+            var statusRemove = SkillInfo.GetComponent<OwnerStatusRemovalEffect>();
             if (!statusRemove.IsSkillUsable(this))
                 return false;
         }
@@ -131,9 +131,9 @@ public class SkillInstance
         {
             SkillInfo.GetComponent<IMovementEffect>().BeforeMove(_owner, this);
         }
-        if (SkillInfo.HasComponent<StatusRemovalEffect>())
+        if (SkillInfo.HasComponent<OwnerStatusRemovalEffect>())
         {
-            SkillInfo.GetComponent<StatusRemovalEffect>().OnRemoveStatusEffect(_owner, this);
+            SkillInfo.GetComponent<OwnerStatusRemovalEffect>().OnRemoveStatusEffect(_owner, this);
         }
         if (SkillInfo.HasComponent<IBuffAdditionEffect>())
         {
@@ -294,8 +294,11 @@ public class SkillInstance
         // 暴击判定
         bool bCrit;
         damage = SkillDamageCalculator.CritTest(damage, out bCrit);
-
-        if(SkillInfo.HasComponent<StatusAdditionEffect>())
+        if (SkillInfo.HasComponent<TargetStatusRemovalEffect>())
+        {
+            SkillInfo.GetComponent<TargetStatusRemovalEffect>().OnRemoveStatusEffect(_owner, this);
+        }
+        if (SkillInfo.HasComponent<StatusAdditionEffect>())
         {
             var statusAdd = SkillInfo.GetComponent<StatusAdditionEffect>();
             statusAdd.OnDealDamage(_owner, target, this);
@@ -311,6 +314,16 @@ public class SkillInstance
     {
         if (_castCoroutine != null)
             CoroutineRunner.StopCoroutine(_castCoroutine);
+
+        if (SkillInfo.HasComponent<IMovementEffect>())
+        {
+            var movements = SkillInfo.GetComponents<IMovementEffect>();
+            foreach (var movement in movements)
+            {
+                movement.OnInterruptSkill(_owner, this);
+            }
+        }
+
         AfterSkillCast();
         CommonUtility.EnableCollision(_owner, true);
     }

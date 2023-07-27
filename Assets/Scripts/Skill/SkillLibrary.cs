@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class SkillLibrary
 {
@@ -60,7 +61,7 @@ public class SkillLibrary
         muyejizhan.AddComponent(new RangeHitCheckStrategy(-1f));
         muyejizhan.AddComponent(new BlinkBehindTargetMovement());
         var muyeshanxian = AddSkill(new Skill("木叶闪现", "muyeshanxian", 0, 0, 1, 18f, 0.88f, 0.44f, 0,
-            SkillUsabilityPriority.Normal, SkillInterruptPriority.Normal, false,
+            SkillUsabilityPriority.ChainHigh2, SkillInterruptPriority.High, false,
               new ChainSkillStrategy()));
         muyeshanxian.AddComponent(new TargetRequired(0f, 16f));
         muyeshanxian.AddComponent(new RangeHitCheckStrategy(-1f));
@@ -76,21 +77,23 @@ public class SkillLibrary
             SkillUsabilityPriority.Conditional, SkillInterruptPriority.High, false,
             new NonChainSkillStrategy()));
            hougunfan.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 4f));
-        hougunfan.AddComponent(new StatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness }));
+        hougunfan.AddComponent(new OwnerStatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness }));
         hougunfan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 0.5f));
         hougunfan.AddComponent(new HouGunFanUsability());
-        var jiaohou = AddSkill(new Skill("绞喉", "jiaohou", 1, 0, 1, 0f, 3f, 0.1f, 0,
+        var jiaohou = AddSkill(new Skill("绞喉", "jiaohou", 1, 0, 1, 0f, 1.6f, 0.1f, 0,
             SkillUsabilityPriority.ChainHigh1, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));
+        jiaohou.AddComponent(new TargetRequired(0f, 3f));
+        jiaohou.AddComponent(new TargetStatusRequired(new List<CharacterStatusType> { CharacterStatusType.Stun}));
         jiaohou.AddComponent(new CircleAroundTargetMovement());
-        jiaohou.AddComponent(new StatusAdditionEffect(CharacterStatusType.Silence, 1.6f));
-        jiaohou.AddComponent(new TargetStatusRequired(CharacterStatusType.Stun));
+        jiaohou.AddComponent(new StatusAdditionEffect(CharacterStatusType.Silence, 2.1f));
+        jiaohou.AddComponent(new TargetStatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Stun}));
         var tab = AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0,
             SkillUsabilityPriority.Conditional, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));
             tab.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 8));
         tab.AddComponent(new RangeHitCheckStrategy(3f, true));
-        tab.AddComponent(new StatusRemovalEffect());
+        tab.AddComponent(new OwnerStatusRemovalEffect());
         tab.AddComponent(new StatusAdditionEffect(CharacterStatusType.Silence, 2f));
         tab.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
         var nifengxing = AddSkill(new Skill("逆风行", "nifengxing", 0, 0, 0, 8f, 0.43f, 0f, 0,

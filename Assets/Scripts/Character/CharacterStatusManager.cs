@@ -104,6 +104,11 @@ public class CharacterStatusManager
         return currentStatus;
     }
 
+    public bool IsPure()
+    {
+        return statusInfos.Count == 1;
+    }
+
     private ConcurrentDictionary<CharacterStatusType, StatusInfo> statusInfos = new ConcurrentDictionary<CharacterStatusType, StatusInfo>();  // 存储每种状态的信息
     private float lastStatusStartTime; // 最后一次添加异常状态的开始时间
     private float gameTime; // 游戏运行时间

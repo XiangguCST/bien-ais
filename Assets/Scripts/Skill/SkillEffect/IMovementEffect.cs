@@ -11,6 +11,7 @@ public interface IMovementEffect : ISkillEffect
     void BeforeMove(Character owner, SkillInstance skill);
     void OnMoving(Character owner, SkillInstance skill);
     void AfterMove(Character owner, SkillInstance skill);
+    void OnInterruptSkill(Character owner, SkillInstance skillInstance);
 }
 
 /// <summary>
@@ -83,6 +84,10 @@ public class FixedDirectionMovement : IMovementEffect
         return movementVector;
     }
 
+    public void OnInterruptSkill(Character owner, SkillInstance skillInstance)
+    {
+    }
+
     public MovementDirection MovementDir { get; set; } // 位移方向
     public float MovementDistance { get; set; } // 位移距离
 
@@ -127,6 +132,10 @@ public class RushToTargetMovement : IMovementEffect
     public void AfterMove(Character owner, SkillInstance skill)
     {
         // 技能释放结束后不做额外操作
+    }
+
+    public void OnInterruptSkill(Character owner, SkillInstance skillInstance)
+    {
     }
 
     private float _rushDistance; // 距离目标的距离
@@ -189,6 +198,10 @@ public class RushToBackTargetMovement : IMovementEffect
             owner.FlipDirection();
         }
     }
+
+    public void OnInterruptSkill(Character owner, SkillInstance skillInstance)
+    {
+    }
 }
 
 
@@ -243,6 +256,10 @@ public class BlinkBehindTargetMovement : IMovementEffect
         // 确保移动到目标位置
         owner.transform.position = _targetBlinkPosition;
     }
+
+    public void OnInterruptSkill(Character owner, SkillInstance skillInstance)
+    {
+    }
 }
 
 
@@ -251,6 +268,7 @@ public class BlinkBehindTargetMovement : IMovementEffect
 /// </summary>
 public class SwapWithTargetMovement : IMovementEffect
 {
+    private Vector3 _startPosition; // 角色旋转开始前的位置
     private Character _target; // 目标
     private Vector3 _ownerOriginalPosition; // 主角原始位置
     private Vector3 _targetOriginalPosition; // 目标原始位置
@@ -260,6 +278,7 @@ public class SwapWithTargetMovement : IMovementEffect
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
+        _startPosition = owner.transform.position; // 记录下角色旋转开始前的位置
         _target = owner._targetFinder.GetTarget();
         _ownerOriginalPosition = owner.transform.position;
         _targetOriginalPosition = _target.transform.position;
@@ -317,6 +336,11 @@ public class SwapWithTargetMovement : IMovementEffect
             _hasSwapped = true;
         }
     }
+
+    public void OnInterruptSkill(Character owner, SkillInstance skillInstance)
+    {
+        owner.transform.position = _startPosition;
+    }
 }
 
 
@@ -329,17 +353,23 @@ public class CircleAroundTargetMovement : IMovementEffect
     private Vector3 _startPosition; // 角色旋转开始前的位置
     private float _elapsedTime; // 旋转已经进行的时间
     private float _totalTravelTime; // 角色旋转需要的总时间
+    private float _delay; // 延迟的时间
     private Quaternion _initialRotation; // 角色旋转开始前的朝向
     private Vector3 _initialLocalTargetDirection; // 角色旋转开始前，目标相对于角色的本地坐标系的方向
     private Vector3 _initialWorldTargetDirection; // 角色旋转开始前，目标在世界坐标系中的方向
     private float _startAngle; // 新增，表示角色初始位置相对于目标的方向（在水平面上）
+
+    public CircleAroundTargetMovement(float delay = 0.1f)
+    {
+        _delay = delay; // 获取技能伤害延迟的时间
+    }
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
         _target = owner._targetFinder.GetTarget(); // 找到目标
         _startPosition = owner.transform.position; // 记录下角色旋转开始前的位置
         _elapsedTime = 0; // 初始化已经旋转的时间为0
-        _totalTravelTime = skill.SkillInfo._castTime; // 旋转需要的总时间由技能释放时间决定
+        _totalTravelTime = skill.SkillInfo._castTime - skill.SkillInfo._damageDelay; // 旋转需要的总时间由技能释放时间减去伤害延迟时间决定
         _initialRotation = owner.transform.rotation; // 记录下角色旋转开始前的朝向
 
         // 计算出角色旋转开始前，目标相对于角色的本地坐标系的方向
@@ -350,21 +380,27 @@ public class CircleAroundTargetMovement : IMovementEffect
 
         // 计算初始角度
         Vector3 startDirection = (_startPosition - _target.transform.position).normalized;
-        _startAngle = Mathf.Atan2(startDirection.z, startDirection.x);
+        _startAngle = Mathf.Atan2(startDirection.z, startDirection.x) + Mathf.PI;
     }
 
     public void OnMoving(Character owner, SkillInstance skill)
     {
         _elapsedTime += Time.deltaTime; // 更新已经旋转的时间
 
-        // 计算当前时间对应的旋转角度，这个角度等于 (已经旋转的时间 / 旋转需要的总时间) * 2π
-        // 注意这里是将已经旋转的角度和初始角度相加
-        float angle = (_startAngle + _elapsedTime * 2 * Mathf.PI / _totalTravelTime) % (2 * Mathf.PI);
+        // 等待技能伤害延迟的时间
+        if (_elapsedTime < _delay)
+            return;
+
+        // 计算当前时间对应的旋转角度，这个角度等于 (已经旋转的时间 / 旋转需要的总时间) * π
+        // 注意这里我们使用了 Mathf.SmoothStep() 函数来让速度在开始和结束时减慢，在中间加快
+        float t = (_elapsedTime - _delay) / _totalTravelTime;
+        float smoothedT = Mathf.SmoothStep(0, 1, t);
+        float angle = _startAngle + smoothedT * Mathf.PI;
 
         // 计算角色旋转的半径，这个半径等于角色开始旋转前的位置与目标的距离
         float radius = Vector3.Distance(_startPosition, _target.transform.position);
 
-        // 根据旋转的半径和当前时间对应的旋转角度，计算出角色的新位置
+        // 根据旋转的半径和当前的旋转角度，计算出角色的新位置
         Vector3 newPosition = _target.transform.position + new Vector3(radius * Mathf.Cos(angle), 0, radius * Mathf.Sin(angle));
 
         // 移动角色到新位置
@@ -394,17 +430,20 @@ public class CircleAroundTargetMovement : IMovementEffect
         // 计算当前朝向
         Vector3 currentForward = transform.TransformDirection(forwardInLocalSpace).normalized;
 
-        // 计算旋转轴
-        Vector3 rotationAxis = Vector3.Cross(currentForward, targetDirection);
-
         // 计算需要旋转的角度
-        float angle = Vector3.SignedAngle(currentForward, targetDirection, rotationAxis);
+        float angle = Vector3.SignedAngle(currentForward, targetDirection, transform.up);
 
         // 进行旋转
-        transform.Rotate(rotationAxis, angle, Space.World);
+        transform.Rotate(transform.up, angle);
+    }
+
+    public void OnInterruptSkill(Character owner, SkillInstance skillInstance)
+    {
+        // 立即将角色的位置和朝向恢复到旋转开始前的状态
+        owner.transform.position = _startPosition;
+        owner.transform.rotation = _initialRotation;
     }
 }
-
 
 
 
