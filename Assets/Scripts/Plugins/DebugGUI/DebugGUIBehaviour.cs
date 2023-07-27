@@ -5,13 +5,16 @@ using UnityEngine;
 public class DebugGUIBehaviour : MonoBehaviour
 {
     public Dictionary<string, IDebugItem> DebugItems = new Dictionary<string, IDebugItem>();
+    private Vector2 scrollPosition; // 添加一个变量来存储滚动位置
 
     private void OnGUI()
     {
+        scrollPosition = GUILayout.BeginScrollView(scrollPosition); // 开始ScrollView
         foreach (var item in DebugItems)
         {
             DisplayDebugItem(item.Value);
         }
+        GUILayout.EndScrollView(); // 结束ScrollView
     }
 
     private void DisplayDebugItem(IDebugItem item)
