@@ -1,10 +1,7 @@
 ﻿using System.ComponentModel;
 using UnityEngine;
 
-public class AllowMovementDuringSkill : ISkillEffect
-{
 
-}
 
 /// <summary>
 /// 技能移动组件
@@ -14,6 +11,22 @@ public interface IMovementEffect : ISkillEffect
     void BeforeMove(Character owner, SkillInstance skill);
     void OnMoving(Character owner, SkillInstance skill);
     void AfterMove(Character owner, SkillInstance skill);
+}
+
+/// <summary>
+/// 位移方向
+/// </summary>
+public enum MovementDirection
+{
+    [Description("向前方移动")]
+    Forward,
+    [Description("向后方移动")]
+    Backward
+}
+
+public class AllowMovementDuringSkill : ISkillEffect
+{
+
 }
 
 /// <summary>
@@ -307,15 +320,93 @@ public class SwapWithTargetMovement : IMovementEffect
 }
 
 
-
-
 /// <summary>
-/// 位移方向
+/// 绕目标旋转
 /// </summary>
-public enum MovementDirection
+public class CircleAroundTargetMovement : IMovementEffect
 {
-    [Description("向前方移动")]
-    Forward,
-    [Description("向后方移动")]
-    Backward
+    private Character _target; // 目标
+    private Vector3 _startPosition; // 角色旋转开始前的位置
+    private float _elapsedTime; // 旋转已经进行的时间
+    private float _totalTravelTime; // 角色旋转需要的总时间
+    private Quaternion _initialRotation; // 角色旋转开始前的朝向
+    private Vector3 _initialLocalTargetDirection; // 角色旋转开始前，目标相对于角色的本地坐标系的方向
+    private Vector3 _initialWorldTargetDirection; // 角色旋转开始前，目标在世界坐标系中的方向
+
+    public void BeforeMove(Character owner, SkillInstance skill)
+    {
+        _target = owner._targetFinder.GetTarget(); // 找到目标
+        _startPosition = owner.transform.position; // 记录下角色旋转开始前的位置
+        _elapsedTime = 0; // 初始化已经旋转的时间为0
+        _totalTravelTime = skill.SkillInfo._castTime; // 旋转需要的总时间由技能释放时间决定
+        _initialRotation = owner.transform.rotation; // 记录下角色旋转开始前的朝向
+
+        // 计算出角色旋转开始前，目标相对于角色的本地坐标系的方向
+        _initialLocalTargetDirection = owner.transform.InverseTransformDirection(_target.transform.position - _startPosition);
+
+        // 计算出角色旋转开始前，目标在世界坐标系中的方向
+        _initialWorldTargetDirection = owner.transform.TransformDirection(_initialLocalTargetDirection);
+    }
+
+    public void OnMoving(Character owner, SkillInstance skill)
+    {
+        _elapsedTime += Time.deltaTime; // 更新已经旋转的时间
+
+        // 计算当前时间对应的旋转角度，这个角度等于 (已经旋转的时间 / 旋转需要的总时间) * 2π
+        float angle = _elapsedTime * 2 * Mathf.PI / _totalTravelTime;
+
+        // 计算角色旋转的半径，这个半径等于角色开始旋转前的位置与目标的距离
+        float radius = Vector3.Distance(_startPosition, _target.transform.position);
+
+        // 根据旋转的半径和当前时间对应的旋转角度，计算出角色的新位置
+        Vector3 newPosition = _target.transform.position + new Vector3(radius * Mathf.Sin(angle), 0, radius * Mathf.Cos(angle));
+
+        // 移动角色到新位置
+        owner.transform.position = newPosition;
+
+        // 通过旋转初始时角色的本地朝向来得到当前应该面向的方向
+        Vector3 currentLocalTargetDirection = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0) * _initialLocalTargetDirection;
+        // 将本地朝向转换为世界坐标系中的朝向
+        Vector3 currentWorldTargetDirection = owner.transform.TransformDirection(currentLocalTargetDirection);
+
+        // 让角色面向目标
+        LookAtWithCustomForward(owner.transform, _initialLocalTargetDirection, _target.transform.position);
+    }
+
+    public void AfterMove(Character owner, SkillInstance skill)
+    {
+        // 技能释放结束后，立即将角色的位置和朝向恢复到旋转开始前的状态
+        owner.transform.position = _startPosition;
+        owner.transform.rotation = _initialRotation;
+    }
+
+    public void LookAtWithCustomForward(Transform transform, Vector3 forwardInLocalSpace, Vector3 targetPosition)
+    {
+        // 计算目标方向
+        Vector3 targetDirection = (targetPosition - transform.position).normalized;
+
+        // 计算当前朝向
+        Vector3 currentForward = transform.TransformDirection(forwardInLocalSpace).normalized;
+
+        // 计算旋转轴
+        Vector3 rotationAxis = Vector3.Cross(currentForward, targetDirection);
+
+        // 计算需要旋转的角度
+        float angle = Vector3.SignedAngle(currentForward, targetDirection, rotationAxis);
+
+        // 进行旋转
+        transform.Rotate(rotationAxis, angle, Space.World);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

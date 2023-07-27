@@ -79,6 +79,12 @@ public class SkillLibrary
         hougunfan.AddComponent(new StatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness }));
         hougunfan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 0.5f));
         hougunfan.AddComponent(new HouGunFanUsability());
+        var jiaohou = AddSkill(new Skill("绞喉", "jiaohou", 1, 0, 1, 0f, 1f, 0.1f, 0,
+            SkillUsabilityPriority.ChainHigh1, SkillInterruptPriority.High, true,
+            new NonChainSkillStrategy()));
+        jiaohou.AddComponent(new CircleAroundTargetMovement());
+        jiaohou.AddComponent(new StatusAdditionEffect(CharacterStatusType.Silence, 1.6f));
+        jiaohou.AddComponent(new TargetStatusRequired(CharacterStatusType.Stun));
         var tab = AddSkill(new Skill("闪光", "tab", 0, 5, 0, 36f, 0.83f, 0f, 0,
             SkillUsabilityPriority.Conditional, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));

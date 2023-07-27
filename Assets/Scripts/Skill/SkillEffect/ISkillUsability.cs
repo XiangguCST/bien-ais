@@ -53,6 +53,27 @@ public class TargetBuffRequired : ISkillUsability
     private BuffType _buffType; // buff类型
 }
 
+/// <summary>
+/// 需要目标状态
+/// </summary>
+public class TargetStatusRequired : ISkillUsability
+{
+    public TargetStatusRequired(CharacterStatusType status)
+    {
+        _status = status;
+    }
+
+    public bool IsSkillUsable(SkillInstance skill)
+    {
+        var finder = skill._owner._targetFinder;
+        var target = finder.GetTarget();
+        return target && target._stateManager.GetCurrentStatus() == _status;
+    }
+
+    float _requiredTargetDistance; // 表示技能释放所需的目标距离
+    private CharacterStatusType _status; // buff类型
+}
+
 public class HouGunFanUsability : ISkillUsability
 {
     public bool IsSkillUsable(SkillInstance skillInstance)
