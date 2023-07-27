@@ -332,6 +332,7 @@ public class CircleAroundTargetMovement : IMovementEffect
     private Quaternion _initialRotation; // 角色旋转开始前的朝向
     private Vector3 _initialLocalTargetDirection; // 角色旋转开始前，目标相对于角色的本地坐标系的方向
     private Vector3 _initialWorldTargetDirection; // 角色旋转开始前，目标在世界坐标系中的方向
+    private float _startAngle; // 新增，表示角色初始位置相对于目标的方向（在水平面上）
 
     public void BeforeMove(Character owner, SkillInstance skill)
     {
@@ -346,6 +347,10 @@ public class CircleAroundTargetMovement : IMovementEffect
 
         // 计算出角色旋转开始前，目标在世界坐标系中的方向
         _initialWorldTargetDirection = owner.transform.TransformDirection(_initialLocalTargetDirection);
+
+        // 计算初始角度
+        Vector3 startDirection = (_startPosition - _target.transform.position).normalized;
+        _startAngle = Mathf.Atan2(startDirection.z, startDirection.x);
     }
 
     public void OnMoving(Character owner, SkillInstance skill)
@@ -353,13 +358,14 @@ public class CircleAroundTargetMovement : IMovementEffect
         _elapsedTime += Time.deltaTime; // 更新已经旋转的时间
 
         // 计算当前时间对应的旋转角度，这个角度等于 (已经旋转的时间 / 旋转需要的总时间) * 2π
-        float angle = _elapsedTime * 2 * Mathf.PI / _totalTravelTime;
+        // 注意这里是将已经旋转的角度和初始角度相加
+        float angle = (_startAngle + _elapsedTime * 2 * Mathf.PI / _totalTravelTime) % (2 * Mathf.PI);
 
         // 计算角色旋转的半径，这个半径等于角色开始旋转前的位置与目标的距离
         float radius = Vector3.Distance(_startPosition, _target.transform.position);
 
         // 根据旋转的半径和当前时间对应的旋转角度，计算出角色的新位置
-        Vector3 newPosition = _target.transform.position + new Vector3(radius * Mathf.Sin(angle), 0, radius * Mathf.Cos(angle));
+        Vector3 newPosition = _target.transform.position + new Vector3(radius * Mathf.Cos(angle), 0, radius * Mathf.Sin(angle));
 
         // 移动角色到新位置
         owner.transform.position = newPosition;
@@ -398,6 +404,8 @@ public class CircleAroundTargetMovement : IMovementEffect
         transform.Rotate(rotationAxis, angle, Space.World);
     }
 }
+
+
 
 
 

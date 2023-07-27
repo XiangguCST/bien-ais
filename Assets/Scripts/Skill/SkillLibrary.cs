@@ -79,7 +79,7 @@ public class SkillLibrary
         hougunfan.AddComponent(new StatusRemovalEffect(new List<CharacterStatusType> { CharacterStatusType.Knockdown, CharacterStatusType.Weakness }));
         hougunfan.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll, 0.5f));
         hougunfan.AddComponent(new HouGunFanUsability());
-        var jiaohou = AddSkill(new Skill("绞喉", "jiaohou", 1, 0, 1, 0f, 1f, 0.1f, 0,
+        var jiaohou = AddSkill(new Skill("绞喉", "jiaohou", 1, 0, 1, 0f, 3f, 0.1f, 0,
             SkillUsabilityPriority.ChainHigh1, SkillInterruptPriority.High, true,
             new NonChainSkillStrategy()));
         jiaohou.AddComponent(new CircleAroundTargetMovement());
