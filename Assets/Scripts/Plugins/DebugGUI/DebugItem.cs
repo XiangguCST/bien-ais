@@ -100,7 +100,18 @@ public class DebugItemBase : IDebugItem
         GUILayout.BeginHorizontal();
         GUILayout.Label($"{Key}:", keyStyle);
         GUILayout.Space(20);
-        GUILayout.Label($"{Getter()}", valueStyle);
+        string value = Getter();
+        if (!string.IsNullOrEmpty(value))
+        {
+            Color valueBoxColor = GetDarkerColor(actualBoxColor);
+            GUILayout.BeginVertical();
+            GUILayout.FlexibleSpace(); // 添加一个可伸缩的空间
+            GUILayout.BeginVertical(CreateBoxStyle(valueBoxColor));
+            GUILayout.Label(value, valueStyle);
+            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace(); // 添加一个可伸缩的空间
+            GUILayout.EndVertical();
+        }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
     }
