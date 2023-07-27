@@ -85,7 +85,7 @@ public class SkillLibrary
             tab.AddComponent(new FixedDirectionMovement(MovementDirection.Backward, 8));
         tab.AddComponent(new RangeHitCheckStrategy(3f, true));
         tab.AddComponent(new StatusRemovalEffect());
-        tab.AddComponent(new StatusAdditionEffect(CharacterStatusType.Stun, 2f));
+        tab.AddComponent(new StatusAdditionEffect(CharacterStatusType.Silence, 2f));
         tab.AddComponent(new AddBuffDurationEffect(BuffType.ImmunityAll));
         var nifengxing = AddSkill(new Skill("逆风行", "nifengxing", 0, 0, 0, 8f, 0.43f, 0f, 0,
             SkillUsabilityPriority.Normal, SkillInterruptPriority.High, false,
