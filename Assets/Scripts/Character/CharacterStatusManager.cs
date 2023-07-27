@@ -68,6 +68,9 @@ public class CharacterStatusManager
         }
 
         UpdateCurrentStatus();
+        DebugGUI.AddDebugTotalObject(_owner.name,this,Color.green);
+        DebugGUI.AddDebugItem(_owner.name + "_hp", _owner._hp.ToString(), Color.blue);
+        DebugGUI.AddDebugItem(_owner.name + "_energy", _owner._energy.ToString(), Color.red);
     }
 
     // 获取上一次添加异常状态经过的时间

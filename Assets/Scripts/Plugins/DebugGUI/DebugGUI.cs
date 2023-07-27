@@ -5,9 +5,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-/// <summary>
-/// DebugGUI静态类提供了一个简单的API，用于在屏幕上显示调试信息。
-/// </summary>
+// DebugGUI静态类
 public static class DebugGUI
 {
     private static DebugGUIBehaviour debugGuiBehaviour;
@@ -25,13 +23,13 @@ public static class DebugGUI
 
     public static void AddDebugItem(string keyName, string valInfo, Color color = default)
     {
-        var item = new DebugItem(() => valInfo) { Color = color == default ? Color.black : color };
+        var item = new DebugItemBase(keyName, () => valInfo, color);
         GetDebugGUIBehaviour().DebugItems[keyName] = item;
     }
 
     public static void AddDebugItem(string keyName, Func<string> valGetter, Color color = default)
     {
-        var item = new DebugItem(valGetter) { Color = color == default ? Color.black : color };
+        var item = new DebugItemBase(keyName, valGetter, color);
         GetDebugGUIBehaviour().DebugItems[keyName] = item;
     }
 
@@ -39,33 +37,10 @@ public static class DebugGUI
     {
         if (obj == null) throw new ArgumentNullException(nameof(obj));
 
-        var type = obj.GetType();
-        var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-        foreach (var field in fields)
-        {
-            if (field.FieldType.BaseType == typeof(MulticastDelegate)) continue;  // 忽略委托类型
-            if (typeof(IDictionary).IsAssignableFrom(field.FieldType)) continue;  // 忽略字典类型
-            if (typeof(IList).IsAssignableFrom(field.FieldType)) continue;  // 忽略列表类型
-
-            var value = field.GetValue(obj);
-            AddDebugItem($"{keyName}.{field.Name}", () => value?.ToString() ?? "null", color);
-        }
-
-        foreach (var property in properties)
-        {
-            if (!property.CanRead) continue;
-            if (property.PropertyType.BaseType == typeof(MulticastDelegate)) continue;  // 忽略委托类型
-            if (typeof(IDictionary).IsAssignableFrom(property.PropertyType)) continue;  // 忽略字典类型
-            if (typeof(IList).IsAssignableFrom(property.PropertyType)) continue;  // 忽略列表类型
-
-            var value = property.GetValue(obj);
-            AddDebugItem($"{keyName}.{property.Name}", () => value?.ToString() ?? "null", color);
-        }
+        var item = new DebugItemObject(keyName, obj, color);
+        GetDebugGUIBehaviour().DebugItems[keyName] = item;
     }
 }
-
 
 
 
