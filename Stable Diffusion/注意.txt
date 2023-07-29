@@ -1,0 +1,1 @@
+大模型使用jimEIDOMODE_version10.safetensors模型效果更好
