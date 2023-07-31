@@ -17,11 +17,15 @@ public class DebugGUITest : MonoBehaviour
 
     private TestObject testObject = new TestObject();
     private float timeSinceStartup;
+    private string testString = "Initial String";
 
     private void Start()
     {
         DebugGUI.AddDebugTotalObject("testObject", testObject);
         DebugGUI.AddDebugItem("timeSinceStartup", () => timeSinceStartup.ToString());
+        DebugGUI.AddDebugItem("testString-1", testString);
+        testString = "modify string";
+        DebugGUI.AddDebugItem("testString-2", testString);
     }
 
     private void Update()
@@ -29,12 +33,24 @@ public class DebugGUITest : MonoBehaviour
         timeSinceStartup = Time.timeSinceLevelLoad;
 
         // 更新测试对象的值
-        testObject.IntegerValue = (int)(timeSinceStartup * 100);
-        testObject.FloatValue = timeSinceStartup;
-        testObject.StringValue = $"Time: {timeSinceStartup}";
-        testObject.ColorValue = new Color(timeSinceStartup % 1, (timeSinceStartup * 0.5f) % 1, (timeSinceStartup * 0.2f) % 1);
-        testObject.Vector3Value = new Vector3(timeSinceStartup, timeSinceStartup * 2, timeSinceStartup * 3);
-        testObject.DictionaryValue["one"] = (int)timeSinceStartup;
-        testObject.ListValue = Enumerable.Range(0, (int)timeSinceStartup % 100).ToList();
+        if (testObject != null)
+        {
+            testObject.IntegerValue = (int)(timeSinceStartup * 100);
+            testObject.FloatValue = timeSinceStartup;
+            testObject.StringValue = $"Time: {timeSinceStartup}";
+            testObject.ColorValue = new Color(timeSinceStartup % 1, (timeSinceStartup * 0.5f) % 1, (timeSinceStartup * 0.2f) % 1);
+            testObject.Vector3Value = new Vector3(timeSinceStartup, timeSinceStartup * 2, timeSinceStartup * 3);
+            testObject.DictionaryValue["one"] = (int)timeSinceStartup;
+            testObject.ListValue = Enumerable.Range(0, (int)timeSinceStartup % 100).ToList();
+        }
+
+        // 更新测试字符串的值
+        testString = $"Time: {timeSinceStartup}";
+
+        // 模拟对象销毁
+        if (timeSinceStartup > 10) // 在10秒后销毁测试对象
+        {
+            testObject = null;
+        }
     }
 }
