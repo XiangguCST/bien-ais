@@ -13,7 +13,7 @@ public interface IDebugItem
     Color Color { get; }
     int FontSize { get; }
     List<IDebugItem> Children { get; }
-
+    void Refresh(); 
     void Display(GUIStyle keyStyle, GUIStyle valueStyle, Color? boxColor = null);
 }
 
@@ -94,6 +94,8 @@ public class DebugItemBase : IDebugItem
         return luminance < 0.5f ? Color.white : Color.black;
     }
 
+    public virtual void Refresh() { } // 默认不执行任何操作
+
     public virtual void Display(GUIStyle keyStyle, GUIStyle valueStyle, Color? boxColor = null)
     {
         Color actualBoxColor = boxColor ?? GetContrastColor(Color);
@@ -124,21 +126,30 @@ public class DebugItemObject : DebugItemBase
     public DebugItemObject(string key, object obj, Color color = default, int fontSize = 18)
         : base(key, key, () => "", color, fontSize)
     {
+        this.obj = obj;
+
         // 获取obj的字段和属性信息
         var type = obj.GetType();
-        var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+        Refresh();
+    }
+
+    public override void Refresh()
+    {
+        Children.Clear();
 
         foreach (var field in fields)
         {
             if (field.FieldType.BaseType == typeof(MulticastDelegate)) continue;  // 忽略委托类型
             var value = field.GetValue(obj);
             if (value is IDictionary dic)
-                Children.Add(new DebugItemDictionary($"{field.Name}", dic, color, fontSize));
+                Children.Add(new DebugItemDictionary($"{field.Name}", dic, Color, FontSize));
             else if (value is IList list)
-                Children.Add(new DebugItemList($"{field.Name}", list, color, fontSize));
+                Children.Add(new DebugItemList($"{field.Name}", list, Color, FontSize));
             else
-                Children.Add(new DebugItemBase($"{Key}.{field.Name}", field.Name, () => value?.ToString() ?? "null", color, fontSize));
+                Children.Add(new DebugItemBase($"{Key}.{field.Name}", field.Name, () => value?.ToString() ?? "null", Color, FontSize));
         }
 
         foreach (var property in properties)
@@ -147,11 +158,11 @@ public class DebugItemObject : DebugItemBase
             if (property.PropertyType.BaseType == typeof(MulticastDelegate)) continue;  // 忽略委托类型
             var value = property.GetValue(obj);
             if (value is IDictionary dic)
-                Children.Add(new DebugItemDictionary($"{property.Name}", dic, color, fontSize));
+                Children.Add(new DebugItemDictionary($"{property.Name}", dic, Color, FontSize));
             else if (value is IList list)
-                Children.Add(new DebugItemList($"{property.Name}", list, color, fontSize));
+                Children.Add(new DebugItemList($"{property.Name}", list, Color, FontSize));
             else
-                Children.Add(new DebugItemBase($"{Key}.{property.Name}", property.Name, () => value?.ToString() ?? "null", color, fontSize));
+                Children.Add(new DebugItemBase($"{Key}.{property.Name}", property.Name, () => value?.ToString() ?? "null", Color, FontSize));
         }
     }
 
@@ -173,6 +184,10 @@ public class DebugItemObject : DebugItemBase
 
         GUILayout.EndVertical();
     }
+
+    private readonly object obj;
+    private readonly FieldInfo[] fields;
+    private readonly PropertyInfo[] properties;
 }
 
 // 列表调试项

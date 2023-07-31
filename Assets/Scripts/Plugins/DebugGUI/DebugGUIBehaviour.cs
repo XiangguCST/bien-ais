@@ -9,10 +9,15 @@ public class DebugGUIBehaviour : MonoBehaviour
 
     private void OnGUI()
     {
-        scrollPosition = GUILayout.BeginScrollView(scrollPosition); // 开始ScrollView
-        foreach (var item in DebugItems)
+        foreach (var item in DebugItems.Values)
         {
-            DisplayDebugItem(item.Value);
+            item.Refresh();
+        }
+
+        scrollPosition = GUILayout.BeginScrollView(scrollPosition); // 开始ScrollView
+        foreach (var item in DebugItems.Values)
+        {
+            DisplayDebugItem(item);
         }
         GUILayout.EndScrollView(); // 结束ScrollView
     }
