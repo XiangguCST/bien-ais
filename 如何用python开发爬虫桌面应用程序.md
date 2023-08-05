@@ -260,67 +260,69 @@ say_hello()
 
   - 打印或保存数据。
 
-    #### 安装`requests`库
+#### 安装`requests`库
 
-    用于发送HTTP请求。
+用于发送HTTP请求。
 
-    ```bash
-    pip install requests
-    ```
-    
-#### 安装`BeautifulSoup`库
-    
-用于解析HTML和XML文档。
-    
 ```bash
-    pip install beautifulsoup4
-    ```
-    
-    #### 安装`lxml`库
+pip install requests
+```
 
-    用于解析HTML和XML文档，也是BeautifulSoup的一个可选解析器。
+#### 安装`BeautifulSoup`库
 
-    ```bash
+用于解析HTML和XML文档。
+
+```bash
+pip install beautifulsoup4
+```
+
+#### 安装`lxml`库
+
+用于解析HTML和XML文档，也是BeautifulSoup的一个可选解析器。
+
+```bash
 pip install lxml
-    ```
-    
-    ### 示例1：使用`requests`库爬取网页标题
-    
+```
+
+### 示例1：使用`requests`库爬取网页标题
+
+
 ```python
-    import requests
+import requests
 from bs4 import BeautifulSoup
     
-    # 使用requests库发送GET请求
-    response = requests.get('https://www.python.org/')
-    
-    # 解析HTML内容
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # 找到标题标签并打印
-    title = soup.find('title')
-    print(title.text)  # 输出: Welcome to Python.org
-    ```
-    
-    ### 示例2：使用`requests`和正则表达式爬取所有链接
-    
+# 使用requests库发送GET请求
+response = requests.get('https://www.python.org/')
+
+# 解析HTML内容
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# 找到标题标签并打印
+title = soup.find('title')
+print(title.text)  # 输出: Welcome to Python.org
+```
+
+### 示例2：使用`requests`和正则表达式爬取所有链接
+
 ```python
-    import requests
+import requests
 import re
-    
-    # 使用requests库发送GET请求
-    response = requests.get('https://www.python.org/')
-    
-    # 使用正则表达式找到所有链接
-    links = re.findall('href="https?://.*?"', response.text)
-    
-    # 打印所有链接
-    for link in links:
-        print(link)
-    ```
-    
-    正则表达式：`'href="https?://.*?"'`
-    
+
+# 使用requests库发送GET请求
+response = requests.get('https://www.python.org/')
+
+# 使用正则表达式找到所有链接
+links = re.findall('href="https?://.*?"', response.text)
+
+# 打印所有链接
+for link in links:
+    print(link)
+```
+
+正则表达式：`'href="https?://.*?"'`
+
 - `href="`：这部分确保正则表达式与HTML中的链接属性匹配。在HTML中，链接通常在`href`属性中定义，所以这部分确保我们只查找包含`href`属性的部分。
+  
     - `https?`：这部分用于匹配链接的协议。`http`和`https`是两种常见的Web协议。问号`?`表示`s`字符是可选的，所以这部分可以匹配`http`或`https`。
 - `://`：这部分确保正则表达式与链接的协议部分匹配。冒号和斜杠是协议和链接地址之间的分隔符。
     - `.*?`：这部分用于匹配链接的主体部分。
@@ -331,65 +333,65 @@ import re
     
     总结：这个正则表达式的目的是匹配HTML中的链接。它查找`href`属性，并捕获`http`或`https`协议，然后捕获链接的主体部分，直到遇到结束引号。通过使用非贪婪模式，它确保每个链接都被单独匹配，而不是整个文档被视为一个长链接。
     
-    ### 示例3：使用`requests`和`lxml`解析器爬取特定类别的内容
-    
-    ```python
-    import requests
-    from lxml import html
-    
-    # 使用requests库发送GET请求
-    response = requests.get('https://www.python.org/')
-    
-    # 使用lxml解析HTML内容
-    tree = html.fromstring(response.content)
-    
-    # 使用XPath找到特定类别的内容
-    nav_texts = tree.xpath('//ul[@class="menu"]/li/a/text()')
-    
-    # 打印内容
-    for text in nav_texts:
-        print(text.strip())
-    ```
-    
-    ### 使用BeautifulSoup方式
-    
-    ```python
-    import requests
-    from bs4 import BeautifulSoup
-    
-    # 使用requests库发送GET请求
-    response = requests.get('https://www.python.org/')
-    
-    # 解析HTML内容
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # 找到特定类别的内容
-    nav_texts = soup.select('ul.menu li a')
-    
-    # 打印内容
-    for text in nav_texts:
-        print(text.text.strip())
-    ```
-    
-    ### 使用正则表达式方式
-    
-    ```python
-    import requests
-    import re
-    from html import unescape
-    
-    # 使用requests库发送GET请求
-    response = requests.get('https://www.python.org/')
-    
-    # 使用正则表达式找到特定类别的内容
-    nav_texts = re.findall(r'<a href=".*?"[^>]*>(.*?)</a>', response.text)
-    
-    # 打印内容
-    for text in nav_texts:
-        print(unescape(text.strip()))
-    ```
-    
-    请注意，正则表达式解析HTML可能会更加复杂和脆弱，因为HTML的结构可能非常复杂。如果网页结构发生变化，正则表达式可能需要相应地调整。
+### 示例3：使用`requests`和`lxml`解析器爬取特定类别的内容
+
+```python
+import requests
+from lxml import html
+
+# 使用requests库发送GET请求
+response = requests.get('https://www.python.org/')
+
+# 使用lxml解析HTML内容
+tree = html.fromstring(response.content)
+
+# 使用XPath找到特定类别的内容
+nav_texts = tree.xpath('//ul[@class="menu"]/li/a/text()')
+
+# 打印内容
+for text in nav_texts:
+print(text.strip())
+```
+
+### 使用BeautifulSoup方式
+
+```python
+import requests
+from bs4 import BeautifulSoup
+
+# 使用requests库发送GET请求
+response = requests.get('https://www.python.org/')
+
+# 解析HTML内容
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# 找到特定类别的内容
+nav_texts = soup.select('ul.menu li a')
+
+# 打印内容
+for text in nav_texts:
+print(text.text.strip())
+```
+
+### 使用正则表达式方式
+
+```python
+import requests
+import re
+from html import unescape
+
+# 使用requests库发送GET请求
+response = requests.get('https://www.python.org/')
+
+# 使用正则表达式找到特定类别的内容
+nav_texts = re.findall(r'<a href=".*?"[^>]*>(.*?)</a>', response.text)
+
+# 打印内容
+for text in nav_texts:
+print(unescape(text.strip()))
+```
+
+​		请注意，正则表达式解析HTML可能会更加复杂和脆弱，因为HTML的结构可能非常复杂。如果网页结构发生变化，正则表达式可能需要相应地调整。
 
 #### 3. 实践
 
